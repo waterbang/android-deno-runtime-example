@@ -6,7 +6,7 @@ public final class RustLog {
 
     public static native void initialiseLogging();
 
-    public static native void testV8();
+    public static native void testDenoCore();
 
     private RustLog() {}
 }

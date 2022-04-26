@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
         init {
             System.loadLibrary("rust_lib")
             RustLog.initialiseLogging()
+            RustLog.testDenoCore()
         }
     }
 
