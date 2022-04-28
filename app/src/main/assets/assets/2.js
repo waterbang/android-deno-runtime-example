@@ -1,0 +1,1 @@
+console.log("import.meta.url: %s", import.meta.url);

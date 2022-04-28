@@ -1,0 +1,5 @@
+[env]
+RUSTY_V8_ARCHIVE = { value = "assets/rusty_v8_mirror/v0.42.0/librusty_v8_release_aarch64-apple-darwin.a", relative = true }
+
+# [env.'cfg(target_os="android")']
+# RUSTY_V8_ARCHIVE = { value = "assets/rusty_v8_mirror/v0.42.0/librusty_v8_release_aarch64-linux-android.a", relative = true }

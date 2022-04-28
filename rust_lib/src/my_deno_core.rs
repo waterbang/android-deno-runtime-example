@@ -2,19 +2,15 @@
 //!  This example shows you how to define ops in Rust and then call them from
 //!  JavaScript.
 
-use deno_core::op;
-use deno_core::Extension;
-use deno_core::JsRuntime;
-use deno_core::RuntimeOptions;
-use deno_core::Snapshot;
+use deno_core::{op, Extension, JsRuntime, RuntimeOptions, Snapshot};
 
 // This is a hack to make the `#[op]` macro work with
 // deno_core examples.
 // You can remove this:
 use deno_core::*;
 
-use log::debug;
-use once_cell::sync::Lazy;
+// use log::debug;
+// use once_cell::sync::Lazy;
 
 // static COMPILER_SNAPSHOT: &[u8] = include_bytes!(concat!(
 //   env!("CARGO_MANIFEST_DIR"),
@@ -45,11 +41,34 @@ pub fn bootstrap_deno_core() {
     ])
     .build();
 
-  println!("JsRuntime::new");
+  log::info!("JsRuntime::new");
+
+  struct Permissions;
+  impl deno_web::TimersPermission for Permissions {
+    fn allow_hrtime(&mut self) -> bool {
+      unreachable!("snapshotting!")
+    }
+
+    fn check_unstable(&self, _state: &deno_core::OpState, _api_name: &'static str) {
+      unreachable!("snapshotting!")
+    }
+  }
 
   // Initialize a runtime instance
   let mut runtime = JsRuntime::new(RuntimeOptions {
-    extensions: vec![ext],
+    extensions: vec![
+      deno_webidl::init(),
+      deno_url::init(),
+      deno_tls::init(),
+      deno_web::init::<Permissions>(
+        deno_web::BlobStore::default(),
+        Default::default(),
+      ),
+      deno_console::init(),
+      deno_crypto::init(None),
+      // custom extension
+      ext,
+    ],
     // startup_snapshot: Some(deno_isolate_init()),
     ..Default::default()
   });
@@ -74,8 +93,12 @@ pub fn bootstrap_deno_core() {
       try {
         print(Deno.core.opSync('op_sum', 0));
       } catch(e) {
-        print('op_sum 0 got Exception:');
-        print(e);
+        const { Console, inspectArgs } = this.__bootstrap.console;
+        const console = new Console((msg, level) => Deno.core.print(msg, level > 1));
+
+        print(console.log.toString());
+        print('op_sum 0 gxot Exception:');
+        console.error(e);
       }
       "#,
     )

@@ -1,11 +1,15 @@
+mod androd_initer;
 mod java_glue;
-pub use crate::java_glue::*;
+mod module_loader;
 mod my_deno_core;
 mod my_deno_runtime;
 
+pub use crate::java_glue::*;
+use crate::module_loader::AssetsModuleLoader;
 use android_logger::Config;
 use log::Level;
 use rifgen::rifgen_attr::*;
+use std::rc::Rc;
 
 pub struct RustLog;
 
@@ -20,6 +24,11 @@ impl RustLog {
                 .with_tag("Rust"),
         );
         log_panics::init();
+        // log::info!("pwe:{:?}", std::env::current_exe().unwrap());
+        // log::info!("pwd:{:?}", std::env::current_dir().unwrap());
+        // std::fs::create_dir("he").unwrap();
+        // std::fs::write("he/zzz.js", "console.log('xxx')").unwrap();
+        // log::info!("dir:{:?}", std::fs::read_dir("he"));
         log::info!("Logging initialised from Rust");
     }
 
@@ -27,8 +36,4 @@ impl RustLog {
     pub fn test_deno_core() {
         my_deno_core::bootstrap_deno_core();
     }
-    // #[generate_interface]
-    // pub fn test_deno_runtime() {
-    //     my_deno_runtime::bootstrap_deno_runtime();
-    // }
 }
