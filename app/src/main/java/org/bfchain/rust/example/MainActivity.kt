@@ -1,39 +1,50 @@
 package org.bfchain.rust.example
 
+import android.content.Intent
 import android.content.res.AssetManager
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
+import android.widget.StackView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.bfchain.rust.example.lib.RustLog
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+//import org.bfchain.rust.example.lib.RustLog
 import org.bfchain.rust.example.ui.theme.RustApplicationTheme
+import java.util.*
 
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
 
-    private external fun hello();
-    private external fun hello2(assets: AssetManager);
-    private external fun helloDenoRuntime(assets: AssetManager);
-
-    companion object {
-        init {
-            System.loadLibrary("rust_lib")
-        }
-    }
-
+    //    companion object {
+//        init {
+//            System.loadLibrary("rust_lib")
+//        }
+//    }
+    private val workManager = WorkManager.getInstance(application)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RustLog.initialiseLogging()
-        RustLog.testDenoCore()
-//        MainActivity().hello()
-//        RustLog.testDenoRuntime()
-        MainActivity().helloDenoRuntime(assets)
+
+
+        Intent(this, DenoService::class.java).also { intent ->
+            startService(intent)
+        }
 
         setContent {
             RustApplicationTheme {
@@ -42,12 +53,25 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android With Rust")
+                    Column() {
+                        Greeting("Android With Rust")
+                        Button(onClick = {
+                            Toast.makeText(
+                                applicationContext,
+                                "clicked!!!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.i(TAG, "clicked!!")
+                        }) {
+                            Text(text = "Hi")
+                        }
+                    }
                 }
             }
         }
     }
 }
+
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")

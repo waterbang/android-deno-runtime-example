@@ -8,9 +8,11 @@ use std::ffi::CString;
 use std::io::Read;
 use std::pin::Pin;
 use std::ptr::NonNull;
+use std::rc::Rc;
+use std::sync::Arc;
 
 pub struct AssetsModuleLoader {
-    pub cache: AssetManager,
+    pub cache: Arc<AssetManager>,
 }
 impl AssetsModuleLoader {
     pub fn new() -> Self {
@@ -46,7 +48,7 @@ impl AssetsModuleLoader {
         let asset_manager = unsafe { AssetManager::from_ptr(asset_manager_ptr) };
         log::info!("asset_manager ready!!!");
         AssetsModuleLoader {
-            cache: asset_manager,
+            cache: Arc::new(asset_manager),
         }
     }
     pub fn get_string_asset(self, path: &str) -> String {
@@ -65,6 +67,12 @@ impl AssetsModuleLoader {
         return code;
     }
 }
+impl Clone for AssetsModuleLoader {
+    fn clone(&self) -> Self {
+        AssetsModuleLoader::from_ptr(self.cache.ptr())
+    }
+}
+
 impl ModuleLoader for AssetsModuleLoader {
     fn resolve(
         &self,
@@ -112,7 +120,7 @@ impl ModuleLoader for AssetsModuleLoader {
 
         let code = {
             let mut asset_path = path.to_str().unwrap();
-            if asset_path.starts_with("/"){
+            if asset_path.starts_with("/") {
                 asset_path = &path.to_str().unwrap()[1..];
             }
             let mut asset = self
