@@ -12,3 +12,9 @@ clippy::clone_on_copy
 )]
 
 include!(concat!(env!("OUT_DIR"), "/java_glue.rs"));
+
+
+/**
+ * https://www.infinyon.com/blog/2021/05/java-client/
+ * This is a typical Rust pattern when using build scripts. The code takes the file in ${OUT_DIR}/java_glue.rs and includes the contents into src/lib.rs in the build directory. The result will be as if we hand-wrote the generated code in our lib.rs file.
+ */
