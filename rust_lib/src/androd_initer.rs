@@ -1,3 +1,5 @@
+#![cfg(target_os = "android")]
+
 use android_logger::Config;
 use log::Level;
 // 引用标准库的一些内容
@@ -21,11 +23,7 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_initialiseLoggi
             .with_tag("Rust"),
     );
     log_panics::init();
-    // log::info!("pwe:{:?}", std::env::current_exe().unwrap());
-    // log::info!("pwd:{:?}", std::env::current_dir().unwrap());
-    // std::fs::create_dir("he").unwrap();
-    // std::fs::write("he/zzz.js", "console.log('xxx')").unwrap();
-    // log::info!("dir:{:?}", std::fs::read_dir("he"));
+
     log::info!("Logging initialised from Rust");
 
     std::env::set_var("NO_COLOR", "true");
@@ -98,9 +96,10 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_helloDeno
     .unwrap();
 }
 
+/// 二维码扫描
 #[no_mangle]
 #[allow(non_snake_case)]
-pub extern "system" fn Java_org_bfchain_rust_example_DenoService_invokeCallbackViaJNI(
+pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeScanning(
     env: JNIEnv,
     _context: JObject,
     callback: JObject,
@@ -110,7 +109,7 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_invokeCallbackV
             .with_min_level(Level::Debug)
             .with_tag("myrust"),
     );
-    log::info!("i am invokeCallbackViaJNI");
+    log::info!("i am mlkitBarcodeScanning");
     let s = String::from("Hello from Rust");
     let response = env.new_string(&s).expect("Couldn't create java string!");
     env.call_method(

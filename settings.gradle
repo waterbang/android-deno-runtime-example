@@ -1,12 +1,14 @@
 rootProject.name = "RustEample"
+include ':mlkit-barcode-scanning'
+include ':mlkit-camera-core'
 include ':app'
+
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://jitpack.io' }
     }
 }

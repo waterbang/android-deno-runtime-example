@@ -1,3 +1,5 @@
+#![cfg(target_os = "android")]
+
 use anyhow::Error;
 // use assets_manager::{loader, Asset, AssetCache};
 use deno_core::error::generic_error;

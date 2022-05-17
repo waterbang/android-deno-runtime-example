@@ -6,13 +6,14 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 
+
 private const val TAG = "DENO_SERVICE"
-class DenoService(appContext:Context, workerParams:WorkerParameters) : Worker(appContext,workerParams) {
-    public interface JNICallback{
+class DenoService(appContext:Context) {
+
+    interface JNICallback{
         fun callback(string:String)
     }
     private val context = appContext;
-    private val params = workerParams;
     // 加载rust编译的so
     companion object {
         init {
@@ -20,30 +21,31 @@ class DenoService(appContext:Context, workerParams:WorkerParameters) : Worker(ap
         }
     }
 
-    external fun hello(to: String): String;
-    external fun invokeCallbackViaJNI(callback:JNICallback)
-    public external fun hello2(assets: AssetManager);
-    public external fun helloDenoRuntime(assets: AssetManager);
-    public external fun initialiseLogging();
+    external fun mlkitBarcodeScanning(callback:JNICallback)
+    external fun helloDenoRuntime(assets: AssetManager);
+    external fun initialiseLogging();
 
+//    makeStatusNotification("Blurring image", context)
+//    BarcodeScanningActivity().startScan();
+//        try {
+//    mlkitBarcodeScanning(object:JNICallback{
+//        override fun callback(string: String) {
+//            Log.d("MainActivity","now rust says:"+string);
+//        }
+//    })
+//    initialiseLogging()
+//    helloDenoRuntime(context.assets)
+//        } catch (throwable: Throwable) {
+//            Log.e(TAG, throwable.stackTraceToString())
+//        }
 
-
-    override fun doWork(): Result {
-        makeStatusNotification("Blurring image", context)
-
-        try {
-            invokeCallbackViaJNI(object:JNICallback{
-                override fun callback(string: String) {
-                    Log.d("MainActivity","now rust says:"+string);
-                }
-            })
-            initialiseLogging()
-            helloDenoRuntime(context.assets)
-        } catch (throwable: Throwable) {
-            Log.e(TAG, throwable.stackTraceToString())
+    fun startScanner() {
+//        BarcodeScanningActivity().startScan();
+        mlkitBarcodeScanning(object:JNICallback{
+        override fun callback(string: String) {
+            Log.d("MainActivity","now rust says:"+string);
         }
-        return Result.success();
+    })
     }
-
 }
 

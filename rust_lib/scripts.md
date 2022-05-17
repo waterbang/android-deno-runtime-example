@@ -2,14 +2,14 @@
 直接执行 main.rs
 
 ```shell
-cargo +nightly run
+cargo run
 ```
 
 编译出 android lib
 
 ```shell
-rustup +nightly target add aarch64-linux-android
-cargo +nightly build --target=aarch64-linux-android --release
+rustup  target add aarch64-linux-android
+cargo build --target=aarch64-linux-android --release
 ```
 
 修改默认编译器

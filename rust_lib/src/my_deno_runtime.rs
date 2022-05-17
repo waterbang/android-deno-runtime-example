@@ -1,3 +1,5 @@
+#![cfg(target_os = "android")]
+
 use crate::errors::get_error_class_name;
 use crate::fmt_errors::PrettyJsError;
 use crate::module_loader::AssetsModuleLoader;

@@ -3,10 +3,11 @@ plugins {
     id 'kotlin-android'
 }
 
+
 android {
     compileSdk 32
-//    compileSdkVersion 32
-//    buildToolsVersion "31.0.0"
+    compileSdkVersion build_versions.compileSdk
+    buildToolsVersion build_versions.buildTools
 
     defaultConfig {
         applicationId "org.bfchain.rust.example"
@@ -36,8 +37,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+       sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -82,26 +83,35 @@ dependencies {
     def work_version = "2.7.1"
     // (Java only)
     implementation("androidx.work:work-runtime:$work_version")
-
-    // Kotlin + coroutines
     implementation("androidx.work:work-runtime-ktx:$work_version")
-
-    // optional - RxJava2 support
     implementation("androidx.work:work-rxjava2:$work_version")
-
-    // optional - GCMNetworkManager support
     implementation("androidx.work:work-gcm:$work_version")
-
-    // optional - Test helpers
     androidTestImplementation("androidx.work:work-testing:$work_version")
-
-    // optional - Multiprocess support
     implementation "androidx.work:work-multiprocess:$work_version"
+
+
+
+
+    //扫码核心库
+    implementation project(':mlkit-camera-core')
+    implementation project(':mlkit-barcode-scanning')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.espresso
+    implementation deps.androidx.design
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.kotlin
+    implementation deps.corektx
+    implementation deps.app_dialog
+
 }
+
 
 def rustBasePath = "../rust_lib"
 def archTriplets = [
-//        'arm64-v8a'  : 'aarch64-linux-android',
+     'arm64-v8a'  : 'aarch64-linux-android',
 //        'armeabi-v7a': 'armv7-linux-androideabi',
 ]
 
