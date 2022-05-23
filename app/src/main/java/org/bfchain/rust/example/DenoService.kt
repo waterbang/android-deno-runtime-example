@@ -1,51 +1,44 @@
 package org.bfchain.rust.example
 
+import android.app.IntentService
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.content.res.AssetManager
+import android.os.IBinder
 import android.util.Log
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.appcompat.app.AppCompatActivity
+import org.bfchain.rust.example.barcode.QRCodeScanningActivity
 
 
 private const val TAG = "DENO_SERVICE"
-class DenoService(appContext:Context) {
 
-    interface JNICallback{
-        fun callback(string:String)
-    }
-    private val context = appContext;
-    // 加载rust编译的so
+class DenoService : IntentService("DenoService") {
     companion object {
         init {
             System.loadLibrary("rust_lib")
         }
     }
 
-    external fun mlkitBarcodeScanning(callback:JNICallback)
-    external fun helloDenoRuntime(assets: AssetManager);
-    external fun initialiseLogging();
-
-//    makeStatusNotification("Blurring image", context)
-//    BarcodeScanningActivity().startScan();
-//        try {
-//    mlkitBarcodeScanning(object:JNICallback{
-//        override fun callback(string: String) {
-//            Log.d("MainActivity","now rust says:"+string);
-//        }
-//    })
-//    initialiseLogging()
-//    helloDenoRuntime(context.assets)
-//        } catch (throwable: Throwable) {
-//            Log.e(TAG, throwable.stackTraceToString())
-//        }
-
-    fun startScanner() {
-//        BarcodeScanningActivity().startScan();
-        mlkitBarcodeScanning(object:JNICallback{
-        override fun callback(string: String) {
-            Log.d("MainActivity","now rust says:"+string);
-        }
-    })
+    interface JNICallback {
+        fun scannerCallback(string: String)
     }
+
+    external fun mlkitBarcodeScanning(callback: JNICallback)
+    external fun helloDenoRuntime(assets: AssetManager)
+    external fun initialiseLogging()
+    external fun stringFromJNI(): String?
+
+
+    override fun onHandleIntent(p0: Intent?) {
+        mlkitBarcodeScanning(object : JNICallback {
+            override fun scannerCallback(string: String) {
+                Log.d("startScanner", "now rust says:" + string)
+
+//                start_zzzz?.let { it() }
+            }
+        })
+    }
+
 }
 

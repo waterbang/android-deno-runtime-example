@@ -33,11 +33,15 @@
         <activity android:name=".barcode.BarcodeScanningActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CameraScanTheme"/>
-        <service
-            android:name=".DenoService"
-            android:foregroundServiceType="location|microphone"
-            android:exported="true"
-             />
+
+        <service android:name="org.bfchain.rust.example.DenoService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.bfchain.rust.example.DenoService"/>
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="barcode" />

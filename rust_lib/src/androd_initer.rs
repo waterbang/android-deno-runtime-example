@@ -11,12 +11,25 @@ use jni::{
     JNIEnv, JavaVM,
 };
 
+// 校验的包名
+macro_rules! app_package {
+    () => {
+        "org.bfchain.rust.example"
+    };
+}
+
+// 检验的签名 hash-code 获取方式可使用 org.bfchain.rust.example.denoService.Utils.getSignInfoHashCode 方式获取
+macro_rules! signature {
+    () => {
+        -779219788
+    };
+}
+
 #[no_mangle]
 pub extern "system" fn Java_org_bfchain_rust_example_DenoService_initialiseLogging(
     env: JNIEnv,
     _context: JObject,
 ) {
-    #[cfg(target_os = "android")]
     android_logger::init_once(
         Config::default()
             .with_min_level(Level::Trace)
@@ -114,7 +127,7 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeSca
     let response = env.new_string(&s).expect("Couldn't create java string!");
     env.call_method(
         callback,
-        "callback",
+        "scannerCallback",
         "(Ljava/lang/String;)V",
         &[JValue::from(JObject::from(response))],
     )

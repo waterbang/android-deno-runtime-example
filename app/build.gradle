@@ -3,7 +3,6 @@ plugins {
     id 'kotlin-android'
 }
 
-
 android {
     compileSdk 32
     compileSdkVersion build_versions.compileSdk
@@ -37,7 +36,7 @@ android {
         }
     }
     compileOptions {
-       sourceCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
@@ -90,8 +89,6 @@ dependencies {
     implementation "androidx.work:work-multiprocess:$work_version"
 
 
-
-
     //扫码核心库
     implementation project(':mlkit-camera-core')
     implementation project(':mlkit-barcode-scanning')
@@ -111,7 +108,7 @@ dependencies {
 
 def rustBasePath = "../rust_lib"
 def archTriplets = [
-     'arm64-v8a'  : 'aarch64-linux-android',
+//        'arm64-v8a': 'aarch64-linux-android',
 //        'armeabi-v7a': 'armv7-linux-androideabi',
 ]
 

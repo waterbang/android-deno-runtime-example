@@ -8,6 +8,8 @@ mod my_deno_core;
 mod my_deno_runtime;
 mod ops;
 
+mod android;
+
 // pub use crate::java_glue::*;
 // use crate::module_loader::AssetsModuleLoader;
 // use android_logger::Config;

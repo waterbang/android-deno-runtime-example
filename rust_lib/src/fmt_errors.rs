@@ -1,11 +1,11 @@
 // Copyright 2018-2022 the Deno authors. All rights reserved. MIT license.
 //! This mod provides DenoError to unify errors across Deno.
+use deno_core::error::{AnyError, JsError, JsStackFrame};
+use deno_core::url::Url;
 use deno_runtime::colors::cyan;
 use deno_runtime::colors::italic_bold;
 use deno_runtime::colors::red;
 use deno_runtime::colors::yellow;
-use deno_core::error::{AnyError, JsError, JsStackFrame};
-use deno_core::url::Url;
 use std::error::Error;
 use std::fmt;
 use std::ops::Deref;
