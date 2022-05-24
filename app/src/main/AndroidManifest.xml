@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.bfchain.rust.example">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -10,6 +13,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RustEample">
+        <activity
+            android:name="org.bfchain.rust.example.webView.DWebViewActivity"
+            android:exported="true"
+            android:launchMode="standard"
+            android:theme="@style/Theme.RustEample">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="org.bfchain.dweb" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="dweb" />
+                <data
+                    android:host="@string/web_host"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -21,33 +42,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".barcode.MultipleQRCodeScanningActivity"
+        <activity
+            android:name=".barcode.MultipleQRCodeScanningActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CameraScanTheme"/>
-
-        <activity android:name=".barcode.QRCodeScanningActivity"
+            android:theme="@style/CameraScanTheme" />
+        <activity
+            android:name=".barcode.QRCodeScanningActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CameraScanTheme"/>
-
-        <activity android:name=".barcode.BarcodeScanningActivity"
+            android:theme="@style/CameraScanTheme" />
+        <activity
+            android:name=".barcode.BarcodeScanningActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CameraScanTheme"/>
+            android:theme="@style/CameraScanTheme" />
 
-        <service android:name="org.bfchain.rust.example.DenoService"
+        <service
+            android:name="org.bfchain.rust.example.DenoService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="org.bfchain.rust.example.DenoService"/>
+                <action android:name="org.bfchain.rust.example.DenoService" />
             </intent-filter>
         </service>
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="barcode" />
-        <!-- To use multiple models: android:value="barcode,model2,model3" -->
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

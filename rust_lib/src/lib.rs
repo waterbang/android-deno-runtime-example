@@ -1,4 +1,3 @@
-mod androd_initer;
 mod diagnostics;
 mod errors;
 mod fmt_errors;

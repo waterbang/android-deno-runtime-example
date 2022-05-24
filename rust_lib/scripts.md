@@ -74,10 +74,3 @@ RUST_BACKTRACE=1 cargo build --target=aarch64-linux-android --release
 ```
 
 原因是.cargo/config.toml里面的env把NDK地址写入环境变量没有生效，导致读不到
-
-### 修复
-
-```bash
- = note: /Users/mac/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/bin/../lib/gcc/aarch64-linux-android/4.9.x/../../../../aarch64-linux-android/bin/ld: cannot find -lExportNative
-          clang++: error: linker command failed with exit code 1 (use -v to see invocation)
-```

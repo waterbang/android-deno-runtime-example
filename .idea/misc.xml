@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/layout/qrcode_scan_activity.xml" value="0.22" />
         <entry key="app/src/main/res/layout/result_dialog.xml" value="0.21333903377511756" />
         <entry key="app/src/main/res/layout/text_result_dialog.xml" value="0.21333903377511756" />
+        <entry key="app/src/main/res/layout/webview.xml" value="0.2821718683197948" />
         <entry key="mlkit-barcode-scanning/src/main/res/drawable/ml_flashlight_selector.xml" value="0.1655" />
         <entry key="mlkit-barcode-scanning/src/main/res/layout/ml_qrcode_camera_scan.xml" value="0.25" />
         <entry key="mlkit-camera-core/src/main/res/layout/ml_camera_scan.xml" value="0.21333903377511756" />

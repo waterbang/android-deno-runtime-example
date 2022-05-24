@@ -15,6 +15,7 @@ private const val TAG = "DENO_SERVICE"
 
 class DenoService : IntentService("DenoService") {
     companion object {
+        // 加载rust编译的so
         init {
             System.loadLibrary("rust_lib")
         }

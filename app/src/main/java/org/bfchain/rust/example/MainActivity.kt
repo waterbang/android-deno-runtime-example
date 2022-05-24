@@ -22,6 +22,8 @@ import org.bfchain.rust.example.barcode.BarcodeScanningActivity
 import org.bfchain.rust.example.barcode.MultipleQRCodeScanningActivity
 import org.bfchain.rust.example.barcode.QRCodeScanningActivity
 import org.bfchain.rust.example.lib.drawRect
+import org.bfchain.rust.example.webView.DWebViewActivity
+import org.bfchain.rust.example.webView.openDWebWindow
 
 
 //var start_zzzz: (() -> Unit)? = null
@@ -34,26 +36,16 @@ class MainActivity : AppCompatActivity() {
     fun getContext() = this
 
     companion object {
-        // 加载rust编译的so
-        init {
-            System.loadLibrary("rust_lib")
-        }
-
         const val REQUEST_CODE_PHOTO = 1
         const val REQUEST_CODE_REQUEST_EXTERNAL_STORAGE = 2
         const val REQUEST_CODE_SCAN_CODE = 3
-
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // 启动Deno服务
-//        DenoService(this).startScanner()
-
         callable_map["openScanner"] = { openScannerActivity() }
-
+        // 启动Deno服务
         Intent(this, DenoService::class.java).also { intent ->
             startService(intent)
         }
@@ -183,8 +175,17 @@ class MainActivity : AppCompatActivity() {
             R.id.btn -> openScannerActivity()
             R.id.btn0 -> startActivity(MultipleQRCodeScanningActivity::class.java)
             R.id.btn1 -> startActivity(BarcodeScanningActivity::class.java)
-            R.id.btn2 -> pickPhotoClicked(true)
-            R.id.btn3 -> pickPhotoClicked(false)
+            R.id.btn2 -> {
+                LogUtils.d("android调用js并且返回数据")
+//                DWebViewActivity().callJavascript()
+            }
+            R.id.btn3 -> {
+                LogUtils.d("启动了DWebView")
+                openDWebWindow(
+                    activity = getContext(),
+                    url = "file:///android_asset/hello_runtime.html"
+                )
+            }
         }
     }
 

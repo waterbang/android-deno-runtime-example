@@ -108,28 +108,3 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_helloDeno
     .await
     .unwrap();
 }
-
-/// 二维码扫描
-#[no_mangle]
-#[allow(non_snake_case)]
-pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeScanning(
-    env: JNIEnv,
-    _context: JObject,
-    callback: JObject,
-) {
-    android_logger::init_once(
-        Config::default()
-            .with_min_level(Level::Debug)
-            .with_tag("myrust"),
-    );
-    log::info!("i am mlkitBarcodeScanning");
-    let s = String::from("Hello from Rust");
-    let response = env.new_string(&s).expect("Couldn't create java string!");
-    env.call_method(
-        callback,
-        "scannerCallback",
-        "(Ljava/lang/String;)V",
-        &[JValue::from(JObject::from(response))],
-    )
-    .unwrap();
-}

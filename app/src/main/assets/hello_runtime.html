@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>测试</title>
+</head>
+<body>
+<fieldset>
+    <button onclick="callAndroid()" type="button">点击调用Android代码</button>
+    <button onclick="onCallAndroid()" type="button">Android调用JS</button>
+    <script>
+         function callAndroid(){
+            Android_nav.showToast("JS调用了android中的hello方法");
+         }
+
+         function onCallAndroid() {
+            Android_nav.onBackPressed();
+         }
+
+         function onBackPressed(){
+            let con = confirm( "Android调用JS，确定要关闭页面?" ); //在页面上弹出对话框
+            console.log("Con ===============> ",con);
+            if (con == true ) Android_nav.finishActivity();
+            return "JS的返回值，Android可以接收到"
+         }
+
+
+
+    </script>
+</fieldset>
+</body>
+</html>

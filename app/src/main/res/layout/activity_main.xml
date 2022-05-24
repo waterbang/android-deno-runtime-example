@@ -5,64 +5,67 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.AppCompat.Light"
     tools:context=".MainActivity">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
         <Button
             android:id="@+id/btn"
+            style="@style/OnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="4dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="4dp"
-            android:text="QRCode scanning"
-            style="@style/OnClick"/>
+            android:text="QRCode scanning" />
 
         <Button
             android:id="@+id/btn0"
+            style="@style/OnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="4dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="4dp"
-            android:text="Multiple QRCode scanning"
-            style="@style/OnClick"/>
+            android:text="Multiple QRCode scanning" />
 
         <Button
             android:id="@+id/btn1"
+            style="@style/OnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="4dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="4dp"
-            android:text="Barcode scanning"
-            style="@style/OnClick"/>
+            android:text="android -> js -> rust -> kotlin" />
+
         <Button
             android:id="@+id/btn2"
+            style="@style/OnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="4dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="4dp"
-            android:text="QRCode recognition from image"
-            style="@style/OnClick"/>
+            android:text="android -> js -> android" />
+
         <Button
             android:id="@+id/btn3"
+            style="@style/OnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="4dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="4dp"
-            android:text="Barcode recognition from image"
-            style="@style/OnClick"/>
+            android:text="js -> rust -> kotlin" />
 
 
     </LinearLayout>
