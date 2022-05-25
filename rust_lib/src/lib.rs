@@ -2,12 +2,17 @@ mod diagnostics;
 mod errors;
 mod fmt_errors;
 // mod java_glue;
+mod android;
+mod js_bridge;
 mod module_loader;
 mod my_deno_core;
 mod my_deno_runtime;
 mod ops;
+mod web_socket;
 
-mod android;
+#[macro_use]
+extern crate downcast_rs;
+extern crate rmp_serde as rmps;
 
 // pub use crate::java_glue::*;
 // use crate::module_loader::AssetsModuleLoader;

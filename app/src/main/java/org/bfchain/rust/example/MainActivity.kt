@@ -44,11 +44,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        callable_map["openScanner"] = { openScannerActivity() }
+        callable_map["startScanner"] = { openScannerActivity() }
         // 启动Deno服务
-        Intent(this, DenoService::class.java).also { intent ->
-            startService(intent)
-        }
+        val deno = Intent(this, DenoService::class.java)
+        deno.putExtra("task", "启动二维码扫描")
+        startService(deno)
     }
 
     // 选择图片回调

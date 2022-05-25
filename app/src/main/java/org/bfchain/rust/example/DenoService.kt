@@ -1,14 +1,9 @@
 package org.bfchain.rust.example
 
 import android.app.IntentService
-import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.res.AssetManager
-import android.os.IBinder
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import org.bfchain.rust.example.barcode.QRCodeScanningActivity
 
 
 private const val TAG = "DENO_SERVICE"
@@ -32,14 +27,22 @@ class DenoService : IntentService("DenoService") {
 
 
     override fun onHandleIntent(p0: Intent?) {
+        println("工作线程是: " + Thread.currentThread().name)
+        val task: String? = p0?.getStringExtra("task")
+        println("任务是 :$task")
+
+        val appContext = applicationContext
+        makeStatusNotification("有医保的先rush", appContext)
+
+        helloDenoRuntime(appContext.assets)
         mlkitBarcodeScanning(object : JNICallback {
             override fun scannerCallback(string: String) {
                 Log.d("startScanner", "now rust says:" + string)
-
-//                start_zzzz?.let { it() }
+//                callable_map[string]?.let { it() }
             }
         })
     }
+
 
 }
 

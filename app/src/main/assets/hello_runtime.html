@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>测试</title>
 </head>
+   <script type="text/javascript" src="./assets/js/msgpack.js"></script>
+   <script type="text/javascript" src="./assets/js/easy-rpc.js"></script>
 <body>
 <fieldset>
     <button onclick="callAndroid()" type="button">点击调用Android代码</button>
@@ -23,10 +25,30 @@
             if (con == true ) Android_nav.finishActivity();
             return "JS的返回值，Android可以接收到"
          }
-
-
-
     </script>
+</fieldset>
+<fieldset>
+   <button onclick="onCallAndroid()" type="button">Android调用JS</button>
+ <script>
+   window.onload = async e => {
+      const ECHO = 1
+      const BIGDATA = 2
+      try {
+         let session = await new EasySession('ws://localhost:3333', {
+            __onclose(e) {
+               console.log("OnClose", e)
+            },
+            [ECHO]: (arg) => {
+               console.log("Client Received", arg)
+               return arg + 1
+            },
+         })
+         console.assert(2, await session.request(ECHO, 0))
+      } catch (err) {
+         alert(err)
+      }
+   }
+</script>
 </fieldset>
 </body>
 </html>
