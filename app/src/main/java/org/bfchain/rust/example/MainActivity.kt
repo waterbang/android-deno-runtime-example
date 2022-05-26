@@ -45,9 +45,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         callable_map["startScanner"] = { openScannerActivity() }
+        callable_map["openDWebView"] = { openDWebViewActivity() }
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)
-        deno.putExtra("task", "启动二维码扫描")
+        deno.putExtra("task", "startScanner")
         startService(deno)
     }
 
@@ -166,6 +167,14 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(
             Intent(this, QRCodeScanningActivity::class.java),
             REQUEST_CODE_SCAN_CODE
+        )
+    }
+
+    fun openDWebViewActivity() {
+        LogUtils.d("启动了DWebView")
+        openDWebWindow(
+            activity = getContext(),
+            url = "file:///android_asset/hello_runtime.html"
         )
     }
 

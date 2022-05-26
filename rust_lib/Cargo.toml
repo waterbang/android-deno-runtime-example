@@ -41,16 +41,12 @@ serde = {version = "=1.0.136", features = ["derive"]}
 tokio = "1.17.0"
 # assets_manager = "0.7.2"
 # android-ndk = "0.0.6"
-downcast-rs = "1.2.0"
-futures = "0.3.21"
-rmp = '0.8.11'
-rmp-serde = '1.1.0'
-rmpv = '1.0.0'
-serde_bytes = '0.11.6'
-websocket = {version = '0.26.4', default-features = false, features = ['sync', 'async'], optional = true}
+futures = {version = "0.3.21", default-features = false}
 
-[target.'cfg(not(target_os="android"))'.dependencies]
-shared_memory = {version = '0.10.0', optional = true}
+serde_json = "1.0"
+tokio-stream = "0.1.6"
+uuid = {version = "0.4", features = ["serde", "v4"]}
+warp = "0.3.1"
 
 [target.'cfg(target_os="android")'.dependencies]
 jni = "0.19.0"
@@ -64,12 +60,6 @@ deno_core = {path = "../../deno/core"}
 flapigen = "0.6.0-pre9"
 rifgen = "0.1.51"
 zstd = "=0.9.2"
-
-[features]
-default = ['ws', 'shm']
-shm = ['shared_memory']
-struct_map = []
-ws = ['websocket']
 
 [lib]
 crate-type = ["cdylib"]

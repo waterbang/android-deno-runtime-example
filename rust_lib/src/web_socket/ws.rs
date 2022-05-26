@@ -1,119 +1,67 @@
-use std::io;
-use std::net::{TcpListener, TcpStream, ToSocketAddrs};
-use std::sync::Mutex;
-use std::sync::{Arc, RwLock};
-
-use websocket::server::NoTlsAcceptor;
-use websocket::server::WsServer;
-use websocket::sync::{Client, Server};
-pub use websocket::WebSocketError;
-use websocket::{
-    client::{
-        sync::{Reader, Writer},
-        ClientBuilder,
-    },
-    OwnedMessage,
-};
-
-use crate::web_socket::{Adaptor, RecvError};
-
-pub struct WsAdaptor {
-    sender: Mutex<Writer<TcpStream>>,
-    receiver: Mutex<Reader<TcpStream>>,
-    disconnected: RwLock<bool>,
+use crate::web_socket::{Client, Clients};
+use futures::{FutureExt, StreamExt};
+use serde::Deserialize;
+use serde_json::from_str;
+use tokio::sync::mpsc;
+use tokio_stream::wrappers::UnboundedReceiverStream;
+use warp::ws::{Message, WebSocket};
+#[derive(Deserialize, Debug)]
+pub struct TopicsRequest {
+    function: Vec<String>,
 }
 
-impl WsAdaptor {
-    pub fn new(client: Client<TcpStream>) -> io::Result<WsAdaptor> {
-        let (receiver, sender) = client.split()?;
-        Ok(WsAdaptor {
-            sender: Mutex::new(sender),
-            receiver: Mutex::new(receiver),
-            disconnected: RwLock::new(false),
-        })
-    }
-}
+pub async fn client_connection(ws: WebSocket, id: String, clients: Clients, mut client: Client) {
+    let (client_ws_sender, mut client_ws_rcv) = ws.split();
+    let (client_sender, client_rcv) = mpsc::unbounded_channel();
+    let client_rcv = UnboundedReceiverStream::new(client_rcv); // <-- this
 
-impl Adaptor for WsAdaptor {
-    fn send(&self, data: Vec<u8>) -> bool {
-        self.sender
-            .lock()
-            .unwrap()
-            .send_message(&OwnedMessage::Binary(data))
-            .is_ok()
-    }
+    tokio::task::spawn(client_rcv.forward(client_ws_sender).map(|result| {
+        if let Err(e) = result {
+            eprintln!("error sending websocket msg: {}", e);
+        }
+    }));
 
-    fn recv(&self) -> Result<Vec<u8>, RecvError> {
-        match recv_message(&mut self.receiver.lock().unwrap(), &self.sender) {
+    client.sender = Some(client_sender);
+    clients.write().await.insert(id.clone(), client);
+
+    println!("{} connected", id);
+
+    while let Some(result) = client_ws_rcv.next().await {
+        let msg = match result {
+            Ok(msg) => msg,
             Err(e) => {
-                if is_disconnected(&e) {
-                    *self.disconnected.write().unwrap() = true;
-                    Err(RecvError::Disconnect)
-                } else {
-                    panic!("Invalid Error: {:?}", e);
-                }
+                eprintln!("error receiving ws message for id: {}): {}", id.clone(), e);
+                break;
             }
-            Ok(data) => Ok(data),
+        };
+        client_msg(&id, msg, &clients).await;
+    }
+
+    clients.write().await.remove(&id);
+    println!("{} disconnected", id);
+}
+
+async fn client_msg(id: &str, msg: Message, clients: &Clients) {
+    println!("received message from {}: {:?}", id, msg); // TODO 需要在这里通知FFI
+    let message = match msg.to_str() {
+        Ok(v) => v,
+        Err(_) => return,
+    };
+
+    if message == "ping" || message == "ping\n" {
+        return;
+    }
+
+    let topics_req: TopicsRequest = match from_str(&message) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("error while parsing message to function request: {}", e);
+            return;
         }
+    };
+
+    let mut locked = clients.write().await;
+    if let Some(v) = locked.get_mut(id) {
+        v.function = topics_req.function;
     }
-
-    fn connected(&self) -> bool {
-        !*self.disconnected.read().unwrap()
-    }
-
-    fn close(&self) {
-        self.sender.lock().unwrap().shutdown_all();
-    }
-}
-
-fn recv_message(
-    r: &mut Reader<TcpStream>,
-    s: &Mutex<Writer<TcpStream>>,
-) -> Result<Vec<u8>, WebSocketError> {
-    loop {
-        match r.recv_message()? {
-            OwnedMessage::Close(_) => {
-                s.lock().unwrap().send_message(&OwnedMessage::Close(None))?;
-            }
-            OwnedMessage::Ping(ping) => {
-                s.lock().unwrap().send_message(&OwnedMessage::Pong(ping))?;
-            }
-            OwnedMessage::Binary(msg) => {
-                return Ok(msg);
-            }
-            _ => {}
-        }
-    }
-}
-
-fn is_disconnected(err: &WebSocketError) -> bool {
-    match *err {
-        WebSocketError::NoDataAvailable => true,
-        WebSocketError::IoError(_) => true,
-        _ => false,
-    }
-}
-
-pub type ServerT = WsServer<NoTlsAcceptor, TcpListener>;
-
-pub fn bind(addr: impl ToSocketAddrs) -> io::Result<ServerT> {
-    Server::bind(addr)
-}
-
-pub fn accept(server: &mut ServerT) -> io::Result<(Arc<WsAdaptor>, String)> {
-    loop {
-        if let Ok(s) = server.accept() {
-            let uri = s.uri();
-            if let Ok(s) = s.accept() {
-                return Ok((Arc::new(WsAdaptor::new(s)?), uri));
-            }
-        }
-    }
-}
-
-pub fn connect(url: &str) -> Result<Arc<WsAdaptor>, WebSocketError> {
-    Ok(Arc::new(
-        WsAdaptor::new(ClientBuilder::new(url).unwrap().connect_insecure()?)
-            .map_err(|e| WebSocketError::IoError(e))?,
-    ))
 }

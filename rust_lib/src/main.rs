@@ -5,6 +5,7 @@ mod module_loader;
 mod my_deno_core;
 mod my_deno_runtime;
 mod ops;
+mod web_socket;
 
 use deno_core::FsModuleLoader;
 use std::path::Path;
@@ -36,6 +37,8 @@ async fn main() {
         .map(|()| log::set_max_level(log::LevelFilter::Info))
         .unwrap();
 
+    // run web Socket
+    web_socket::start();
     // test 1
     my_deno_core::bootstrap_deno_core();
 

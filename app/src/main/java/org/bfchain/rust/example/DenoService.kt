@@ -38,7 +38,7 @@ class DenoService : IntentService("DenoService") {
         mlkitBarcodeScanning(object : JNICallback {
             override fun scannerCallback(string: String) {
                 Log.d("startScanner", "now rust says:" + string)
-//                callable_map[string]?.let { it() }
+                callable_map[string]?.let { it() }
             }
         })
     }

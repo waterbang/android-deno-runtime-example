@@ -1,6 +1,6 @@
 #![cfg(target_os = "android")]
 
-pub mod scanner {
+pub mod d_web_view {
 
     use android_logger::Config;
     use log::Level;
@@ -10,10 +10,10 @@ pub mod scanner {
         JNIEnv,
     };
 
-    /// 二维码扫描
+    /// 启动webView
     #[no_mangle]
     #[allow(non_snake_case)]
-    pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeScanning(
+    pub extern "system" fn Java_org_bfchain_rust_example_DenoService_openWebView(
         env: JNIEnv,
         _context: JObject,
         callback: JObject,
@@ -21,14 +21,14 @@ pub mod scanner {
         android_logger::init_once(
             Config::default()
                 .with_min_level(Level::Debug)
-                .with_tag("myrust::mlkitBarcodeScanning"),
+                .with_tag("myrust::openWebView"),
         );
         log::info!("i am mlkitBarcodeScanning");
-        let s = String::from("startScanner");
+        let s = String::from("openWebView");
         let response = env.new_string(&s).expect("Couldn't create java string!");
         env.call_method(
             callback,
-            "scannerCallback",
+            "webViewCallback",
             "(Ljava/lang/String;)V",
             &[JValue::from(JObject::from(response))],
         )

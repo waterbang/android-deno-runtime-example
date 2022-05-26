@@ -10,10 +10,6 @@ mod my_deno_runtime;
 mod ops;
 mod web_socket;
 
-#[macro_use]
-extern crate downcast_rs;
-extern crate rmp_serde as rmps;
-
 // pub use crate::java_glue::*;
 // use crate::module_loader::AssetsModuleLoader;
 // use android_logger::Config;

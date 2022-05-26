@@ -33,13 +33,13 @@ use std::sync::Arc;
 use std::task::Context;
 use std::task::Poll;
 
-/// This worker is created and used by almost all
-/// subcommands in Deno executable.
+/// 这个worker几乎被所有人创建和使用
+/// Deno 可执行文件中的子命令。
 ///
-/// It provides ops available in the `Deno` namespace.
+/// 它提供在 `Deno` 命名空间中可用的操作。
 ///
-/// All `WebWorker`s created during program execution
-/// are descendants of this worker.
+/// 在程序执行期间创建的所有 `WebWorker`
+/// 是这个worker的后代。
 pub struct MainWorker {
     pub js_runtime: JsRuntime,
     should_break_on_first_statement: bool,
