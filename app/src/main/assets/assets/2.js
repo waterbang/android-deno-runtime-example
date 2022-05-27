@@ -4,4 +4,4 @@ export default a;
 export const b = true;
 setInterval(()=>{
     console.log('[%s] worker time: %s', import.meta.url, new Date())
-},1000)
+},10000)

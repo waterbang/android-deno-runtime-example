@@ -1,4 +1,6 @@
 #![cfg(target_os = "android")]
+use tokio;
+use crate::web_socket;
 
 use android_logger::Config;
 use log::Level;
@@ -99,6 +101,11 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_helloDeno
     let asset_manager_ptr = unsafe {
         ndk_sys::AAssetManager_fromJava(env.get_native_interface(), jasset_manager.cast())
     };
+     android_logger::init_once(
+        Config::default()
+            .with_min_level(Level::Debug)
+            .with_tag("myrust::helloDenoRuntime"),
+    );
     bootstrap_deno_runtime(
         Arc::new(AssetsModuleLoader::from_ptr(
             NonNull::new(asset_manager_ptr).unwrap(),
@@ -107,4 +114,35 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_helloDeno
     )
     .await
     .unwrap();
+}
+
+
+
+/// 处理android启动各个功能事件的AOP回调
+#[no_mangle]
+#[allow(non_snake_case)]
+pub extern "system" fn Java_org_bfchain_rust_example_DenoService_handleCallback(
+    env: JNIEnv,
+    _context: JObject,
+    callback: JObject,
+) {
+
+    android_logger::init_once(
+        Config::default()
+            .with_min_level(Level::Debug)
+            .with_tag("myrust::handleCallback"),
+    );
+    log::info!("i am web_socket xxxxxxx1");
+    let s = String::from("openDWebView");
+    let response = env.new_string(&s).expect("Couldn't create java string!");
+    env.call_method(
+        callback,
+        "handleCallback",
+        "(Ljava/lang/String;)V",
+        &[JValue::from(JObject::from(response))],
+    )
+    .unwrap();
+     // run web Socket
+    let mut rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(web_socket::start());
 }

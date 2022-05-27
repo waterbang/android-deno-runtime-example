@@ -6,13 +6,14 @@ mod my_deno_core;
 mod my_deno_runtime;
 mod ops;
 mod web_socket;
-
 use deno_core::FsModuleLoader;
+use log::{Level, Metadata, Record};
+use std::collections::HashMap;
 use std::path::Path;
 use std::sync::Arc;
+mod js_bridge;
 
-use log::{Level, Metadata, Record};
-
+use js_bridge::call_android_js::handle_function;
 struct SimpleLogger;
 
 impl log::Log for SimpleLogger {
@@ -37,8 +38,12 @@ async fn main() {
         .map(|()| log::set_max_level(log::LevelFilter::Info))
         .unwrap();
 
-    // run web Socket
-    web_socket::start();
+    // // run web Socket
+    // web_socket::start();
+
+    // initialization op
+    handle_function::new();
+
     // test 1
     my_deno_core::bootstrap_deno_core();
 

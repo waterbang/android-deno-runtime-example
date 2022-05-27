@@ -17,10 +17,10 @@ class DenoService : IntentService("DenoService") {
     }
 
     interface JNICallback {
-        fun scannerCallback(string: String)
+        fun handleCallback(string: String)
     }
 
-    external fun mlkitBarcodeScanning(callback: JNICallback)
+    external fun handleCallback(callback: JNICallback)
     external fun helloDenoRuntime(assets: AssetManager)
     external fun initialiseLogging()
     external fun stringFromJNI(): String?
@@ -34,10 +34,9 @@ class DenoService : IntentService("DenoService") {
         val appContext = applicationContext
         makeStatusNotification("有医保的先rush", appContext)
 
-        helloDenoRuntime(appContext.assets)
-        mlkitBarcodeScanning(object : JNICallback {
-            override fun scannerCallback(string: String) {
-                Log.d("startScanner", "now rust says:" + string)
+        handleCallback(object : JNICallback {
+            override fun handleCallback(string: String) {
+                Log.d("handleCallback", "now rust says:" + string)
                 callable_map[string]?.let { it() }
             }
         })

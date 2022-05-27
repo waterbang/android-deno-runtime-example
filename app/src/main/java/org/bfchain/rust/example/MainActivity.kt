@@ -44,11 +44,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        callable_map["startScanner"] = { openScannerActivity() }
+        callable_map["openScanner"] = { openScannerActivity() }
         callable_map["openDWebView"] = { openDWebViewActivity() }
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)
-        deno.putExtra("task", "startScanner")
+        deno.putExtra("task", "openScanner")
         startService(deno)
     }
 
