@@ -1,11 +1,14 @@
-use android_logger::Config;
-use log::Level;
+
 
 use std::collections::HashMap;
 use std::convert::Infallible;
 use std::sync::Arc;
 use tokio::sync::{mpsc, RwLock};
-use warp::{hyper::Method, ws::Message, Filter, Rejection};
+use warp::{
+    hyper,
+    ws::Message,
+    Filter, Rejection,
+};
 
 mod handler;
 mod ws;
@@ -21,12 +24,6 @@ pub struct Client {
 }
 /// 启动web Socket
 pub async fn start() {
-    android_logger::init_once(
-        Config::default()
-            .with_min_level(Level::Debug)
-            .with_tag("myrust::handleCallback"),
-    );
-    log::info!("xxxxxxxxxxxxxx1");
     let clients: Clients = Arc::new(RwLock::new(HashMap::new()));
 
     let health_route = warp::path!("health").and_then(handler::health_handler);

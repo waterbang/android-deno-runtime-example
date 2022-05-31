@@ -2,7 +2,7 @@ mod diagnostics;
 mod errors;
 mod fmt_errors;
 // mod java_glue;
-mod android;
+pub mod android;
 mod js_bridge;
 mod module_loader;
 mod my_deno_core;

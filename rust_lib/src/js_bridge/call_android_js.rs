@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 pub struct handle_function {
-    pub fun_type: Vec<String>,
-    pub fun_map: HashMap<String, String>,
+    fun_type: Vec<String>,
+    fun_map: HashMap<String, String>,
 }
 
 impl handle_function {
@@ -21,4 +21,26 @@ impl handle_function {
     pub fn get(&self, target: &String) -> Option<&String> {
         self.fun_map.get(target)
     }
+    /// 验证是否是允许操作的函数
+    pub fn handle_match(fun: &str) -> Result<&str, &str> {
+        match fun {
+            "openDWebView" => Ok(fun),
+            "openScanner" => Ok(fun),
+            _ => return Err("handle function Not fund"),
+        }
+    }
+}
+
+pub fn save_fn<F>(func: F, fun_type: &str)
+where
+    F: FnOnce(&str) -> (),
+{
+    // `func` consumes its captured variables, so it cannot be run more
+    // than once.
+    func(fun_type);
+
+    println!("Delicious!");
+
+    // Attempting to invoke `func()` again will throw a `use of moved
+    // value` error for `func`.
 }

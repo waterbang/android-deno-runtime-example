@@ -6,31 +6,30 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
-import androidx.navigation.NavType
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import org.bfchain.plaoc.webkit.AdWebViewHook
 import org.bfchain.plaoc.webkit.rememberAdWebViewState
 import org.bfchain.rust.example.ui.theme.RustApplicationTheme
 import java.net.URLDecoder
 import java.net.URLEncoder
+
 
 private const val TAG = "DWebViewActivity"
 
@@ -54,6 +53,7 @@ class DWebViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         ALL.add(this)
         WebView.setWebContentsDebuggingEnabled(true)
+
         Log.i(TAG, "onCreate")
         Log.i(TAG, "actionBar$actionBar")
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -72,6 +72,7 @@ class DWebViewActivity : AppCompatActivity() {
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable

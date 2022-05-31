@@ -32,7 +32,7 @@ class DenoService : IntentService("DenoService") {
         println("任务是 :$task")
 
         val appContext = applicationContext
-        makeStatusNotification("有医保的先rush", appContext)
+//        makeStatusNotification("有医保的先rush", appContext)
 
         handleCallback(object : JNICallback {
             override fun handleCallback(string: String) {

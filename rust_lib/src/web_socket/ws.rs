@@ -1,5 +1,8 @@
+use crate::js_bridge::call_android_js;
 use crate::web_socket::{Client, Clients};
+use android_logger::Config;
 use futures::{FutureExt, StreamExt};
+use log::Level;
 use serde::Deserialize;
 use serde_json::from_str;
 use tokio::sync::mpsc;
@@ -42,26 +45,37 @@ pub async fn client_connection(ws: WebSocket, id: String, clients: Clients, mut 
 }
 
 async fn client_msg(id: &str, msg: Message, clients: &Clients) {
-    println!("received message from {}: {:?}", id, msg); // TODO 需要在这里通知FFI
+    android_logger::init_once(
+        // 生产环境记得删除
+        Config::default()
+            .with_min_level(Level::Debug)
+            .with_tag("myrust::handleCallback"),
+    );
+
     let message = match msg.to_str() {
         Ok(v) => v,
         Err(_) => return,
     };
-
     if message == "ping" || message == "ping\n" {
         return;
     }
-
+    log::info!("message: {:?} ", message); // 生产环境记得删除
     let topics_req: TopicsRequest = match from_str(&message) {
-        Ok(v) => v,
+        Ok(v) => {
+            log::info!("vvvvvv: {:?} ", &v); // 生产环境记得删除
+            v
+        }
         Err(e) => {
+            log::info!("eeeeee: {:?} ", e); // 生产环境记得删除
             eprintln!("error while parsing message to function request: {}", e);
             return;
         }
     };
-
+    // topics_req: TopicsRequest { function: ["openScanner", "openDWebView"] }
+    call_android_js::save_fn(&topics_req.function[0]);
     let mut locked = clients.write().await;
     if let Some(v) = locked.get_mut(id) {
         v.function = topics_req.function;
     }
+    log::info!("locked: {:?} ", locked.get_mut(id)); // 生产环境记得删除
 }

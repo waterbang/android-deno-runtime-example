@@ -24,18 +24,20 @@
             return "JS的返回值，Android可以接收到"
          }
 
+
     </script>
 </fieldset>
 <fieldset>
-   <h1>websockets简单示例</h1><br>
-   <div id="message"></div>
-   <div>
-      <input type="text" id="sendText" value="{'function':['openScanner','openDWebView']}">
-      <button id="connect" onclick="connect()">建立连接</button>
-      <button id="sendData" onclick="sendData()">发送数据</button>
+    <h1>websockets简单示例</h1><br>
+    <div id="message"></div>
+    <div>
+        <button id="connect" onclick="connect()">建立连接</button>
       <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
-   </div>
-   <script type="text/javascript">
+      <br>
+        <button id="sendData" onclick='sendData("openScanner")' >启动二维码扫描</button>
+         <button id="sendData" onclick='sendData("openDWebView")'>启动webView</button>
+    </div>
+    <script type="text/javascript">
       let websockets;
       //创建一个数组对象用于存放当前的连接的状态，以便在页面上实时展示出来当前的状态
       let statusArr = [
@@ -51,14 +53,10 @@
             method: 'POST',
             headers: {
                "Content-Type": "application/json",
-               "Referrer-Policy":"strict-origin-when-cross-origin"
             },
             body: JSON.stringify({ "public_key": "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj" })
             })
-            .then(function (response) {
-               console.log("xxxxxxxxx", JSON.stringify(response));
-               return response.text();
-            })
+            .then(response => response.json())
             .then(function (responseData) {
                console.log(JSON.stringify(responseData));
             return responseData;
@@ -107,10 +105,9 @@
       *   发送数据
       *
       */
-      function sendData() {
+      function sendData(fun) {
          //1. 首先获取输入的信息，判断信息是否可以发送
-         let val = document.querySelector("#sendText").value;
-
+         let val = `{"function":["${fun}"]}`
          if (val == "" || val == undefined) {
             document.querySelector("#message").innerHTML += "<p>发送数据为空，请填写完成后再发送！</p>";
             return;
@@ -126,7 +123,8 @@
       function closeConnect() {
          websockets.close();
       }
-   </script>
+
+    </script>
 </fieldset>
 </body>
 </html>

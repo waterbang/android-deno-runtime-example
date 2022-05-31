@@ -1,30 +1,31 @@
 #![cfg(target_os = "android")]
+use android_logger::Config;
+// 引用 jni 库的一些内容，就是上面添加的 jni 依赖
+use jni::{
+    objects::{JObject, JString, JValue},
+    JNIEnv,
+};
+use log::Level;
 
-pub mod scanner {
+use crate::js_bridge::call_android_js;;
 
-    use android_logger::Config;
-    use log::Level;
-    // 引用 jni 库的一些内容，就是上面添加的 jni 依赖
-    use jni::{
-        objects::{JObject, JString, JValue},
-        JNIEnv,
-    };
-
-    /// 二维码扫描
-    #[no_mangle]
-    #[allow(non_snake_case)]
-    pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeScanning(
-        env: JNIEnv,
-        _context: JObject,
-        callback: JObject,
-    ) {
-        android_logger::init_once(
-            Config::default()
-                .with_min_level(Level::Debug)
-                .with_tag("myrust::mlkitBarcodeScanning"),
-        );
-        log::info!("i am mlkitBarcodeScanning");
-        let s = String::from("startScanner");
+/// 二维码扫描
+#[no_mangle]
+#[allow(non_snake_case)]
+pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeScanning(
+    env: JNIEnv,
+    _context: JObject,
+    callback: JObject,
+    fun_type: &str,
+) {
+    android_logger::init_once(
+        Config::default()
+            .with_min_level(Level::Debug)
+            .with_tag("myrust::mlkitBarcodeScanning"),
+    );
+    log::info!("i am mlkitBarcodeScanning");
+    let call_back = |fun_type| {
+        let s = String::from(fun_type);
         let response = env.new_string(&s).expect("Couldn't create java string!");
         env.call_method(
             callback,
@@ -33,5 +34,6 @@ pub mod scanner {
             &[JValue::from(JObject::from(response))],
         )
         .unwrap();
-    }
+    };
+    call_android_js::save_fn(call_back,fun_type);
 }

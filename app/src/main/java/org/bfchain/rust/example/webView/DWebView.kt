@@ -48,6 +48,9 @@ fun DWebView(
     AdWebView(
         state = state,
         onCreated = { webView ->
+            // 允许从file加载
+            webView.settings.allowFileAccessFromFileURLs = true
+            webView.settings.allowUniversalAccessFromFileURLs = true
             // 将webView的背景默认设置为透明。不通过systemUi的api提供这个功能，一些手机上动态地修改webView背景颜色，在黑夜模式下，会有问题
             webView.setBackgroundColor(Color.TRANSPARENT)
             webView.adWebViewHook = hook

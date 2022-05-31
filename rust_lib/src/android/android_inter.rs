@@ -146,3 +146,4 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_handleCallback(
     let mut rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(web_socket::start());
 }
+
