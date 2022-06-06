@@ -2,13 +2,13 @@ package org.bfchain.rust.example
 
 import android.app.IntentService
 import android.content.Intent
-import android.content.res.AssetManager
 import android.util.Log
 
 
 private const val TAG = "DENO_SERVICE"
 
 class DenoService : IntentService("DenoService") {
+
     companion object {
         // 加载rust编译的so
         init {
@@ -16,15 +16,22 @@ class DenoService : IntentService("DenoService") {
         }
     }
 
-    interface JNICallback {
+    interface IHandleCallback {
         fun handleCallback(string: String)
     }
 
-    external fun handleCallback(callback: JNICallback)
-    external fun helloDenoRuntime(assets: AssetManager)
-    external fun initialiseLogging()
-    external fun stringFromJNI(): String?
+    interface IOpenWebView {
+        fun webViewCallback(string: String)
+    }
 
+    external fun nativeSetCallback(callback: IHandleCallback)
+    external fun openWebView(callback: IOpenWebView)
+//    external fun helloDenoRuntime(assets: AssetManager)
+//    external fun initialiseLogging()
+
+    fun startForeground() {
+        
+    }
 
     override fun onHandleIntent(p0: Intent?) {
         println("工作线程是: " + Thread.currentThread().name)
@@ -33,13 +40,20 @@ class DenoService : IntentService("DenoService") {
 
         val appContext = applicationContext
 //        makeStatusNotification("有医保的先rush", appContext)
-
-        handleCallback(object : JNICallback {
+        nativeSetCallback(object : IHandleCallback {
             override fun handleCallback(string: String) {
                 Log.d("handleCallback", "now rust says:" + string)
                 callable_map[string]?.let { it() }
             }
         })
+        // 独立启动webView和web Socket
+        openWebView(object : IOpenWebView {
+            override fun webViewCallback(string: String) {
+                Log.d("webViewCallback", "now rust webViewCallback says:" + string)
+                callable_map[string]?.let { it() }
+            }
+        })
+
     }
 
 

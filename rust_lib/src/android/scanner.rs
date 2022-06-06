@@ -7,8 +7,6 @@ use jni::{
 };
 use log::Level;
 
-use crate::js_bridge::call_android_js;;
-
 /// 二维码扫描
 #[no_mangle]
 #[allow(non_snake_case)]
@@ -16,7 +14,6 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeSca
     env: JNIEnv,
     _context: JObject,
     callback: JObject,
-    fun_type: &str,
 ) {
     android_logger::init_once(
         Config::default()
@@ -24,16 +21,13 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_mlkitBarcodeSca
             .with_tag("myrust::mlkitBarcodeScanning"),
     );
     log::info!("i am mlkitBarcodeScanning");
-    let call_back = |fun_type| {
-        let s = String::from(fun_type);
-        let response = env.new_string(&s).expect("Couldn't create java string!");
-        env.call_method(
-            callback,
-            "scannerCallback",
-            "(Ljava/lang/String;)V",
-            &[JValue::from(JObject::from(response))],
-        )
-        .unwrap();
-    };
-    call_android_js::save_fn(call_back,fun_type);
+    let s = String::from("openScanner");
+    let response = env.new_string(&s).expect("Couldn't create java string!");
+    env.call_method(
+        callback,
+        "scannerCallback",
+        "(Ljava/lang/String;)V",
+        &[JValue::from(JObject::from(response))],
+    )
+    .unwrap();
 }

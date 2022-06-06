@@ -1,3 +1,3 @@
-mod android_inter;
+pub(crate) mod android_inter;
 mod d_web_view;
 pub(crate) mod scanner;

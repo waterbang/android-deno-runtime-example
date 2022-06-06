@@ -72,10 +72,12 @@ async fn client_msg(id: &str, msg: Message, clients: &Clients) {
         }
     };
     // topics_req: TopicsRequest { function: ["openScanner", "openDWebView"] }
-    call_android_js::save_fn(&topics_req.function[0]);
+    log::info!("&topics_req.function[0]: {:?} ", &topics_req.function[0]); // 生产环境记得删除
+
+    call_android_js::call_android(&topics_req.function[0]); // 通知FFI函数
+
     let mut locked = clients.write().await;
     if let Some(v) = locked.get_mut(id) {
         v.function = topics_req.function;
     }
-    log::info!("locked: {:?} ", locked.get_mut(id)); // 生产环境记得删除
 }

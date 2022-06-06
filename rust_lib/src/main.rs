@@ -12,6 +12,7 @@ mod js_bridge;
 
 struct SimpleLogger;
 
+
 impl log::Log for SimpleLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
         metadata.level() <= Level::Info
