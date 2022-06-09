@@ -13,14 +13,6 @@ pub struct HandleFunction {
     fun_map: HashMap<String, String>,
 }
 
-// lazy_static! {
-//     // pub static ref FUN_TYPE: Mutex<String> = Mutex::new(String::from("openDWebView"));
-//     // pub static ref CALL_ANDROID: Mutex<Box<dyn Fn(&str) -> () + Send + Sync + 'static>> = Mutex::new(Box::new(|a| a));
-//     //   static ref CALL_ANDROID: Mutex<Option<String>> = Mutex::new(None);
-//     //   pub static ref JNI_CALL_BACK: Option<Mutex<JObject>> = None;
-// }
-// pub static CHANNEL_SENDER: Option<Sender<&str>> = None;
-
 impl HandleFunction {
     pub fn new() -> HandleFunction {
         let operation_fun = vec![String::from("openDWebView"), String::from("openScanner")];

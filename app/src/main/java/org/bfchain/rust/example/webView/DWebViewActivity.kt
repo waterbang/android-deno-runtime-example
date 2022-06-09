@@ -9,11 +9,14 @@ import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,11 +27,14 @@ import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import org.bfchain.plaoc.webkit.AdWebViewHook
-import org.bfchain.plaoc.webkit.rememberAdWebViewState
+import org.bfchain.rust.example.webkit.AdWebViewHook
+import org.bfchain.rust.example.webkit.rememberAdWebViewState
 import org.bfchain.rust.example.ui.theme.RustApplicationTheme
+import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
+import org.bfchain.rust.example.webView.urlscheme.requestHandlerFromAssets
 import java.net.URLDecoder
 import java.net.URLEncoder
+import kotlin.io.path.Path
 
 
 private const val TAG = "DWebViewActivity"
@@ -48,6 +54,12 @@ class DWebViewActivity : AppCompatActivity() {
             this.startActivity(this.parentActivityIntent)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ALL.remove(this)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,16 +85,14 @@ class DWebViewActivity : AppCompatActivity() {
     }
 }
 
-
-@OptIn(ExperimentalMaterialNavigationApi::class)
+@OptIn(
+    ExperimentalMaterialNavigationApi::class,
+    androidx.compose.foundation.layout.ExperimentalLayoutApi::class
+)
 @Composable
 private fun NavFun(activity: ComponentActivity) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
-
-    var adWebViewHook by remember {
-        mutableStateOf<AdWebViewHook?>(null)
-    }
 
     ModalBottomSheetLayout(bottomSheetNavigator) {
         NavHost(navController = navController, startDestination = "dweb/{url}") {
@@ -97,16 +107,35 @@ private fun NavFun(activity: ComponentActivity) {
                     uriPattern = "dweb://{url}"
                 })
             ) { entry ->
+                var urlStr = entry.arguments?.getString("url")
+                    .let { it -> URLDecoder.decode(it, "UTF-8") }
+                    ?: "file:///android_asset/demo.html"
+                var customUrlScheme: CustomUrlScheme? = null
+                // 内建应用的路径
+                val internalAppFilePathPrefix = "file:///android_asset/app/"
+                if (urlStr.startsWith(internalAppFilePathPrefix)) {
+                    val host = Path(urlStr.substring(internalAppFilePathPrefix.length)).getName(0)
+                        .toString()
+                    val assetBasePath = "app/$host/"
+
+                    customUrlScheme = CustomUrlScheme(
+                        "dweb", host,
+                        requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)
+                    )
+                    urlStr =
+                        customUrlScheme.resolveUrl(urlStr.substring(internalAppFilePathPrefix.length + host.length))
+                }
                 DWebView(
-                    state = rememberAdWebViewState(entry.arguments?.getString("url")
-                        .let { it -> URLDecoder.decode(it, "UTF-8") }
-                        ?: "file:///android_asset/demo.html"),
+                    state = rememberAdWebViewState(urlStr),
                     navController = navController,
                     activity = activity,
+                    modifier = Modifier.background(Color.Cyan),
+                    customUrlScheme = customUrlScheme,
+//                    modifier = Modifier.padding(innerPadding)
                 ) { webView ->
-                    adWebViewHook = webView.adWebViewHook
+//                            webView.addJavascriptInterface()
+//                    adWebViewHook = webView.adWebViewHook
                 }
-
             }
         }
     }

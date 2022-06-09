@@ -1,4 +1,4 @@
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -7,8 +7,8 @@ import android.os.Process
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import org.bfchain.plaoc.webkit.inputFile.AdFileInputHelper
-import org.bfchain.plaoc.webkit.inputFile.InputFileOptions
+import org.bfchain.rust.example.webkit.inputFile.AdFileInputHelper
+import org.bfchain.rust.example.webkit.inputFile.InputFileOptions
 
 /**
  * AccompanistWebChromeClient
@@ -49,7 +49,7 @@ open class AdWebChromeClient : WebChromeClient() {
 
         var multiple = false
         var capture = false
-        val accept = mutableListOf<String>();
+        val accept = mutableListOf<String>()
 
         fileChooserParams?.let { params ->
             capture = params.isCaptureEnabled
@@ -72,7 +72,7 @@ open class AdWebChromeClient : WebChromeClient() {
             fileInputHelper.requestPermissionCallback = ValueCallback {
                 launchFileInput()
             }
-            fileInputHelper.requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            fileInputHelper.requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         } else {
             launchFileInput()
         }

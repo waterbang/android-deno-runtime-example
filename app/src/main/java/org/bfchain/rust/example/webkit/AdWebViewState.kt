@@ -1,8 +1,7 @@
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.*
-import com.google.accompanist.web.AdWebViewError
 
 /**
  * A state holder to hold the state for the WebView. In most cases this will be remembered

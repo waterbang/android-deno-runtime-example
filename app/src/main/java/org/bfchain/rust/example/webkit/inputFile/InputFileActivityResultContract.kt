@@ -1,4 +1,4 @@
-package org.bfchain.plaoc.webkit.inputFile
+package org.bfchain.rust.example.webkit.inputFile
 
 import android.app.Activity
 import android.content.Context
@@ -25,12 +25,12 @@ open class InputFileActivityResultContract :
 
     @CallSuper
     override fun createIntent(context: Context, input: InputFileOptions): Intent {
-        this.context = context;
+        this.context = context
         if (input.capture) {
 
             val tempDir =
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            Log.i(TAG, "tempDir: $tempDir");
+            Log.i(TAG, "tempDir: $tempDir")
             val tmpFileTitle = "capture-" + LocalDateTime.now().format(
                 DateTimeFormatter.ofPattern("yyyy_MM_dd-HH_mm_ss_SSS")
             )
@@ -44,8 +44,8 @@ open class InputFileActivityResultContract :
                             context,
                             context.packageName + ".fileprovider",
                             tempFile
-                        );
-                    Log.i(TAG, "tempUri: $captureUri");
+                        )
+                    Log.i(TAG, "tempUri: $captureUri")
                     return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                         .putExtra(MediaStore.EXTRA_OUTPUT, captureUri)
                 }
@@ -57,8 +57,8 @@ open class InputFileActivityResultContract :
                             context,
                             context.packageName + ".fileprovider",
                             tempFile
-                        );
-                    Log.i(TAG, "tempUri: $captureUri");
+                        )
+                    Log.i(TAG, "tempUri: $captureUri")
                     return Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                         .putExtra(MediaStore.EXTRA_OUTPUT, captureUri)
                 }
@@ -111,7 +111,7 @@ open class InputFileActivityResultContract :
     ): SynchronousResult<List<@JvmSuppressWildcards Uri>>? = null
 
     final override fun parseResult(resultCode: Int, intent: Intent?): List<Uri> {
-        val tmpCaptureUri = captureUri;
+        val tmpCaptureUri = captureUri
         captureUri = null
         if (resultCode == Activity.RESULT_OK) {
             return intent?.let {
@@ -163,7 +163,5 @@ data class InputFileOptions(
     val accept: List<String>,
     val multiple: Boolean,
     val capture: Boolean
-) {
-
-}
+)
 

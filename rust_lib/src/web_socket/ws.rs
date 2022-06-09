@@ -71,7 +71,7 @@ async fn client_msg(id: &str, msg: Message, clients: &Clients) {
             return;
         }
     };
-    // topics_req: TopicsRequest { function: ["openScanner", "openDWebView"] }
+    // topics_req: TopicsRequest { function: ["openScanner"] }
     log::info!("&topics_req.function[0]: {:?} ", &topics_req.function[0]); // 生产环境记得删除
 
     call_android_js::call_android(&topics_req.function[0]); // 通知FFI函数

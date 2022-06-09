@@ -1,11 +1,10 @@
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 import android.graphics.Bitmap
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.google.accompanist.web.AdWebViewError
 
 /**
  * AccompanistWebViewClient

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 import android.view.ViewGroup
-import android.webkit.WebView
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import org.bfchain.plaoc.webkit.inputFile.AdFileInputHelper
-import org.bfchain.plaoc.webkit.inputFile.rememberAdFileInputHelper
+import org.bfchain.rust.example.webkit.inputFile.AdFileInputHelper
+import org.bfchain.rust.example.webkit.inputFile.rememberAdFileInputHelper
 
 /**
  * A wrapper around the Android View WebView to provide a basic WebView composable.
@@ -67,14 +66,16 @@ fun AdWebView(
     AndroidView(
         factory = { context ->
             AdAndroidWebView(context).apply {
-                settings.javaScriptEnabled = true;
-                settings.setSupportMultipleWindows(true);
-                settings.allowFileAccess = true;
-                settings.javaScriptCanOpenWindowsAutomatically = true;
-                settings.domStorageEnabled = true;
-                settings.databaseEnabled = true;
-                settings.safeBrowsingEnabled = true;
-                settings.setGeolocationEnabled(true);
+                settings.javaScriptEnabled = true
+                settings.setSupportMultipleWindows(true)
+                settings.allowFileAccess = true
+                settings.javaScriptCanOpenWindowsAutomatically = true
+                settings.domStorageEnabled = true
+                settings.databaseEnabled = true
+                settings.safeBrowsingEnabled = true
+                settings.setGeolocationEnabled(true)
+                settings.allowFileAccessFromFileURLs = true
+                settings.allowUniversalAccessFromFileURLs = true
 
                 onCreated(this)
 

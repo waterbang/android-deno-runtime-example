@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "declaration": true,
+    "sourceMap": false,
+    "target": "es2020",
+    "module": "es2020",
+    "lib": [
+      "ES2020"
+    ],
+    "importHelpers": true,
+    "isolatedModules": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": ".bfsp/tsc",
+    "paths": {
+      "#plugin/navigation/builder": [
+        "./plugin/navigation/builder#android.ts"
+      ],
+      "#plugin/navigation/ffi": [
+        "./plugin/navigation/ffi#android.ts"
+      ],
+      "#plugin/navigation/ffi.type": [
+        "./plugin/navigation/ffi#android.type.ts"
+      ]
+    }
+  },
+  "references": [
+    {
+      "path": "./tsconfig.isolated.json"
+    },
+    {
+      "path": "./tsconfig.typings.json"
+    }
+  ],
+  "files": []
+}

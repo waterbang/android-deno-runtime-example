@@ -25,6 +25,7 @@
          }
 
 
+
     </script>
 </fieldset>
 <fieldset>
@@ -32,10 +33,10 @@
     <div id="message"></div>
     <div>
         <button id="connect" onclick="connect()">建立连接</button>
-      <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
-      <br>
-        <button id="sendData" onclick='sendData("openScanner")' >启动二维码扫描</button>
-         <button id="sendData" onclick='sendData("openDWebView")'>启动webView</button>
+        <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
+        <br>
+        <button onclick='sendData("openScanner")'>启动二维码扫描</button>
+        <button onclick='sendData("openDWebView")'>启动webView</button>
     </div>
     <script type="text/javascript">
       let websockets;
@@ -123,6 +124,7 @@
       function closeConnect() {
          websockets.close();
       }
+
 
     </script>
 </fieldset>

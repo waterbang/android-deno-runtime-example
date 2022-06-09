@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.accompanist.web
+package org.bfchain.rust.example.webkit
 
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import androidx.compose.runtime.Immutable
-import org.bfchain.plaoc.webkit.*
 
 
 /**

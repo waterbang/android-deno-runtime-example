@@ -1,4 +1,4 @@
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 import android.webkit.WebView
 import androidx.compose.runtime.*
@@ -73,6 +73,7 @@ class AdWebViewNavigator(private val coroutineScope: CoroutineScope) {
         coroutineScope.launch { navigationEvents.emit(NavigationEvent.STOP_LOADING) }
     }
 }
+
 /**
  * Creates and remembers a [AdWebViewNavigator] using the default [CoroutineScope] or a provided
  * override.

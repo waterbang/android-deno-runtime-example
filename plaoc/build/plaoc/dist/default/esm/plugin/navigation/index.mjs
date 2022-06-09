@@ -1,0 +1,1 @@
+import m from"./builder_android.mjs";import{defineHtmlElement as o}from"../common/defineHtmlElement.mjs";const e=o({tagName:"DWebNavigator",tag_name:"dweb-navigator"},m());export{e as HTMLDWebNavigatorElement};

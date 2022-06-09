@@ -1,7 +1,9 @@
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import org.bfchain.rust.example.webkit.AdWebContent
+import org.bfchain.rust.example.webkit.AdWebViewState
 
 /**
  * Sealed class for constraining possible loading states.

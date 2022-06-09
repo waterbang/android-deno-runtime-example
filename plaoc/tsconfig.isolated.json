@@ -1,0 +1,33 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": true,
+    "noEmit": true,
+    "emitDeclarationOnly": false,
+    "typeRoots": [
+      ".bfsp"
+    ],
+    "types": [
+      "tsc"
+    ],
+    "outDir": ".bfsp/tsc"
+  },
+  "files": [
+    "./index.ts",
+    "./plugin/common/EvtOut.ts",
+    "./plugin/common/defineHtmlElement.ts",
+    "./plugin/common/index.ts",
+    "./plugin/navigation/BfcsNavigator.ts",
+    "./plugin/navigation/builder#android.ts",
+    "./plugin/navigation/ffi#android.ts",
+    "./plugin/navigation/index.ts",
+    "./plugin/statusBar/index.ts",
+    "./runtime/appRuntime.ts",
+    "./runtime/module/DWebview.ts",
+    "./runtime/module/File.ts",
+    "./runtime/module/Script.ts",
+    "./core/gateway.ts",
+    "./runtime/installApp.ts",
+    "./core/WebSockets.ts"
+  ]
+}

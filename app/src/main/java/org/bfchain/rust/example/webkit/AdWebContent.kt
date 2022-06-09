@@ -1,4 +1,4 @@
-package org.bfchain.plaoc.webkit
+package org.bfchain.rust.example.webkit
 
 sealed class AdWebContent {
     data class Url(

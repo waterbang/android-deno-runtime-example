@@ -260,7 +260,7 @@ where
 }
 
 
-// 处理android启动各个功能事件的AOP回调
+
 // #[no_mangle]
 // #[allow(non_snake_case)]
 // pub extern "system" fn Java_org_bfchain_rust_example_DenoService_handleCallback(
