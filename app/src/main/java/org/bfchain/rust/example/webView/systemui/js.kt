@@ -76,7 +76,7 @@ class SystemUiFFI(
         Log.i(TAG, "isOverlayStatusBar.value:${systemUIState.statusBar.overlay.value}")
     }
 
-
+    
     @JavascriptInterface
     fun setNavigationBarColor(
         colorHex: ColorInt,

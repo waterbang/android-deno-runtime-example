@@ -27,10 +27,6 @@ const _BfcsNavigator = class {
     this.parentInfo = parentInfo;
     this._ffi = _ffi;
   }
-  init() {
-    console.log("init");
-    return "init";
-  }
   get length() {
     return __privateGet(this, _routes).length;
   }

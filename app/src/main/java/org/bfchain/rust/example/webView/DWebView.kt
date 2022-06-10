@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
@@ -31,6 +32,7 @@ import org.bfchain.rust.example.webView.bottombar.BottomBarState
 import org.bfchain.rust.example.webView.bottombar.DWebBottomBar
 import org.bfchain.rust.example.webView.dialog.*
 import org.bfchain.rust.example.webView.jsutil.JsUtil
+import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
 import org.bfchain.rust.example.webView.navigator.NavigatorFFI
 import org.bfchain.rust.example.webView.systemui.SystemUIState
 import org.bfchain.rust.example.webView.systemui.SystemUiFFI
@@ -212,6 +214,7 @@ fun DWebView(
                         jsUtil!!,
                         systemUIState,
                     )
+            
                     webView.addJavascriptInterface(systemUiFFI, "system_ui")
                     webView.addJavascriptInterface(systemUiFFI.virtualKeyboard, "virtual_keyboard")
 

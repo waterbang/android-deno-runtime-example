@@ -30,7 +30,7 @@ class DenoService : IntentService("DenoService") {
 //    external fun initialiseLogging()
 
     fun startForeground() {
-        
+
     }
 
     override fun onHandleIntent(p0: Intent?) {
@@ -41,9 +41,9 @@ class DenoService : IntentService("DenoService") {
         val appContext = applicationContext
 //        makeStatusNotification("有医保的先rush", appContext)
         nativeSetCallback(object : IHandleCallback {
-            override fun handleCallback(string: String) {
+            override fun handleCallback(name: String) {
                 Log.d("handleCallback", "now rust says:" + string)
-                callable_map[string]?.let { it() }
+                callable_map[name]?.let { it() }
             }
         })
         // 独立启动webView和web Socket

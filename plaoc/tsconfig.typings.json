@@ -7,11 +7,13 @@
     "outDir": ".bfsp/tsc"
   },
   "files": [
+    "./core/core.type.ts",
+    "./gateway/gateway.type.ts",
     "./plugin/navigation/ffi#android.type.ts",
     "./plugin/navigation/index.type.ts",
     "./plugin/statusBar/statusBar.type.ts",
     "./runtime/app.type.ts",
-    "./core/core.type.ts",
+    "./gateway/WebSockets.ts",
     "./index.ts",
     "./plugin/common/EvtOut.ts",
     "./plugin/common/defineHtmlElement.ts",
@@ -22,12 +24,11 @@
     "./plugin/navigation/index.ts",
     "./plugin/statusBar/index.ts",
     "./runtime/appRuntime.ts",
+    "./runtime/installApp.ts",
     "./runtime/module/DWebview.ts",
     "./runtime/module/File.ts",
     "./runtime/module/Script.ts",
-    "./core/gateway.ts",
-    "./runtime/installApp.ts",
-    "./core/WebSockets.ts"
+    "./gateway/index.ts"
   ],
   "references": []
 }

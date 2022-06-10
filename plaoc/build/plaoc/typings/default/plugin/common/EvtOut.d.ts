@@ -4,4 +4,4 @@ export declare class EvtOut<T> {
     emit(data: T): void;
     toAsyncGenerator(): Evt<T>;
 }
-export declare type Evt<T = unknown> = AsyncGenerator<T, void, void>;
+export declare type Evt<T = unknown> = AsyncGenerator<Awaited<NonNullable<T>>, void, void>;

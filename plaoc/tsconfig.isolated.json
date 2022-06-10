@@ -13,6 +13,7 @@
     "outDir": ".bfsp/tsc"
   },
   "files": [
+    "./gateway/WebSockets.ts",
     "./index.ts",
     "./plugin/common/EvtOut.ts",
     "./plugin/common/defineHtmlElement.ts",
@@ -23,11 +24,10 @@
     "./plugin/navigation/index.ts",
     "./plugin/statusBar/index.ts",
     "./runtime/appRuntime.ts",
+    "./runtime/installApp.ts",
     "./runtime/module/DWebview.ts",
     "./runtime/module/File.ts",
     "./runtime/module/Script.ts",
-    "./core/gateway.ts",
-    "./runtime/installApp.ts",
-    "./core/WebSockets.ts"
+    "./gateway/index.ts"
   ]
 }

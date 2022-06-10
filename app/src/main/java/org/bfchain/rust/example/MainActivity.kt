@@ -10,7 +10,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.compose.ui.graphics.Color
+import org.bfchain.rust.example.webView.systemui.SystemUiFFI
 import com.google.mlkit.vision.barcode.Barcode
 import com.king.app.dialog.AppDialog
 import com.king.app.dialog.AppDialogConfig
@@ -24,6 +25,7 @@ import org.bfchain.rust.example.barcode.MultipleQRCodeScanningActivity
 import org.bfchain.rust.example.barcode.QRCodeScanningActivity
 import org.bfchain.rust.example.lib.drawRect
 import org.bfchain.rust.example.webView.DWebViewActivity
+import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
 import org.bfchain.rust.example.webView.openDWebWindow
 
 
@@ -47,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         callable_map["openScanner"] = { openScannerActivity() }
         callable_map["openDWebView"] = { openDWebViewActivity() }
+        // Navigator
+//        callable_map["setNavigationBarColor"] = { SystemUiFFI().setNavigationBarColor() }
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)
         deno.putExtra("task", "openScanner")

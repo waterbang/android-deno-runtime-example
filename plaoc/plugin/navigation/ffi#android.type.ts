@@ -1,7 +1,7 @@
 import { BfcsNavigator } from "./BfcsNavigator";
-
 declare global {
   namespace navigation {
-    const navigator_ffi: BfcsNavigator.FFI;
+    const ffi: BfcsNavigator.FFI;
   }
 }
+// declare const navigator_ffi: import("./BfcsNavigator").BfcsNavigator.FFI;

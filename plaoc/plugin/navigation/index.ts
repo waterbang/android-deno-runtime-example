@@ -8,6 +8,8 @@ export const HTMLDWebNavigatorElement = defineHtmlElement(
   { tagName: "DWebNavigator", tag_name: "dweb-navigator" },
   builder(),
   {
-    onCreate() {},
+    onCreate() {
+      console.log("DWebNavigator is create");
+    },
   }
 );

@@ -1,4 +1,4 @@
-export class webSockets {
+export class WebSockets {
   webSockets!: WebSocket;
   statusArr = [
     { state: 0, value: "正在连接" },
@@ -13,7 +13,7 @@ export class webSockets {
     }
   }
 
-  // 1. 注册客户端
+  //注册客户端
   async sendSubscriptionToBackEnd(body: webSocket.registerBody) {
     const response = await fetch(this.registerUrl, {
       method: "POST",
@@ -26,6 +26,7 @@ export class webSockets {
     console.log(JSON.stringify(responseData));
     return responseData;
   }
+
   async connect(
     body: webSocket.registerBody = {
       public_key: "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj",
@@ -43,8 +44,6 @@ export class webSockets {
     this.webSockets.onmessage = (res) => {
       console.log("webSockets.onmessage:", res);
     };
-
-    //监听关闭时的状态变化
     this.webSockets.onclose = (event) => this.socketChange();
   }
   socketChange() {
@@ -54,6 +53,7 @@ export class webSockets {
         return item.value;
       }
     });
+    console.log("当前的连接状态是：", val);
     return val;
   }
   sendData(fun: string) {

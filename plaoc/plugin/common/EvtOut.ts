@@ -36,4 +36,8 @@ export class EvtOut<T> {
     return ag;
   }
 }
-export type Evt<T = unknown> = AsyncGenerator<T, void, void>;
+export type Evt<T = unknown> = AsyncGenerator<
+  Awaited<NonNullable<T>>,
+  void,
+  void
+>;

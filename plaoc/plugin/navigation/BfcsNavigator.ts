@@ -12,12 +12,8 @@ export class BfcsNavigator<R extends Route = Route> {
     private _ffi: BfcsNavigator.FFI
   ) {}
 
-  init() {
-    console.log("init");
-    return "init";
-  }
-
   #routes: R[] = [];
+
   /**
    * 当前存有的 route 个数
    */
@@ -101,7 +97,7 @@ export class BfcsNavigator<R extends Route = Route> {
    * @param opts
    */
   fork(opts: BfcsNavigator.ForkOptions): BfcsNavigator | undefined {
-    // const parentNav = this
+    const parentNav = this;
     //   opts.fromNavigator === null ? null : opts.fromNavigator || this;
     // const parentNid = parentNav?.info.nid ?? -1;
     const result = this._ffi.fork(this.info.nid, opts.data);
