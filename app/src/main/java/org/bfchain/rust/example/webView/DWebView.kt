@@ -214,7 +214,7 @@ fun DWebView(
                         jsUtil!!,
                         systemUIState,
                     )
-            
+
                     webView.addJavascriptInterface(systemUiFFI, "system_ui")
                     webView.addJavascriptInterface(systemUiFFI.virtualKeyboard, "virtual_keyboard")
 

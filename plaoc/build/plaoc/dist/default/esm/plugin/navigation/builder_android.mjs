@@ -1,1 +1,1 @@
-import{BfcsNavigator as a}from"./BfcsNavigator.mjs";const i=()=>{navigation.navigator_ffi.push(1,{rule:1});const i=JSON.parse(navigation.navigator_ffi.init());return new a(i.info,i.parent,navigation.navigator_ffi)};export{i as default};
+import{BfcsNavigator as r}from"./BfcsNavigator.mjs";import{navigator_ffi as o}from"./ffi_android.mjs";const t=()=>{const t=JSON.parse(o.init());return new r(t.info,t.parent,o)};export{t as default};

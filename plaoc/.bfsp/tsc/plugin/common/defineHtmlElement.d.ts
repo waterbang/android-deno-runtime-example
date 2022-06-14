@@ -13,4 +13,4 @@ export declare const defineHtmlElement: <T extends {}>(names: {
 }) => {
     new (): HTMLElement;
     prototype: HTMLElement;
-};
+} | undefined;

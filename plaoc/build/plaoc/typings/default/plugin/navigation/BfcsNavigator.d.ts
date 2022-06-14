@@ -18,7 +18,6 @@ export declare class BfcsNavigator<R extends Route = Route> {
      * Foreign Function Interface
      */
     _ffi: BfcsNavigator.FFI);
-    init(): void;
     /**
      * 当前存有的 route 个数
      */

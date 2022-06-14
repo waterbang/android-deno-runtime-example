@@ -1,11 +1,5 @@
 export class WebSockets {
-  webSockets!: WebSocket;
-  statusArr = [
-    { state: 0, value: "正在连接" },
-    { state: 1, value: "已建立连接" },
-    { state: 2, value: "正在关闭连接" },
-    { state: 3, value: "已关闭连接" },
-  ];
+  ws!: WebSocket;
   registerUrl: string = "http://127.0.0.1:8000/register";
   constructor(url?: string) {
     if (url) {
@@ -13,18 +7,24 @@ export class WebSockets {
     }
   }
 
-  //注册客户端
+  // 注册客户端
   async sendSubscriptionToBackEnd(body: webSocket.registerBody) {
-    const response = await fetch(this.registerUrl, {
+    return fetch(this.registerUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-    });
-    const responseData = await response.json();
-    console.log(JSON.stringify(responseData));
-    return responseData;
+    })
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log("responseData:", JSON.stringify(responseData));
+        return responseData;
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        return error;
+      });
   }
 
   async connect(
@@ -32,43 +32,63 @@ export class WebSockets {
       public_key: "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj",
     }
   ) {
-    // 1. 注册客户端
+    // 注册客户端
     const res = await this.sendSubscriptionToBackEnd(body);
-    // 创建webSockets对象，参数为服务器webSockets地址
-    this.webSockets = new WebSocket(res.url);
-
-    //监听连接状态的变化
-    this.webSockets.onopen = (event) => this.socketChange();
-
-    //监听接收消息的情况
-    this.webSockets.onmessage = (res) => {
-      console.log("webSockets.onmessage:", res);
-    };
-    this.webSockets.onclose = (event) => this.socketChange();
+    this.ws = new WebSocket(res.url);
+    return this.ws;
   }
+
   socketChange() {
-    let state = this.webSockets.readyState;
-    let val = this.statusArr.map((item) => {
-      if (item.state == state) {
-        return item.value;
-      }
-    });
-    console.log("当前的连接状态是：", val);
-    return val;
+    let state = this.ws.readyState;
+    return state;
   }
-  sendData(fun: string) {
-    //1. 首先获取输入的信息，判断信息是否可以发送
-    let val = `{"function":["${fun}"]}`;
-    if (val == "" || val == undefined) {
-      return;
-    }
 
-    this.webSockets.send(val);
+  sendData(fun: string) {
+    let val = `{"function":["${fun}"]}`;
+    if (fun == undefined) {
+      throw new Error("的传递websocket消息为空");
+    }
+    console.log("sendData:", fun);
+    this.ws.send(val);
   }
-  /**
-   *   关闭连接
-   */
+  awaitConnectWs() {
+    let index = 1;
+    return new Promise(async (resolve, reject) => {
+      do {
+        const status = this.socketChange();
+        console.log(
+          `正在连接websocket：${index}第次,当前的连接状态是${connectStatus[status]}`
+        );
+        if (status === EConnectStatus.已建立连接) {
+          resolve(status);
+          break;
+        }
+        if (
+          status === EConnectStatus.正在关闭连接 ||
+          status === EConnectStatus.已关闭连接
+        ) {
+          reject("close ws");
+          break;
+        }
+        index++;
+        await sleep(500); // 不要太快发请求
+      } while (index <= 10);
+      reject("连接超时");
+    });
+  }
   closeConnect() {
-    this.webSockets.close();
+    this.ws.close();
   }
 }
+
+const sleep = (delay: number) =>
+  new Promise((resolve) => setTimeout(resolve, delay));
+
+export enum EConnectStatus {
+  "正在连接" = 0,
+  "已建立连接" = 1,
+  "正在关闭连接" = 2,
+  "已关闭连接" = 3,
+}
+
+const connectStatus = ["正在连接", "已建立连接", "正在关闭连接", "已关闭连接"];

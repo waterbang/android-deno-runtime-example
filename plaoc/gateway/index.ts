@@ -3,7 +3,20 @@
 /////////////////////////////
 import { WebSockets } from "./WebSockets";
 
-export const connect = async () => {
-  const rs = new WebSockets();
-  await rs.connect();
+let webSockets: WebSockets;
+/// 拿到全局的webSockets对象
+const getWebSocket = async (): Promise<WebSockets> => {
+  return new Promise(async (resolve, reject) => {
+    if (webSockets === undefined) {
+      try {
+        webSockets = new WebSockets();
+        await webSockets.connect();
+      } catch (e) {
+        reject(e);
+      }
+    }
+    resolve(webSockets);
+  });
 };
+
+export { getWebSocket };

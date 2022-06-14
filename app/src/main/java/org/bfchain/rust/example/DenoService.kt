@@ -41,16 +41,16 @@ class DenoService : IntentService("DenoService") {
         val appContext = applicationContext
 //        makeStatusNotification("有医保的先rush", appContext)
         nativeSetCallback(object : IHandleCallback {
-            override fun handleCallback(name: String) {
-                Log.d("handleCallback", "now rust says:" + string)
-                callable_map[name]?.let { it() }
+            override fun handleCallback(callName: String) {
+                Log.d("handleCallback", "now rust says:" + callName)
+                callable_map[callName]?.let { it() }
             }
         })
         // 独立启动webView和web Socket
         openWebView(object : IOpenWebView {
-            override fun webViewCallback(string: String) {
-                Log.d("webViewCallback", "now rust webViewCallback says:" + string)
-                callable_map[string]?.let { it() }
+            override fun webViewCallback(callName: String) {
+                Log.d("webViewCallback", "now rust webViewCallback says:" + callName)
+                callable_map[callName]?.let { it() }
             }
         })
 

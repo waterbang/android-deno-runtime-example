@@ -129,7 +129,7 @@ private fun NavFun(activity: ComponentActivity) {
                     state = rememberAdWebViewState(urlStr),
                     navController = navController,
                     activity = activity,
-                    modifier = Modifier.background(Color.Cyan),
+                    modifier = Modifier.background(Color.Unspecified),
                     customUrlScheme = customUrlScheme,
 //                    modifier = Modifier.padding(innerPadding)
                 ) { webView ->

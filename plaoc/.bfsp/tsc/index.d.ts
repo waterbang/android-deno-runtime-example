@@ -1,2 +1,1 @@
-export * from "./plugin/navigation/index";
-export * from "./plugin/statusBar/index";
+export * from "./plugin/index";

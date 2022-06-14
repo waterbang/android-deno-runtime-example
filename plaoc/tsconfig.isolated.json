@@ -13,11 +13,16 @@
     "outDir": ".bfsp/tsc"
   },
   "files": [
+    "./core/index.ts",
+    "./deno/index.ts",
+    "./deno/navigation.ts",
     "./gateway/WebSockets.ts",
+    "./gateway/index.ts",
     "./index.ts",
     "./plugin/common/EvtOut.ts",
     "./plugin/common/defineHtmlElement.ts",
     "./plugin/common/index.ts",
+    "./plugin/index.ts",
     "./plugin/navigation/BfcsNavigator.ts",
     "./plugin/navigation/builder#android.ts",
     "./plugin/navigation/ffi#android.ts",
@@ -27,7 +32,6 @@
     "./runtime/installApp.ts",
     "./runtime/module/DWebview.ts",
     "./runtime/module/File.ts",
-    "./runtime/module/Script.ts",
-    "./gateway/index.ts"
+    "./runtime/module/Script.ts"
   ]
 }

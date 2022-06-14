@@ -1,12 +1,4 @@
-import { connect } from "../gateway/index";
-
 export const installApp = async (app: runtime.ManifestApp) => {
-  await createClient();
+  // console.log("installApp");
+  // 1.创建和Deno交互的模块
 };
-
-/**
- * 创建客户端
- */
-async function createClient() {
-  const client = await connect();
-}

@@ -21,6 +21,7 @@ export const defineHtmlElement = <T extends {}>(
   /// 获取所有的属性
   const propDescMap = new Map<string, PropertyDescriptor>();
   let value: any = apis;
+  let i = 2;
   do {
     for (const [prop, desc] of Object.entries(
       Object.getOwnPropertyDescriptors(value)
@@ -35,7 +36,7 @@ export const defineHtmlElement = <T extends {}>(
       }
       propDescMap.set(prop, desc);
     }
-    value = Object.getPrototypeOf(apis);
+    value = Object.getPrototypeOf(value);
     if (value === Object.prototype) {
       break;
     }
@@ -90,6 +91,7 @@ export const defineHtmlElement = <T extends {}>(
     }
   };
   for (const [prop, desc] of propDescMap) {
+    if (prop === 'constructor') { return }; // 每个方法只能有一个构造函数，下面已经有了
     handlePropDesc(prop, desc);
   }
 
