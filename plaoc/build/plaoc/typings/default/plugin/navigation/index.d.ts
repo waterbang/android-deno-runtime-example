@@ -3,4 +3,4 @@ export { BfcsNavigator };
 export declare const HTMLDWebNavigatorElement: {
     new (): HTMLElement;
     prototype: HTMLElement;
-};
+} | undefined;

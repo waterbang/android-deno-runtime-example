@@ -87,7 +87,7 @@ export declare class BfcsNavigator<R extends Route = Route> {
 declare type Closeable = string | number | {
     [key: string]: Closeable;
 };
-declare type Route = Closeable;
+export declare type Route = Closeable;
 export declare namespace BfcsNavigator {
     type FFI = {
         init(): string;

@@ -1,5 +1,6 @@
 #[cfg(target_os = "android")]
 use crate::android::android_inter;
+use crate::web_socket::ws::TopicsRequest;
 use std::sync::mpsc::{Receiver, Sender};
 use std::{
     collections::HashMap,
@@ -41,8 +42,12 @@ impl HandleFunction {
         }
     }
 }
-pub fn call_android(fun_type: &str) {
-    let callback = Box::leak(String::from(fun_type).into_boxed_str());
+/// 调用android方法
+pub fn call_android(handle: &TopicsRequest) {
+    // let fun_type = &handle.function;
+    // let public_key = &handle.public_key;
+    // let data = &handle.data;
+    let callback = Box::leak(String::from(handle.to_string()).into_boxed_str());
     #[cfg(target_os = "android")]
     android_inter::call_java_callback(callback);
 }

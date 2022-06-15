@@ -1,5 +1,5 @@
 export { HTMLDWebNavigatorElement } from "./plugin/navigation/index.mjs";
-import { installApp } from "./runtime/installApp.mjs";
+import { getWebSocket } from "./gateway/index.mjs";
 export { BfcsNavigator } from "./plugin/navigation/BfcsNavigator.mjs";
-installApp();
+getWebSocket();
 //# sourceMappingURL=index.mjs.map

@@ -178,7 +178,7 @@ export class BfcsNavigator<R extends Route = Route> {
 }
 type Closeable = string | number | { [key: string]: Closeable };
 
-type Route = Closeable;
+export type Route = Closeable;
 
 export namespace BfcsNavigator {
   export type FFI = {

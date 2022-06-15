@@ -1,4 +1,6 @@
 use crate::web_socket::{ws, Client, Clients, Result};
+use android_logger::Config;
+use log::Level;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use warp::{http::StatusCode, reply::json, ws::Message, Reply};
@@ -15,10 +17,11 @@ pub struct RegisterResponse {
 
 #[derive(Deserialize, Debug)]
 pub struct Event {
-    function: String,
-    public_key: Option<String>,
-    message: String,
+    pub function: String,
+    pub public_key: Option<String>,
+    pub message: String,
 }
+
 ///向连接的客户端广播消息的能力
 pub async fn publish_handler(body: Event, clients: Clients) -> Result<impl Reply> {
     clients
@@ -48,6 +51,28 @@ pub async fn register_handler(body: RegisterRequest, clients: Clients) -> Result
         url: format!("ws://127.0.0.1:8000/ws/{}", uuid),
     }))
 }
+// fetch('./get-ws-port', location.href/* dweb://app.id/index.html */)
+// new DWebSocket('dweb://app.id/')
+/**
+ *
+ * // link import
+ *
+ * // bfs-app.js
+ *
+ * const dwebview = new DWebView()
+ * dwebview.onRequest((req,res)=>{
+ *   if(req.url ==='get-ws-port') {
+ * //nodejs & deno
+ *         tcp/udp
+ *         websocket-server
+ * //bfs-app
+ *       const socketBlob = DWebSocket
+ *      res.send(socketBlob)
+ *   }
+ *
+ * })
+ * dwebview.onUpgrade(req,socket)
+ */
 // 注册客户端，默认给了启动DwebView的方法
 async fn register_client(id: String, public_key: String, clients: Clients) {
     clients.write().await.insert(

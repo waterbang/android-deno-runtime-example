@@ -1,5 +1,6 @@
 export class WebSockets {
   ws!: WebSocket;
+  public_key!: string;
   registerUrl: string = "http://127.0.0.1:8000/register";
   constructor(url?: string) {
     if (url) {
@@ -32,32 +33,49 @@ export class WebSockets {
       public_key: "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj",
     }
   ) {
-    // 注册客户端
+    this.public_key = body.public_key;
     const res = await this.sendSubscriptionToBackEnd(body);
     this.ws = new WebSocket(res.url);
+    await this.awaitConnectWs();
     return this.ws;
   }
 
+  // 获取连接状态
   socketChange() {
     let state = this.ws.readyState;
     return state;
   }
 
   sendData(fun: string) {
-    let val = `{"function":["${fun}"]}`;
+    // 携带函数和自己的公钥，不然返回数据是异步的，不知道给谁
+    let val = `{"function":["${fun}"],"public_key":"${this.public_key}","data":"''"}`;
     if (fun == undefined) {
       throw new Error("的传递websocket消息为空");
     }
     console.log("sendData:", fun);
-    this.ws.send(val);
+    return new Promise(async (resolve, reject) => {
+      this.ws.send(val);
+      // 设置超时时间
+      let timer = setTimeout(() => {
+        reject("连接超时");
+        clearTimeout(timer);
+      }, 20000);
+      //监听接收消息的情况
+      this.ws.onmessage = (res) => {
+        clearTimeout(timer);
+        resolve(res.data);
+      };
+    });
   }
+
+  // 等待连接上
   awaitConnectWs() {
     let index = 1;
     return new Promise(async (resolve, reject) => {
       do {
         const status = this.socketChange();
         console.log(
-          `正在连接websocket：${index}第次,当前的连接状态是${connectStatus[status]}`
+          `正在连接websocket：第${index}次,当前的连接状态是${connectStatus[status]}`
         );
         if (status === EConnectStatus.已建立连接) {
           resolve(status);

@@ -6,11 +6,11 @@
 </head>
 <body>
 <fieldset>
-    <button onclick="callAndroid()" type="button">点击调用Android代码</button>
+    <button onclick="callAndroid('JS调用了android中的hello方法')" type="button">点击调用Android代码</button>
     <button onclick="onCallAndroid()" type="button">Android调用JS</button>
     <script>
-         function callAndroid(){
-            Android_nav.showToast("JS调用了android中的hello方法");
+         function callAndroid(msg){
+            Android_nav.showToast(msg);
          }
 
          function onCallAndroid() {
@@ -131,7 +131,7 @@
 
 <fieldset>
    <h2>navigator</h2>
-   <dweb-navigator></dweb-navigator>
+   <dweb-navigator onCreate="callAndroid('dweb-navigator')"></dweb-navigator>
    <script type="module" src="./plaoc/index.mjs"></script>
 </fieldset>
 </body>

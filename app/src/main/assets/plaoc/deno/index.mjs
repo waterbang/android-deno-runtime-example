@@ -4,8 +4,7 @@ class Deno {
   }
   async callFunction(handleFn) {
     const webSockets = await getWebSocket();
-    await webSockets.awaitConnectWs();
-    webSockets.sendData(handleFn);
+    return webSockets.sendData(handleFn);
   }
 }
 export { Deno };

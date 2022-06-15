@@ -90,6 +90,7 @@ export const defineHtmlElement = <T extends {}>(
       }
     }
   };
+  console.log(propDescMap);
   for (const [prop, desc] of propDescMap) {
     if (prop === 'constructor') { return }; // 每个方法只能有一个构造函数，下面已经有了
     handlePropDesc(prop, desc);
@@ -131,6 +132,7 @@ export const defineHtmlElement = <T extends {}>(
           .join("\n")}
       }`
   )(apis, evt_hubs) as typeof HTMLElement;
+
   customElements.define(names.tag_name, HTMLConstructor);
   return HTMLConstructor;
 };

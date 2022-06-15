@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -182,7 +183,6 @@ class MainActivity : AppCompatActivity() {
             url = "file:///android_asset/hello_runtime.html"
         )
     }
-
 
     fun onClick(v: View) {
         when (v.id) {

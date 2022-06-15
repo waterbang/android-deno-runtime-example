@@ -6,7 +6,6 @@ class WebSockets {
     }
   }
   async sendSubscriptionToBackEnd(body) {
-    console.log("sendSubscriptionToBackEnd");
     return fetch(this.registerUrl, {
       method: "POST",
       headers: {
@@ -24,8 +23,10 @@ class WebSockets {
   async connect(body = {
     public_key: "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj"
   }) {
+    this.public_key = body.public_key;
     const res = await this.sendSubscriptionToBackEnd(body);
     this.ws = new WebSocket(res.url);
+    await this.awaitConnectWs();
     return this.ws;
   }
   socketChange() {
@@ -33,19 +34,29 @@ class WebSockets {
     return state;
   }
   sendData(fun) {
-    let val = `{"function":["${fun}"]}`;
+    let val = `{"function":["${fun}"],"public_key":"${this.public_key}","data":"''"}`;
     if (fun == void 0) {
       throw new Error("\u7684\u4F20\u9012websocket\u6D88\u606F\u4E3A\u7A7A");
     }
     console.log("sendData:", fun);
-    this.ws.send(val);
+    return new Promise(async (resolve, reject) => {
+      this.ws.send(val);
+      let timer = setTimeout(() => {
+        reject("\u8FDE\u63A5\u8D85\u65F6");
+        clearTimeout(timer);
+      }, 2e4);
+      this.ws.onmessage = (res) => {
+        clearTimeout(timer);
+        resolve(res.data);
+      };
+    });
   }
   awaitConnectWs() {
     let index = 1;
     return new Promise(async (resolve, reject) => {
       do {
         const status = this.socketChange();
-        console.log(`\u6B63\u5728\u8FDE\u63A5websocket\uFF1A${index}\u7B2C\u6B21,\u5F53\u524D\u7684\u8FDE\u63A5\u72B6\u6001\u662F${connectStatus[status]}`);
+        console.log(`\u6B63\u5728\u8FDE\u63A5websocket\uFF1A\u7B2C${index}\u6B21,\u5F53\u524D\u7684\u8FDE\u63A5\u72B6\u6001\u662F${connectStatus[status]}`);
         if (status === EConnectStatus.\u5DF2\u5EFA\u7ACB\u8FDE\u63A5) {
           resolve(status);
           break;

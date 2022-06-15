@@ -13,7 +13,7 @@ use std::{
 // 引用 jni 库的一些内容，就是上面添加的 jni 依赖
 use jni::{
     objects::{GlobalRef, JObject, JString, JValue},
-    sys::{jint, jstring, JNI_ERR,JNI_VERSION_1_4},
+    sys::{jint, jstring, JNI_ERR, JNI_VERSION_1_4},
     JNIEnv, JavaVM, NativeMethod,
 };
 
@@ -150,7 +150,10 @@ unsafe fn JNI_OnLoad(jvm: JavaVM, _reserved: *mut c_void) -> jint {
     let class_name: &str = "org/bfchain/rust/example/DenoService";
     let jni_methods = [
         // # 添加注册一个可以传递java回调对象的本地方法
-        jni_method!(nativeSetCallback, "(Lorg/bfchain/rust/example/DenoService$IHandleCallback;)V"),
+        jni_method!(
+            nativeSetCallback,
+            "(Lorg/bfchain/rust/example/DenoService$IHandleCallback;)V"
+        ),
     ];
 
     let ok = register_natives(&jvm, class_name, jni_methods.as_ref());
@@ -199,12 +202,12 @@ unsafe fn register_natives(jvm: &JavaVM, class_name: &str, methods: &[NativeMeth
 
 /// 回调 Callback 对象的 { void handleCallback(string: String) } 函数
 pub fn call_java_callback(fun_type: &'static str) {
-        android_logger::init_once(
+    android_logger::init_once(
         Config::default()
             .with_min_level(Level::Debug)
             .with_tag("myrust::handleCallback"),
     );
-    log::info!("i am call_java_callback xxxxxxx1{:?}",fun_type);
+    log::info!("i am call_java_callback {:?}", fun_type);
     call_jvm(&JNI_CALLBACK, move |obj: JObject, env: &JNIEnv| {
         let s = String::from(fun_type);
         let response: JString = env
@@ -258,8 +261,6 @@ where
         }
     }
 }
-
-
 
 // #[no_mangle]
 // #[allow(non_snake_case)]

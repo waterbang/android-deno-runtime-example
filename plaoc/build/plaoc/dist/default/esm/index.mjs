@@ -1,1 +1,1 @@
-export{HTMLDWebNavigatorElement}from"./plugin/navigation/index.mjs";export{StatusBar}from"./plugin/statusBar/index.mjs";import{installApp as t}from"./runtime/installApp.mjs";export{BfcsNavigator}from"./plugin/navigation/BfcsNavigator.mjs";t();
+export{HTMLDWebNavigatorElement}from"./plugin/navigation/index.mjs";import{getWebSocket as a}from"./gateway/index.mjs";export{BfcsNavigator}from"./plugin/navigation/BfcsNavigator.mjs";a();

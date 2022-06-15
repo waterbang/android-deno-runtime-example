@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::js_bridge::call_android_js;
 use crate::web_socket::{Client, Clients};
 use android_logger::Config;
@@ -10,7 +12,19 @@ use tokio_stream::wrappers::UnboundedReceiverStream;
 use warp::ws::{Message, WebSocket};
 #[derive(Deserialize, Debug)]
 pub struct TopicsRequest {
-    function: Vec<String>,
+    pub function: Vec<String>,
+    pub public_key: String,
+    pub data: String,
+}
+/// 实现一个toString的trait
+impl fmt::Display for TopicsRequest {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{{public_key:{},function:{:?},data:{}}}",
+            self.public_key, self.function, self.data
+        )
+    }
 }
 
 pub async fn client_connection(ws: WebSocket, id: String, clients: Clients, mut client: Client) {
@@ -71,10 +85,10 @@ async fn client_msg(id: &str, msg: Message, clients: &Clients) {
             return;
         }
     };
-    // topics_req: TopicsRequest { function: ["openScanner"] }
-    log::info!("&topics_req.function[0]: {:?} ", &topics_req.function[0]); // 生产环境记得删除
+    // topics_req: TopicsRequest { public_key: "",function: ["openScanner"],data: ""}
+    log::info!("&topics_req.function[0]: {:?} ", &topics_req); // 生产环境记得删除
 
-    call_android_js::call_android(&topics_req.function[0]); // 通知FFI函数
+    call_android_js::call_android(&topics_req); // 通知FFI函数
 
     let mut locked = clients.write().await;
     if let Some(v) = locked.get_mut(id) {
