@@ -5,10 +5,6 @@ const navigator_ffi = {};
 navigator_ffi.init = function init() {
   console.log("navigator-> init");
   let code;
-  (async function() {
-    code = await deno.callFunction("openScanner");
-    console.log("xixixixixixixixixi", JSON.stringify(code));
-  })();
   return JSON.stringify({
     scannerData: async () => {
       await deno.callFunction("navigatorPush");

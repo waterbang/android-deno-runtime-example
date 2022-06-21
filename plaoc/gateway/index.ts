@@ -5,11 +5,11 @@ import { WebSockets } from "./WebSockets";
 
 let webSockets: WebSockets;
 /// 拿到全局的webSockets对象
-const getWebSocket = async (): Promise<WebSockets> => {
+const getWebSocket = async (url?: string): Promise<WebSockets> => {
   return new Promise(async (resolve, reject) => {
-    if (webSockets === undefined) {
+    if (webSockets === undefined || url !== undefined) {
       try {
-        webSockets = new WebSockets();
+        webSockets = new WebSockets(url);
         await webSockets.connect();
       } catch (e) {
         reject(e);

@@ -8,10 +8,12 @@ const navigator_ffi: BfcsNavigator.FFI = {} as BfcsNavigator.FFI;
 navigator_ffi.init = function init() {
   console.log("navigator-> init");
   let code;
-  (async function () {
-    code = await deno.callFunction("openScanner");
-    console.log("xixixixixixixixixi", JSON.stringify(code));
-  })();
+  // (async function () {
+  //   code = await deno.callFunction("openScanner");
+  //   const el = window.document.querySelector("#navigator");
+  //   el!.innerHTML += `<p>接收数据: ${code}</p>`;
+  //   console.log("xixixixixixixixixi", JSON.stringify(code));
+  // })();
 
   return JSON.stringify({
     scannerData: async () => {

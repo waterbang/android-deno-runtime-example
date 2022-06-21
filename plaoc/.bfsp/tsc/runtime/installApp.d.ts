@@ -1,1 +1,1 @@
-export declare const installApp: (app: runtime.ManifestApp) => Promise<void>;
+export declare const installApp: (app: runtime.ManifestApp) => void;

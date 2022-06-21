@@ -1,3 +1,7 @@
+import { FileModule } from "./module/File";
+import { ScriptModule } from "./module/Script";
+import { DWebview } from "./module/DWebview";
+import { ManifestEntry } from "./AppRuntime";
 declare global {
     namespace runtime {
         interface ManifestApp {
@@ -8,10 +12,9 @@ declare global {
             defaultEntry: string;
             entryResourceMap: Map<string, ManifestEntry>;
         }
+        type TLinker = ScriptModule | FileModule | DWebview | string;
+        type module_fn = {
+            [fn: string]: Function;
+        };
     }
-}
-export declare class ManifestEntry {
-    url: null;
-    constructor(url: string);
-    getUrl(): null;
 }

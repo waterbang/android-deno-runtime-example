@@ -1,8 +1,7 @@
 declare global {
-  namespace callDeno {
-    type fun = {
-      setNavigationBarColor(): string;
-    };
+  enum callDeno {
+    openDWebView = "openDWebView",
+    openScanner = "openScanner",
   }
 }
 

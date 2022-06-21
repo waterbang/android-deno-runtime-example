@@ -35,7 +35,6 @@ const defineHtmlElement = (names, apis, lifecycle) => {
       }
     }
   };
-  console.log(propDescMap);
   for (const [prop, desc] of propDescMap) {
     if (prop === "constructor") {
       return;

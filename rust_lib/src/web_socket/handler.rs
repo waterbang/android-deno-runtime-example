@@ -51,28 +51,6 @@ pub async fn register_handler(body: RegisterRequest, clients: Clients) -> Result
         url: format!("ws://127.0.0.1:8000/ws/{}", uuid),
     }))
 }
-// fetch('./get-ws-port', location.href/* dweb://app.id/index.html */)
-// new DWebSocket('dweb://app.id/')
-/**
- *
- * // link import
- *
- * // bfs-app.js
- *
- * const dwebview = new DWebView()
- * dwebview.onRequest((req,res)=>{
- *   if(req.url ==='get-ws-port') {
- * //nodejs & deno
- *         tcp/udp
- *         websocket-server
- * //bfs-app
- *       const socketBlob = DWebSocket
- *      res.send(socketBlob)
- *   }
- *
- * })
- * dwebview.onUpgrade(req,socket)
- */
 // 注册客户端，默认给了启动DwebView的方法
 async fn register_client(id: String, public_key: String, clients: Clients) {
     clients.write().await.insert(

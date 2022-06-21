@@ -9,6 +9,7 @@ export default defineConfig((info) => {
     packageJson: {
       license: "MIT",
       author: "mac",
+      dependencies: {},
     },
   };
   return config;

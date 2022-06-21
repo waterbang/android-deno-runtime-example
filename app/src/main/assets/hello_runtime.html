@@ -40,17 +40,14 @@
     </div>
     <script type="text/javascript">
       let websockets;
-      //创建一个数组对象用于存放当前的连接的状态，以便在页面上实时展示出来当前的状态
       let statusArr = [
          { state: 0, value: '正在连接' },
          { state: 1, value: '已建立连接' },
          { state: 2, value: '正在关闭连接' },
          { state: 3, value: '已关闭连接' },
       ]
-
-      function sendSubscriptionToBackEnd() {
-  
-         return  fetch('http://127.0.0.1:8000/register', {
+      function getResponse(url="http://127.0.0.1:8000/register") {
+         return  fetch(url, {
             method: 'POST',
             headers: {
                "Content-Type": "application/json",
@@ -63,34 +60,15 @@
             return responseData;
             });
          }
-      /**
-      *   建立连接
-      *
-      */
       async function connect() {
-         // 1. 注册客户端
-         const res =  await sendSubscriptionToBackEnd();
-          // 2. 创建websockets对象，参数为服务器websockets地址
+         const res =  await getResponse();
          websockets = new WebSocket(res.url);
-
-         // 3.监听websocket的状态变化，接收的信息，关闭时的状态
-
-         //监听连接状态的变化
          websockets.onopen = (event) => socketChange();
-
-         //监听接收消息的情况
          websockets.onmessage = (res) => {
             document.querySelector("#message").innerHTML += `<p>接收数据: ${res.data}</p>`
          }
-
-         //监听关闭时的状态变化
          websockets.onclose = (event) => socketChange();
-        
       }
-      /**
-      *   socket状态变化
-      *
-      */
       function socketChange() {
          let state = websockets.readyState;
          let val = statusArr.map((item) => {
@@ -98,39 +76,37 @@
                return item.value
             }
          });
-
-         //实时显示状态的变化
          document.querySelector("#message").innerHTML += `<p>当前的socket连接状态是: ${val}</p>`
       }
-      /**
-      *   发送数据
-      *
-      */
       function sendData(fun) {
-         //1. 首先获取输入的信息，判断信息是否可以发送
          let val = `{"function":["${fun}"]}`
          if (val == "" || val == undefined) {
             document.querySelector("#message").innerHTML += "<p>发送数据为空，请填写完成后再发送！</p>";
             return;
          }
-
          websockets.send(val);
          document.querySelector("#message").innerHTML += `<p>发送数据:${val}</p>`;
       }
-      /**
-      *   关闭连接
-      *
-      */
       function closeConnect() {
          websockets.close();
       }
-
-
     </script>
 </fieldset>
 
 <fieldset>
-   <h2>navigator</h2>
+   <h2>拦截dweb://请求测试</h2>
+   <div id="response"></div>
+   <button id="request" onclick="testUrl()">建立连接</button>
+   <script type="text/javascript">
+      async function testUrl() {
+         let msg = await getResponse('http://aa/');
+         document.getElementById('response').innerHTML += `拦截结果：${msg}`
+      }
+   </script>
+</fieldset>
+<fieldset>
+   <h2>从android拿回数据</h2>
+   <div id="navigator"></div>
    <dweb-navigator onCreate="callAndroid('dweb-navigator')"></dweb-navigator>
    <script type="module" src="./plaoc/index.mjs"></script>
 </fieldset>
