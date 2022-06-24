@@ -7,8 +7,8 @@ export class Deno {
   constructor() {}
 
   /// 调用deno的函数
-  async callFunction(handleFn: string): Promise<any> {
+  async callFunction(handleFn: string, data?: string): Promise<any> {
     const webSockets = await getWebSocket(); // 单一性不要担心重新创建
-    return webSockets.sendData(handleFn);
+    return webSockets.sendData(handleFn, data);
   }
 }

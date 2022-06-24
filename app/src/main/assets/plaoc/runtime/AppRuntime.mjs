@@ -1,20 +1,23 @@
+import { getExtension } from "../util/common.mjs";
 import { DWebview } from "./module/DWebview.mjs";
 import { FileModule } from "./module/File.mjs";
 import { ScriptModule } from "./module/Script.mjs";
 class AppRuntime {
-  constructor(app_root) {
+  constructor(appId, app_root) {
+    this.app_root = app_root;
+    this.appId = appId;
   }
-  inker(spe) {
-    if (spe === "node:bnrtc") {
+  inker() {
+    if (this.app_root === "node:bnrtc") {
       return new ScriptModule("code", "node:bnrtc");
     }
-    if (spe.startsWith("./")) {
-      return new FileModule(new URL(spe, this.app_root));
+    if (getExtension(this.app_root) == "html") {
+      return new DWebview(this.appId);
     }
-    if (spe === "dwebview") {
-      return new DWebview();
+    if (this.app_root.startsWith("File:///")) {
+      return new FileModule(new URL(this.app_root, `https://${this.appId}.dweb`));
     }
-    return `dweb://${spe}`;
+    return `https://${this.appId}.dweb`;
   }
   import(url) {
   }

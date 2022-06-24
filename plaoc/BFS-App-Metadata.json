@@ -1,0 +1,20 @@
+{
+  "router": [
+    {
+      "url": "/getBlockInfo",
+      "header": {
+        "content-type": "application/json",
+        "StatusCode": 200,
+        "response": "hi this is getBlockInfo"
+      }
+    },
+    {
+      "url": "/getBlockHigh",
+      "header": {
+        "content-type": "application/json",
+        "StatusCode": 200,
+        "response": "3600090"
+      }
+    }
+  ]
+}

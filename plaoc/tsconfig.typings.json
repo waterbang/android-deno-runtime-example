@@ -14,7 +14,7 @@
     "./plugin/navigation/index.type.ts",
     "./plugin/statusBar/statusBar.type.ts",
     "./runtime/app.type.ts",
-    "./runtime/util/proxy/proxy.type.ts",
+    "./util/proxy/proxy.type.ts",
     "./core/index.ts",
     "./deno/index.ts",
     "./deno/navigation.ts",
@@ -36,9 +36,10 @@
     "./runtime/module/DWebview.ts",
     "./runtime/module/File.ts",
     "./runtime/module/Script.ts",
-    "./runtime/util/EventEmitter.ts",
-    "./runtime/util/proxy/hook.ts",
-    "./runtime/util/proxy/proxy.ts"
+    "./util/EventEmitter.ts",
+    "./util/proxy/proxy.ts",
+    "./util/proxy/hook.ts",
+    "./util/common.ts"
   ],
   "references": []
 }

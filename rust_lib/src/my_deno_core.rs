@@ -24,65 +24,62 @@ use deno_core::*;
 
 #[op]
 fn op_sum(nums: Vec<f64>) -> Result<f64, deno_core::error::AnyError> {
-  // Sum inputs
-  let sum = nums.iter().fold(0.0, |a, v| a + v);
-  // return as a Result<f64, AnyError>
-  Ok(sum)
+    // Sum inputs
+    let sum = nums.iter().fold(0.0, |a, v| a + v);
+    // return as a Result<f64, AnyError>
+    Ok(sum)
 }
-
+#[allow(dead_code)]
 pub fn bootstrap_deno_core() {
-  // // Build a deno_core::Extension providing custom ops
-  let ext = Extension::builder()
-    .ops(vec![
-      // An op for summing an array of numbers
-      // The op-layer automatically deserializes inputs
-      // and serializes the returned Result & value
-      op_sum::decl(),
-    ])
-    .build();
+    // // Build a deno_core::Extension providing custom ops
+    let ext = Extension::builder()
+        .ops(vec![
+            // An op for summing an array of numbers
+            // The op-layer automatically deserializes inputs
+            // and serializes the returned Result & value
+            op_sum::decl(),
+        ])
+        .build();
 
-  log::info!("JsRuntime::new");
+    log::info!("JsRuntime::new");
 
-  struct Permissions;
-  impl deno_web::TimersPermission for Permissions {
-    fn allow_hrtime(&mut self) -> bool {
-      unreachable!("snapshotting!")
+    struct Permissions;
+    impl deno_web::TimersPermission for Permissions {
+        fn allow_hrtime(&mut self) -> bool {
+            unreachable!("snapshotting!")
+        }
+
+        fn check_unstable(&self, _state: &deno_core::OpState, _api_name: &'static str) {
+            unreachable!("snapshotting!")
+        }
     }
 
-    fn check_unstable(&self, _state: &deno_core::OpState, _api_name: &'static str) {
-      unreachable!("snapshotting!")
-    }
-  }
+    // Initialize a runtime instance
+    let mut runtime = JsRuntime::new(RuntimeOptions {
+        extensions: vec![
+            deno_webidl::init(),
+            deno_url::init(),
+            deno_tls::init(),
+            deno_web::init::<Permissions>(deno_web::BlobStore::default(), Default::default()),
+            deno_console::init(),
+            deno_crypto::init(None),
+            // custom extension
+            ext,
+        ],
+        // startup_snapshot: Some(deno_isolate_init()),
+        ..Default::default()
+    });
 
-  // Initialize a runtime instance
-  let mut runtime = JsRuntime::new(RuntimeOptions {
-    extensions: vec![
-      deno_webidl::init(),
-      deno_url::init(),
-      deno_tls::init(),
-      deno_web::init::<Permissions>(
-        deno_web::BlobStore::default(),
-        Default::default(),
-      ),
-      deno_console::init(),
-      deno_crypto::init(None),
-      // custom extension
-      ext,
-    ],
-    // startup_snapshot: Some(deno_isolate_init()),
-    ..Default::default()
-  });
-
-  // Now we see how to invoke the op we just defined. The runtime automatically
-  // contains a Deno.core object with several functions for interacting with it.
-  // You can find its definition in core.js.
-  runtime
-    .execute_script(
-      "<usage>",
-      // r#"
-      // Deno.core.print("okokokokoko!")
-      // "#,
-      r#"
+    // Now we see how to invoke the op we just defined. The runtime automatically
+    // contains a Deno.core object with several functions for interacting with it.
+    // You can find its definition in core.js.
+    runtime
+        .execute_script(
+            "<usage>",
+            // r#"
+            // Deno.core.print("okokokokoko!")
+            // "#,
+            r#"
       // Print helper function, calling Deno.core.print()
       function print(...args) {
         Deno.core.print(args.join(" ") + "\n");
@@ -101,8 +98,8 @@ pub fn bootstrap_deno_core() {
         console.error(e);
       }
       "#,
-    )
-    .unwrap();
+        )
+        .unwrap();
 
-  // let snapshot: &[u8] = runtime.snapshot();
+    // let snapshot: &[u8] = runtime.snapshot();
 }

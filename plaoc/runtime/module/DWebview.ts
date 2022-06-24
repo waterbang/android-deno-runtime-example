@@ -1,12 +1,14 @@
+import { callDeno } from "../../deno/fn.type";
 import { Deno } from "../../deno/index";
 
 const deno = new Deno();
 export class DWebview {
-  url: URL | undefined;
-  constructor() {}
+  url!: string;
+  constructor(id: string) {
+    this.url = `https://${id}.dweb`;
+  }
 
   onRequest(url: string) {
-    console.log("请求的是：", url);
     return fetch(url)
       .then((response) => response.text())
       .then(function (responseData) {
@@ -15,7 +17,7 @@ export class DWebview {
       });
   }
 
-  activity() {
-    // deno.callFunction(callDeno.openDWebView);
+  activity(entry: string) {
+    deno.callFunction(callDeno.openDWebView, entry);
   }
 }

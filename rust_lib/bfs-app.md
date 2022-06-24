@@ -23,9 +23,9 @@
 
 
     // bfs-app.js
-    import { } from 'xxxx'
+    import { DWebview } from 'xxxx'
 
-    const webview = new Webview();
+    const webview = new DWebview();
 
     const workerApp = new Worker(module{
       const windows = await webview.getWindows()

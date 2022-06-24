@@ -17,7 +17,7 @@ pub struct Client {
     pub function: Vec<String>,
     pub sender: Option<mpsc::UnboundedSender<std::result::Result<Message, warp::Error>>>,
 }
-// 添加一个全局变量来缓存回调对象
+// 添加一个全局变量来缓存回调对象，存储js端注册的信息
 lazy_static! {
     // clients
   pub(crate) static ref CLIENTS: Clients = Arc::new(RwLock::new(HashMap::new()));

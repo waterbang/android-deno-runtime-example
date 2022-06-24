@@ -2,10 +2,12 @@ package org.bfchain.rust.example.webView.urlscheme
 
 import android.content.res.AssetManager
 import android.content.res.Resources
+import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import androidx.compose.runtime.Stable
+import org.bfchain.rust.example.webView.gateWay
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
@@ -23,6 +25,8 @@ data class UrlState(
     val isRedirect: Boolean,
     val isForMainFrame: Boolean,
 )
+
+private const val TAG = "URL_STATE"
 
 class CustomUrlScheme(
     val scheme: String,
@@ -65,8 +69,8 @@ class CustomUrlScheme(
         }
     }
 
-    fun isMatch(req: WebResourceRequest) =
-        req.url.scheme == scheme && req.url.host == host
+    fun isMatch(req: WebResourceRequest) = req.url.scheme == scheme && req.url.host == host
+
 
     /**
      * @TODO 增加跨域白名单的配置功能
@@ -92,6 +96,10 @@ class CustomUrlScheme(
             isRedirect = req.isRedirect,
             isForMainFrame = req.isForMainFrame,
         )
+        Log.d(TAG, "handleRequest urlMimeType: $urlMimeType")
+        Log.d(TAG, "handleRequest urlEncoding: $urlEncoding")
+        Log.d(TAG, "handleRequest urlExt: $urlExt")
+        Log.d(TAG, "handleRequest: $req")
         val responseBodyStream = requestHandler.onRequest(urlState)
             ?: return WebResourceResponse(
                 urlMimeType, urlEncoding, 404, "Resource No Found", mapOf(),
@@ -123,6 +131,7 @@ fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): Requ
         override fun onRequest(urlState: UrlState): InputStream? {
             val uri = URI(urlState.href)
             val urlPath = Path(basePath, uri.path).toString()
+            Log.d(TAG, "onRequest: $urlPath")
             // 使用 context.assets.open 来读取文件
             var inputStream = openInputStream(urlPath)
             // 判断 isFile，不是的话就看 isDirectory，如果是的话就尝试访问 index.html

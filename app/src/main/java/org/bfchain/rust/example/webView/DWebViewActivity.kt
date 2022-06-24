@@ -107,17 +107,22 @@ private fun NavFun(activity: ComponentActivity) {
                     uriPattern = "dweb://{url}"
                 })
             ) { entry ->
+                // 请求文件路径
                 var urlStr = entry.arguments?.getString("url")
                     .let { it -> URLDecoder.decode(it, "UTF-8") }
-                    ?: "file:///android_asset/demo.html"
+                    ?: "file:///android_asset/index.html"
                 var customUrlScheme: CustomUrlScheme? = null
+
                 // 内建应用的路径
-                val internalAppFilePathPrefix = "file:///android_asset/app/"
+                val internalAppFilePathPrefix = "file:///android_asset/app"
+                Log.d(TAG, "NavFun: ${urlStr.startsWith(internalAppFilePathPrefix)}")
+                // 如果是内建应用发来的数据
                 if (urlStr.startsWith(internalAppFilePathPrefix)) {
+                    // 拿到发送请求的文件名 index.html
                     val host = Path(urlStr.substring(internalAppFilePathPrefix.length)).getName(0)
                         .toString()
                     val assetBasePath = "app/$host/"
-
+                    // 设置规则
                     customUrlScheme = CustomUrlScheme(
                         "dweb", host,
                         requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)

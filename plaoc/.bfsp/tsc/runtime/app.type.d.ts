@@ -12,7 +12,13 @@ declare global {
             defaultEntry: string;
             entryResourceMap: Map<string, ManifestEntry>;
         }
-        type TLinker = ScriptModule | FileModule | DWebview | string;
+        type TLinker = ScriptModule | FileModule | DWebview | String;
+        interface ILinker {
+            script: ScriptModule;
+            file: FileModule;
+            dwebview: DWebview;
+            url: string;
+        }
         type module_fn = {
             [fn: string]: Function;
         };

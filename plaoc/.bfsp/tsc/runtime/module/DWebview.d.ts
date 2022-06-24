@@ -1,6 +1,6 @@
 export declare class DWebview {
-    url: URL | undefined;
-    constructor();
+    url: string;
+    constructor(id: string);
     onRequest(url: string): Promise<string>;
-    activity(): void;
+    activity(entry: string): void;
 }

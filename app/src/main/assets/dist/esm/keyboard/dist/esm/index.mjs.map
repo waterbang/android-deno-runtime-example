@@ -1,0 +1,1 @@
+{"version":3,"file":"index.mjs","sources":["../../../../../../keyboard/dist/esm/index.mjs"],"sourcesContent":["import { BfcsKeyboard } from \"./bfcsKeyboard_android.mjs\";\ncustomElements.define(\"dweb-keyboard\", BfcsKeyboard);\n//# sourceMappingURL=index.mjs.map\n"],"names":[],"mappings":";AACA,eAAe,OAAO,iBAAiB,YAAY;"}

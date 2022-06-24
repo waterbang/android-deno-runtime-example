@@ -2,9 +2,9 @@ import { getWebSocket } from "../gateway/index.mjs";
 class Deno {
   constructor() {
   }
-  async callFunction(handleFn) {
+  async callFunction(handleFn, data) {
     const webSockets = await getWebSocket();
-    return webSockets.sendData(handleFn);
+    return webSockets.sendData(handleFn, data);
   }
 }
 export { Deno };

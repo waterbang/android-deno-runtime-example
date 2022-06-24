@@ -116,12 +116,14 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-material:$accompanist_version")
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanist_version")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
+    // 序列化反序列化
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.13.+"
 }
 
 
 def rustBasePath = "../rust_lib"
 def archTriplets = [
-//        'arm64-v8a': 'aarch64-linux-android',
+        'arm64-v8a': 'aarch64-linux-android',
 //        'armeabi-v7a': 'armv7-linux-androideabi',
 ]
 

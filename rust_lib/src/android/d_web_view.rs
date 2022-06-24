@@ -24,7 +24,7 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_openWebView(
             .with_tag("myrust::web_socket"),
     );
     log::info!("i am web_socket");
-    let s = String::from("openDWebView");
+    let s = String::from("hello_runtime.html");
     let response = env.new_string(&s).expect("Couldn't create java string!");
     env.call_method(
         callback,

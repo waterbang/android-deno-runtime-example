@@ -31,7 +31,7 @@ import org.bfchain.rust.example.webView.openDWebWindow
 
 
 //var start_zzzz: (() -> Unit)? = null
-val callable_map = mutableMapOf<String, () -> Unit>()
+val callable_map = mutableMapOf<String, (data: String) -> Unit>()
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,7 +49,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         callable_map["openScanner"] = { openScannerActivity() }
-        callable_map["openDWebView"] = { openDWebViewActivity() }
+        callable_map["openDWebView"] = {
+            openDWebViewActivity(it)
+        }
+
         // Navigator
 //        callable_map["setNavigationBarColor"] = { SystemUiFFI().setNavigationBarColor() }
         // 启动Deno服务
@@ -176,11 +179,12 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun openDWebViewActivity() {
-        LogUtils.d("启动了DWebView")
+    fun openDWebViewActivity(url: String = "/hello_runtime.html") {
+        LogUtils.d("启动了DWebView:$url")
+
         openDWebWindow(
             activity = getContext(),
-            url = "file:///android_asset/hello_runtime.html"
+            url = "file:///android_asset/$url" //  先这样实现，不安全的拼接方法
         )
     }
 

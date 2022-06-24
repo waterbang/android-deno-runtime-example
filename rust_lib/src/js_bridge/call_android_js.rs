@@ -6,7 +6,7 @@ use std::{
     collections::HashMap,
     sync::{mpsc, Arc},
 };
-
+#[allow(dead_code)]
 pub struct HandleFunction {
     fun_type: Vec<String>,
     pub sender: Arc<Sender<&'static str>>,

@@ -41,7 +41,7 @@ pub async fn publish_handler(body: Event, clients: Clients) -> Result<impl Reply
 
     Ok(StatusCode::OK)
 }
-/// 注册
+/// 注册客户端，默认给了启动DwebView的方法
 pub async fn register_handler(body: RegisterRequest, clients: Clients) -> Result<impl Reply> {
     let public_key = body.public_key;
     let uuid = Uuid::new_v4().simple().to_string();
@@ -51,7 +51,7 @@ pub async fn register_handler(body: RegisterRequest, clients: Clients) -> Result
         url: format!("ws://127.0.0.1:8000/ws/{}", uuid),
     }))
 }
-// 注册客户端，默认给了启动DwebView的方法
+
 async fn register_client(id: String, public_key: String, clients: Clients) {
     clients.write().await.insert(
         id,

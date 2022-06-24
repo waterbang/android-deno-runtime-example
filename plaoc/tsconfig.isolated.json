@@ -34,8 +34,9 @@
     "./runtime/module/DWebview.ts",
     "./runtime/module/File.ts",
     "./runtime/module/Script.ts",
-    "./runtime/util/EventEmitter.ts",
-    "./runtime/util/proxy/hook.ts",
-    "./runtime/util/proxy/proxy.ts"
+    "./util/EventEmitter.ts",
+    "./util/proxy/proxy.ts",
+    "./util/proxy/hook.ts",
+    "./util/common.ts"
   ]
 }

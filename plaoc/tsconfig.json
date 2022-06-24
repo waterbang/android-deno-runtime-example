@@ -27,6 +27,10 @@
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleSuffixes": [
+      "#android",
+      ""
+    ],
     "outDir": ".bfsp/tsc",
     "paths": {
       "#plugin/navigation/builder": [

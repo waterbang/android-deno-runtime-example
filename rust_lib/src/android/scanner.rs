@@ -52,5 +52,6 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_getScanni
         public_key: Some(public_key),
         message: scannerData,
     };
+    // 告知js扫码的数据
     web_socket::handler::publish_handler(body, web_socket::CLIENTS.clone()).await;
 }

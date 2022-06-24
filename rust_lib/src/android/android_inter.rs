@@ -200,6 +200,8 @@ unsafe fn register_natives(jvm: &JavaVM, class_name: &str, methods: &[NativeMeth
     }
 }
 
+
+
 /// 回调 Callback 对象的 { void handleCallback(string: String) } 函数
 pub fn call_java_callback(fun_type: &'static str) {
     android_logger::init_once(
@@ -262,60 +264,35 @@ where
     }
 }
 
+// fn rust_result_to_java_result<'e, T>(
+//     env: &JNIEnv<'e>,
+//     result: anyhow::Result<T>,
+// ) -> JObject<'e>
+// where
+//     T: Display,
+// {
+//     let (is_ok, value) = match result {
+//         Ok(v) => (true, format!("{}", v)),
+//         Err(e) => (false, format!("{:?}", e)),
+//     };
+//     create_java_result(env, is_ok, value)
+// }
+// fn actually_do_stuff<'a>(
+//     env: JNIEnv<'a>,
+//     code: JString,
+// ) -> anyhow::Result<String>
+// {
+//     let code = String::from(env.get_string(code)?);
+//     let intermediate_value = some_rust_function(code)?;
+//     other_rust_function(intermediate_value)
+// }
+// /// 可以返回我想要的任何类型的 Result，并将其转换为 Java 类的实例以供 Java 代码使用。
 // #[no_mangle]
-// #[allow(non_snake_case)]
-// pub extern "system" fn Java_org_bfchain_rust_example_DenoService_handleCallback(
-//     env: JNIEnv,
-//     _context: JObject,
-//     callback: JObject,
-// ) {
-//     android_logger::init_once(
-//         Config::default()
-//             .with_min_level(Level::Debug)
-//             .with_tag("myrust::handleCallback"),
-//     );
-//     log::info!("i am web_socket xxxxxxx1");
-
-//     // 创建一个全局引用,
-//     let callback = env.new_global_ref(JObject::from(callback)).unwrap();
-
-//     // 添加到全局缓存
-//     let mut ptr_fn = JNI_CALLBACK.lock().unwrap();
-//     *ptr_fn = Some(callback);
-
-//     // let mut call_back = move |fun_type: &_| {
-//     //     let s = String::from(fun_type);
-//     //     let response = &env.new_string(s).expect("Couldn't create java string!");
-//     //     &env.call_method(
-//     //         &global_callback,
-//     //         "handleCallback",
-//     //         "(Ljava/lang/String;)V",
-//     //         &[JValue::from(&JObject::from(response))],
-//     //     )
-//     //     .unwrap();
-//     // };
-
-//     // log::info!("xxxxxxx received{:?}", call_back("openScanner"));
-//     // call_back("openDWebView");
-//     // thread::spawn(|| loop {
-//     //     log::info!("hahahaha");
-//     //     let (tx, rx) = mpsc::channel();
-
-//     //     let fun_type = rx.recv();
-//     //     match fun_type {
-//     //         Ok(s) => {
-//     //             call_back(s);
-//     //         }
-//     //         Err(e) => println!("fund RecvError{:?}", e),
-//     //     }
-//     // });
-//     // call_android_js::AndroidCallback::save_fn(Box::new(call_back), Some("openDWebView"));
-
-//     // call_android_js::CALL_ANDROID = Some(Box::leak(Box::new(call_back)));
-//     // call_back(call_android_js::FUN_TYPE.lock());✅
-
-//     // let call_fun = handle_function::new();
-//     // run web Socket
-//     // let mut rt = tokio::runtime::Runtime::new().unwrap();
-//     // rt.block_on(web_socket::start());
+// pub extern "C" fn Java_com_startup_hip_RustCode_doStuff<'a>(
+//     env: JNIEnv<'a>,
+//     _class: JClass,
+//     code: JString,
+// ) -> JObject<'a>
+// {
+//     rust_result_to_java_result(actually_do_stuff(env, code))
 // }

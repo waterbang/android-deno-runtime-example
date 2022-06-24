@@ -6,33 +6,27 @@ import android.os.Build
 import android.os.Message
 import android.util.Log
 import android.webkit.*
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.bfchain.rust.example.webView.bottombar.BottomBarFFI
 import org.bfchain.rust.example.webView.bottombar.BottomBarState
 import org.bfchain.rust.example.webView.bottombar.DWebBottomBar
 import org.bfchain.rust.example.webView.dialog.*
 import org.bfchain.rust.example.webView.jsutil.JsUtil
-import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
 import org.bfchain.rust.example.webView.navigator.NavigatorFFI
 import org.bfchain.rust.example.webView.systemui.SystemUIState
 import org.bfchain.rust.example.webView.systemui.SystemUiFFI
@@ -362,6 +356,17 @@ fun DWebView(
                             request: WebResourceRequest?
                         ): WebResourceResponse? {
                             Log.i(ITAG, "Intercept Request: ${request?.url}")
+                            Log.i(
+                                ITAG,
+                                "Intercept scheme: ${request?.url?.scheme} ==== ${customUrlScheme?.scheme}"
+                            )
+                            Log.i(
+                                ITAG,
+                                "Intercept host: ${request?.url?.host} ====  ${customUrlScheme?.host}"
+                            )
+//                            if (request?.url !== null) {
+//                                return gateWay(request)
+//                            }
                             if (request !== null && customUrlScheme?.isMatch(request) == true) {
                                 return customUrlScheme.handleRequest(request)
                             }

@@ -3,20 +3,23 @@ package org.bfchain.rust.example
 import android.app.IntentService
 import android.content.Intent
 import android.util.Log
-import com.google.gson.Gson
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.ObjectMapper
 
 
 private const val TAG = "DENO_SERVICE"
 
 // 这里当做一个连接池，每当有客户端传过来方法就注册一下，返回的时候就知道数据是谁要的了 <public_key,handleFunction>
 val rust_call_map = mutableMapOf<String, String>()
+val mapper = ObjectMapper()
 
 class DenoService : IntentService("DenoService") {
 
     companion object {
-        // 加载rust编译的so
         init {
+            // 加载rust编译的so
             System.loadLibrary("rust_lib")
+
         }
     }
 
@@ -34,6 +37,7 @@ class DenoService : IntentService("DenoService") {
         scannerData: String,
         public_key: String? = rust_call_map["openScanner"]
     )
+
 //    external fun helloDenoRuntime(assets: AssetManager)
 //    external fun initialiseLogging()
 
@@ -50,30 +54,31 @@ class DenoService : IntentService("DenoService") {
         nativeSetCallback(object : IHandleCallback {
             override fun handleCallback(callHandle: String) {
                 Log.d("handleCallback", "now rust says:$callHandle")
-                val handle = Gson().fromJson(callHandle, RustHandle::class.java)
+//                Gson().fromJson(callHandle, RustHandle::class.java)
+                //允许使用未带引号的字段名
+                mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+                //允许使用单引号
+                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+                val handle = mapper.readValue(callHandle, RustHandle::class.java)
                 // 存一下public_key，返回数据的时候才知道给谁
                 rust_call_map[(handle.function?.get(0)).toString()] = (handle.public_key).toString()
                 // 执行函数
-                callable_map[handle.function?.get(0)]?.let { it() }.apply { handle.data }
+                callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
             }
         })
         // 独立启动webView和web Socket
         openWebView(object : IOpenWebView {
-            override fun webViewCallback(callName: String) {
-                Log.d("webViewCallback", "now rust webViewCallback says:$callName")
-                callable_map[callName]?.let { it() }
+            override fun webViewCallback(view: String) {
+                Log.d("webViewCallback", "now rust webViewCallback says:$view")
+                callable_map["openDWebView"]?.let { it(view) }
             }
         })
     }
 }
 
-class RustHandle {
-    var function: Array<String>? = null
-    var public_key: String? = null
+data class RustHandle(
+    var function: Array<String>? = null,
+    var public_key: String? = null,
     var data: String? = null
-
-    override fun toString(): String {
-        return "{public_key=$public_key,function=$function,data=$data}"
-    }
-}
+)
 

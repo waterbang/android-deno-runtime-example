@@ -46,13 +46,13 @@ export class WebSockets {
     return state;
   }
 
-  sendData(fun: string) {
+  sendData(fun: string, data?: string) {
     // 携带函数和自己的公钥，不然返回数据是异步的，不知道给谁
-    let val = `{"function":["${fun}"],"public_key":"${this.public_key}","data":"''"}`;
+    let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":"'${data}'"}`;
     if (fun == undefined) {
       throw new Error("的传递websocket消息为空");
     }
-    console.log("sendData:", fun);
+    console.log("sendData:", val);
     return new Promise(async (resolve, reject) => {
       this.ws.send(val);
       // 设置超时时间
@@ -89,7 +89,7 @@ export class WebSockets {
           break;
         }
         index++;
-        await sleep(500); // 不要太快发请求
+        await sleep(10); // 不要太快发请求
       } while (index <= 10);
       reject("连接超时");
     });

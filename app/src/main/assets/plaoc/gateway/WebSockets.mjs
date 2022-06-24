@@ -33,12 +33,12 @@ class WebSockets {
     let state = this.ws.readyState;
     return state;
   }
-  sendData(fun) {
-    let val = `{"function":["${fun}"],"public_key":"${this.public_key}","data":"''"}`;
+  sendData(fun, data) {
+    let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":"'${data}'"}`;
     if (fun == void 0) {
       throw new Error("\u7684\u4F20\u9012websocket\u6D88\u606F\u4E3A\u7A7A");
     }
-    console.log("sendData:", fun);
+    console.log("sendData:", val);
     return new Promise(async (resolve, reject) => {
       this.ws.send(val);
       let timer = setTimeout(() => {
@@ -66,7 +66,7 @@ class WebSockets {
           break;
         }
         index++;
-        await sleep(500);
+        await sleep(10);
       } while (index <= 10);
       reject("\u8FDE\u63A5\u8D85\u65F6");
     });

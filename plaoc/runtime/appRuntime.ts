@@ -1,23 +1,29 @@
+import { getExtension } from "../util/common";
 import { DWebview } from "./module/DWebview";
 import { FileModule } from "./module/File";
 import { ScriptModule } from "./module/Script";
 
 export class AppRuntime {
-  app_root: string | URL | undefined;
-  constructor(app_root: string) {
-    app_root;
+  app_root!: string;
+  appId!: string;
+  constructor(appId: string, app_root: string) {
+    this.app_root = app_root;
+    this.appId = appId;
   }
-  inker(spe: string): runtime.TLinker {
-    if (spe === "node:bnrtc") {
+  inker(): runtime.TLinker {
+    if (this.app_root === "node:bnrtc") {
       return new ScriptModule("code", "node:bnrtc");
     }
-    if (spe.startsWith("./")) {
-      return new FileModule(new URL(spe, this.app_root));
+    // 如果是html
+    if (getExtension(this.app_root) == "html") {
+      return new DWebview(this.appId);
     }
-    if (spe === "dwebview") {
-      return new DWebview();
+    if (this.app_root.startsWith("File:///")) {
+      return new FileModule(
+        new URL(this.app_root, `https://${this.appId}.dweb`)
+      );
     }
-    return `dweb://${spe}`;
+    return `https://${this.appId}.dweb`;
   }
 
   // const scriptUrl = worker.module_loader({

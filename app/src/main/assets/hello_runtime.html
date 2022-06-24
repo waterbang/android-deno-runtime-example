@@ -1,15 +1,35 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <title>测试</title>
+   <meta charset="utf-8">
+   <title>测试</title>
+   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+   <script type="module" src="./plaoc/index.mjs"></script>
 </head>
+
 <body>
-<fieldset>
-    <button onclick="callAndroid('JS调用了android中的hello方法')" type="button">点击调用Android代码</button>
-    <button onclick="onCallAndroid()" type="button">Android调用JS</button>
-    <script>
-         function callAndroid(msg){
+   <fieldset>
+      <h1>启动内建app</h1>
+      <button onclick="navTo('./app/bfchain.dev/index.html')" type="button">启动app.bfchain.dev</button>
+      <!--      <button onclick="callAndroid('JS调用了android中的hello方法')" type="button">点击调用Android代码</button>-->
+      <!--      <button onclick="onCallAndroid()" type="button">Android调用JS</button>-->
+      <script type="module">
+         import { openDWebView } from "./plaoc/index.mjs";
+         window.navTo = function navTo(url) {
+            console.log(url)
+            openDWebView()
+            // installApp({
+            //    id: "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj",
+            //    name: "defaultApp",
+            //    versionCode: 1,
+            //    minBfsVersionCode: 1,
+            //    defaultEntry: url,
+            //    entryResourceMap: entryMap,
+            // });
+
+         }
+         function callAndroid(msg) {
             Android_nav.showToast(msg);
          }
 
@@ -17,98 +37,113 @@
             Android_nav.onBackPressed();
          }
 
-         function onBackPressed(){
-            let con = confirm( "Android调用JS，确定要关闭页面?" ); //在页面上弹出对话框
-            console.log("Con ===============> ",con);
-            if (con == true ) Android_nav.finishActivity();
+         function onBackPressed() {
+            let con = confirm("Android调用JS，确定要关闭页面?"); //在页面上弹出对话框
+            console.log("Con ===============> ", con);
+            if (con == true) Android_nav.finishActivity();
             return "JS的返回值，Android可以接收到"
          }
-
-
-
-    </script>
-</fieldset>
-<fieldset>
-    <h1>websockets简单示例</h1><br>
-    <div id="message"></div>
-    <div>
-        <button id="connect" onclick="connect()">建立连接</button>
-        <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
-        <br>
-        <button onclick='sendData("openScanner")'>启动二维码扫描</button>
-        <button onclick='sendData("openDWebView")'>启动webView</button>
-    </div>
-    <script type="text/javascript">
-      let websockets;
-      let statusArr = [
-         { state: 0, value: '正在连接' },
-         { state: 1, value: '已建立连接' },
-         { state: 2, value: '正在关闭连接' },
-         { state: 3, value: '已关闭连接' },
-      ]
-      function getResponse(url="http://127.0.0.1:8000/register") {
-         return  fetch(url, {
-            method: 'POST',
-            headers: {
-               "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ "public_key": "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj" })
+      </script>
+   </fieldset>
+   <fieldset>
+      <h1>websockets简单示例</h1><br>
+      <div id="message"></div>
+      <div>
+         <button id="connect" onclick="connect()">建立连接</button>
+         <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
+         <br>
+         <button onclick='sendData("openScanner")'>启动二维码扫描</button>
+         <button onclick='sendData("openDWebView")'>启动webView</button>
+      </div>
+      <script type="text/javascript">
+         let websockets;
+         let statusArr = [
+            { state: 0, value: '正在连接' },
+            { state: 1, value: '已建立连接' },
+            { state: 2, value: '正在关闭连接' },
+            { state: 3, value: '已关闭连接' },
+         ]
+         function getResponse(url = "http://127.0.0.1:8000/register") {
+            return fetch(url, {
+               method: 'POST',
+               headers: {
+                  "Content-Type": "application/json",
+               },
+               body: JSON.stringify({ "public_key": "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj" })
             })
-            .then(response => response.json())
-            .then(function (responseData) {
-               console.log(JSON.stringify(responseData));
-            return responseData;
-            });
+               .then(response => response.json())
+               .then(function (responseData) {
+                  console.log(JSON.stringify(responseData));
+                  return responseData;
+               });
          }
-      async function connect() {
-         const res =  await getResponse();
-         websockets = new WebSocket(res.url);
-         websockets.onopen = (event) => socketChange();
-         websockets.onmessage = (res) => {
-            document.querySelector("#message").innerHTML += `<p>接收数据: ${res.data}</p>`
-         }
-         websockets.onclose = (event) => socketChange();
-      }
-      function socketChange() {
-         let state = websockets.readyState;
-         let val = statusArr.map((item) => {
-            if (item.state == state) {
-               return item.value
+         async function connect() {
+            const res = await getResponse();
+            websockets = new WebSocket(res.url);
+            websockets.onopen = (event) => socketChange();
+            websockets.onmessage = (res) => {
+               document.querySelector("#message").innerHTML += `<p>接收数据: ${res.data}</p>`
             }
-         });
-         document.querySelector("#message").innerHTML += `<p>当前的socket连接状态是: ${val}</p>`
-      }
-      function sendData(fun) {
-         let val = `{"function":["${fun}"]}`
-         if (val == "" || val == undefined) {
-            document.querySelector("#message").innerHTML += "<p>发送数据为空，请填写完成后再发送！</p>";
-            return;
+            websockets.onclose = (event) => socketChange();
          }
-         websockets.send(val);
-         document.querySelector("#message").innerHTML += `<p>发送数据:${val}</p>`;
-      }
-      function closeConnect() {
-         websockets.close();
-      }
-    </script>
-</fieldset>
+         function socketChange() {
+            let state = websockets.readyState;
+            let val = statusArr.map((item) => {
+               if (item.state == state) {
+                  return item.value
+               }
+            });
+            document.querySelector("#message").innerHTML += `<p>当前的socket连接状态是: ${val}</p>`
+         }
+         function sendData(fun) {
+            let val = `{"function":["${fun}"],"public_key": "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj","data":"'dweb://appid'"}`;
+            if (val == "" || val == undefined) {
+               document.querySelector("#message").innerHTML += "<p>发送数据为空，请填写完成后再发送！</p>";
+               return;
+            }
+            websockets.send(val);
+            document.querySelector("#message").innerHTML += `<p>发送数据:${val}</p>`;
+         }
+         function closeConnect() {
+            websockets.close();
+         }
 
-<fieldset>
-   <h2>拦截dweb://请求测试</h2>
-   <div id="response"></div>
-   <button id="request" onclick="testUrl()">建立连接</button>
-   <script type="text/javascript">
-      async function testUrl() {
-         let msg = await getResponse('http://aa/');
-         document.getElementById('response').innerHTML += `拦截结果：${msg}`
-      }
-   </script>
-</fieldset>
-<fieldset>
-   <h2>从android拿回数据</h2>
-   <div id="navigator"></div>
-   <dweb-navigator onCreate="callAndroid('dweb-navigator')"></dweb-navigator>
-   <script type="module" src="./plaoc/index.mjs"></script>
-</fieldset>
+      </script>
+   </fieldset>
+
+   <fieldset>
+      <h2>拦截https://appName.Address.dweb请求测试</h2>
+      <div id="response"></div>
+      <button id="request" onclick="testUrl('http://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb')">
+         建立http连接
+      </button>
+      <button id="request" onclick="testUrl('https://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb')">
+         建立https连接
+      </button>
+      <script type="text/javascript">
+         async function testUrl(url) {
+            let msg = await onClick(url);
+            document.getElementById('response').innerHTML += `拦截结果：${msg}`
+         }
+         function onClick(url) {
+            axios.get(url)
+               .then((response) => {
+                  // handle success
+                  console.log('sucess onClick', response);
+                  return response;
+               }).catch((e) => {
+                  console.log('error onClick', e.message);
+               })
+         }
+
+      </script>
+   </fieldset>
+   <fieldset>
+      <h2>从android拿回数据</h2>
+      <div id="navigator"></div>
+      <dweb-navigator onCreate="callAndroid('dweb-navigator')"></dweb-navigator>
+      <script src="./plaoc/index.mjs" type="module"></script>
+   </fieldset>
 </body>
+
 </html>

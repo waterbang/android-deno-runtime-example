@@ -1,5 +1,3 @@
-use std::fmt;
-
 use crate::js_bridge::call_android_js;
 use crate::web_socket::{Client, Clients};
 use android_logger::Config;
@@ -7,9 +5,11 @@ use futures::{FutureExt, StreamExt};
 use log::Level;
 use serde::Deserialize;
 use serde_json::from_str;
+use std::fmt;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use warp::ws::{Message, WebSocket};
+
 #[derive(Deserialize, Debug)]
 pub struct TopicsRequest {
     pub function: Vec<String>,
@@ -27,6 +27,7 @@ impl fmt::Display for TopicsRequest {
     }
 }
 
+#[allow(dead_code)]
 pub async fn client_connection(ws: WebSocket, id: String, clients: Clients, mut client: Client) {
     let (client_ws_sender, mut client_ws_rcv) = ws.split();
     let (client_sender, client_rcv) = mpsc::unbounded_channel();
@@ -57,7 +58,7 @@ pub async fn client_connection(ws: WebSocket, id: String, clients: Clients, mut 
     clients.write().await.remove(&id);
     println!("{} disconnected", id);
 }
-
+#[allow(dead_code)]
 async fn client_msg(id: &str, msg: Message, clients: &Clients) {
     android_logger::init_once(
         // 生产环境记得删除
