@@ -96,7 +96,7 @@
             document.querySelector("#message").innerHTML += `<p>当前的socket连接状态是: ${val}</p>`
          }
          function sendData(fun) {
-            let val = `{"function":["${fun}"],"public_key": "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj","data":"'dweb://appid'"}`;
+            let val = `{"function":["${fun}"],"public_key": "'bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj'","data":"'dweb://appid'"}`;
             if (val == "" || val == undefined) {
                document.querySelector("#message").innerHTML += "<p>发送数据为空，请填写完成后再发送！</p>";
                return;

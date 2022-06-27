@@ -71,7 +71,7 @@ fun DWebView(
     val doBack = state.content.getCurrentUrl()?.endsWith(LEAVE_URI_SYMBOL) == true
     BackHandler(
         // 如果要执行doBack，那么要禁用拦截
-        !doBack
+        doBack
                 // 如果有js上下文
                 and
                 (jsUtil != null)

@@ -1,20 +1,27 @@
 package org.bfchain.rust.example.webView.topbar
 
 
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import org.bfchain.rust.example.webView.icon.DWebIcon
 import org.bfchain.rust.example.webView.jsutil.JsUtil
 import org.bfchain.rust.example.webkit.AdWebViewState
 
+private const val TAG = "TOPBAR_UI"
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DWebTopBar(
     jsUtil: JsUtil?,
@@ -98,14 +105,15 @@ fun DWebTopBar(
             .onGloballyPositioned { coordinates ->
                 topBarState.height.value = coordinates.size.height / localDensity.density
             }
-//                .pointerInteropFilter { event ->
-//                    Log.i(TAG, "filter TopAppBar event $event")
-//
-//                    // false 会穿透，在穿透后，返回按钮也能点击了
-//                    // true 不会穿透，但是返回按钮也无法点击了
-//                    false
-//                }.clickable {
-//                    Log.i(TAG, "Clicked TopAppBar")
-//                }
+            .pointerInteropFilter { event ->
+                Log.i(TAG, "filter TopAppBar event $event")
+
+                // false 会穿透，在穿透后，返回按钮也能点击了
+                // true 不会穿透，但是返回按钮也无法点击了
+                false
+            }
+            .clickable {
+                Log.i(TAG, "Clicked TopAppBar")
+            }
     )
 }

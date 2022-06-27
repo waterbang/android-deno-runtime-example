@@ -28,6 +28,7 @@ import org.bfchain.rust.example.lib.drawRect
 import org.bfchain.rust.example.webView.DWebViewActivity
 import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
 import org.bfchain.rust.example.webView.openDWebWindow
+import java.util.regex.Pattern
 
 
 //var start_zzzz: (() -> Unit)? = null
@@ -181,10 +182,11 @@ class MainActivity : AppCompatActivity() {
 
     fun openDWebViewActivity(url: String = "/hello_runtime.html") {
         LogUtils.d("启动了DWebView:$url")
-
+        // 需要在这里判断是远程的还是本地的
+        var prefix = "file:///android_asset/"
         openDWebWindow(
             activity = getContext(),
-            url = "file:///android_asset/$url" //  先这样实现，不安全的拼接方法
+            url = "$prefix$url" //  先这样实现，不安全的拼接方法
         )
     }
 
