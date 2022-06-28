@@ -3,9 +3,7 @@
     {
       "url": "/getBlockInfo",
       "header": {
-        "content-type": "application/json",
-        "StatusCode": 200,
-        "response": "hi this is getBlockInfo"
+        "method": "get",
       }
     },
     {

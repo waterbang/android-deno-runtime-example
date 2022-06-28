@@ -112,27 +112,29 @@
    </fieldset>
 
    <fieldset>
-      <h2>拦截https://appName.Address.dweb请求测试</h2>
+      <h2>拦截https://appID.dweb请求测试</h2>
       <div id="response"></div>
-      <button id="request" onclick="testUrl('http://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb')">
-         建立http连接
+      <button id="request" onclick="testUrl('/getBlockInfo')">
+         getBlockInfo
       </button>
-      <button id="request" onclick="testUrl('https://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb')">
-         建立https连接
+      <button id="request" onclick="testUrl('https://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb/getBlockHigh')">
+         getBlockHigh
       </button>
       <script type="text/javascript">
+         new URL()
          async function testUrl(url) {
             let msg = await onClick(url);
             document.getElementById('response').innerHTML += `拦截结果：${msg}`
          }
          function onClick(url) {
-            axios.get(url)
+            return axios.get(url)
                .then((response) => {
                   // handle success
-                  console.log('sucess onClick', response);
-                  return response;
+                  console.log('sucess onClick', JSON.stringify(response.data));
+                  return response.data;
                }).catch((e) => {
-                  console.log('error onClick', e.message);
+                  console.log('error onClick', JSON.stringify(e));
+                  return e
                })
          }
 

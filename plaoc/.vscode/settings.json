@@ -1,6 +1,6 @@
 {
   "files.exclude": {
-    "**/*.json": true,
+    "**/package.json": true,
     "**/.*": true,
     "**/*.log": true,
     "**/*.lock": true,

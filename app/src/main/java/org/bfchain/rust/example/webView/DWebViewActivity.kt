@@ -13,7 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,11 +27,10 @@ import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import org.bfchain.rust.example.webkit.AdWebViewHook
-import org.bfchain.rust.example.webkit.rememberAdWebViewState
 import org.bfchain.rust.example.ui.theme.RustApplicationTheme
 import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.example.webView.urlscheme.requestHandlerFromAssets
+import org.bfchain.rust.example.webkit.rememberAdWebViewState
 import java.net.URLDecoder
 import java.net.URLEncoder
 import kotlin.io.path.Path
@@ -111,10 +110,13 @@ private fun NavFun(activity: ComponentActivity) {
                 var urlStr = entry.arguments?.getString("url")
                     .let { it -> URLDecoder.decode(it, "UTF-8") }
                     ?: "file:///android_asset/index.html"
-                var customUrlScheme: CustomUrlScheme? = null
+                var customUrlScheme = CustomUrlScheme(
+                    "dweb", urlStr,
+                    requestHandlerFromAssets(LocalContext.current.assets, urlStr)
+                )
 
                 // 内建应用的路径
-                val internalAppFilePathPrefix = "file:///android_asset/app"
+                val internalAppFilePathPrefix = "file:///android_asset/app/"
                 Log.d(TAG, "NavFun: ${urlStr.startsWith(internalAppFilePathPrefix)}")
                 // 如果是内建应用发来的数据
                 if (urlStr.startsWith(internalAppFilePathPrefix)) {
@@ -159,3 +161,6 @@ fun openDWebWindow(activity: ComponentActivity, url: String) {
     }
     activity.startActivity(intent)
 }
+
+
+

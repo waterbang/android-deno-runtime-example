@@ -79,7 +79,7 @@ class CustomUrlScheme(
         req.url.scheme == scheme && req.url.host != host
 
 
-    fun handleRequest(req: WebResourceRequest): WebResourceResponse {
+    fun handleRequest(req: WebResourceRequest, url: String): WebResourceResponse {
         val urlExt = req.url.lastPathSegment?.let { filename ->
             Path(filename).extension
         } ?: ""
@@ -87,7 +87,7 @@ class CustomUrlScheme(
         val urlEncoding = getEncodingByMimeType(urlMimeType)
 
         val urlState = UrlState(
-            href = req.url.toString(),
+            href = url,
             ext = urlExt,
             mime = urlMimeType,
             encoding = urlEncoding,
@@ -99,13 +99,12 @@ class CustomUrlScheme(
         Log.d(TAG, "handleRequest urlMimeType: $urlMimeType")
         Log.d(TAG, "handleRequest urlEncoding: $urlEncoding")
         Log.d(TAG, "handleRequest urlExt: $urlExt")
-        Log.d(TAG, "handleRequest: $req")
+        Log.d(TAG, "handleRequest url: ${req.url}")
         val responseBodyStream = requestHandler.onRequest(urlState)
             ?: return WebResourceResponse(
                 urlMimeType, urlEncoding, 404, "Resource No Found", mapOf(),
                 nullInputStream
             )
-
         return WebResourceResponse(urlMimeType, urlEncoding, responseBodyStream)
     }
 
@@ -116,8 +115,10 @@ val nullInputStream by lazy { ByteArrayInputStream(byteArrayOf()) }
 //typealias  RequestHandler = (req: UrlState) -> InputStream?
 interface RequestHandler {
     fun onRequest(req: UrlState): InputStream?
+    fun onHttpRequest(req: UrlState): InputStream?
 }
 
+//
 fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): RequestHandler {
     return object : RequestHandler {
         private fun openInputStream(path: String): InputStream? {
@@ -143,6 +144,21 @@ fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): Requ
                 val indexName = fileLists.find { it == "index.html" } ?: return null
                 // 如果加上 index.html 后 isFile 仍然是 false，那么返回 null
                 return openInputStream(Path(urlPath, indexName).toString())
+            }
+            return inputStream
+        }
+
+        override fun onHttpRequest(urlState: UrlState): InputStream? {
+            val urlPath = urlState.href
+            Log.d(TAG, "onHttpRequest: $urlPath")
+            // 使用 context.assets.open 来读取文件
+            var inputStream = openInputStream(urlPath)
+            // 判断 isFile，不是的话就看 isDirectory，如果是的话就尝试访问 index.html
+            if (inputStream == null) {
+//                val fileLists = assetManager.list(urlPath) ?: return null
+
+//                val indexName = fileLists.find { it == "index.html" } ?: return null
+                // 如果加上 index.html 后 isFile 仍然是 false，那么返回 null
             }
             return inputStream
         }

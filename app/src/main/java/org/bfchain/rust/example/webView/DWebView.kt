@@ -36,7 +36,10 @@ import org.bfchain.rust.example.webView.topbar.TopBarFFI
 import org.bfchain.rust.example.webView.topbar.TopBarState
 import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.example.webkit.*
+import java.io.ByteArrayInputStream
+import java.net.HttpURLConnection
 import java.net.URI
+import java.net.URL
 import kotlin.math.min
 
 
@@ -52,7 +55,7 @@ fun DWebView(
     state: AdWebViewState,
     navController: NavController,
     activity: ComponentActivity,
-    customUrlScheme: CustomUrlScheme? = null,
+    customUrlScheme: CustomUrlScheme,
     modifier: Modifier = Modifier,
     onCreated: (AdAndroidWebView) -> Unit = {},
 ) {
@@ -351,34 +354,105 @@ fun DWebView(
                 client = remember {
                     class MyWebViewClient : AdWebViewClient() {
                         private val ITAG = "$TAG/CUSTOM-SCHEME"
+
+                        // API >= 21
+                        @SuppressLint("NewApi")
+                        @Override
                         override fun shouldInterceptRequest(
                             view: WebView?,
                             request: WebResourceRequest?
                         ): WebResourceResponse? {
                             Log.i(ITAG, "Intercept Request: ${request?.url}")
-                            Log.i(
-                                ITAG,
-                                "Intercept scheme: ${request?.url?.scheme} ==== ${customUrlScheme?.scheme}"
-                            )
-                            Log.i(
-                                ITAG,
-                                "Intercept host: ${request?.url?.host} ====  ${customUrlScheme?.host}"
-                            )
-//                            if (request?.url !== null) {
-//                                return gateWay(request)
-//                            }
-                            if (request !== null && customUrlScheme?.isMatch(request) == true) {
-                                return customUrlScheme.handleRequest(request)
+                            val url = request?.url.toString()
+//                             拦截跳过本地和远程脚本？
+                            if (request !== null && !(url.startsWith("http://127.0.0.1") || url.startsWith(
+                                    "https://unpkg.com"
+                                ))
+                            ) {
+                                try {
+                                    val connection =
+                                        URL(gateWay(url)).openConnection() as HttpURLConnection
+                                    connection.requestMethod = request.method
+                                    val statusCode = connection.responseCode
+                                    val response = connection.responseMessage
+                                    val res = connection.inputStream
+                                    Log.i(ITAG, "xxxxxxxx Request: ${connection.url}")
+                                    Log.i(ITAG, "xxxxxxxx Request: ${connection.contentType}")
+                                    Log.i(ITAG, "xxxxxxxx Request: ${connection.responseMessage}")
+                                    return WebResourceResponse(
+                                        "application/json",
+                                        "utf-8",
+                                        res
+                                    )
+                                } catch (e: java.lang.Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                            if (request !== null && customUrlScheme.isMatch(request)) {
+                                return customUrlScheme.handleRequest(
+                                    request,
+                                    request.url.toString()
+                                )
                             }
                             return super.shouldInterceptRequest(view, request)
                         }
+
+                        // API < 21
+//                        val req = object : WebResourceRequest {
+//                            @Override
+//                            override fun getUrl(): Uri {
+//                                var url = gateWay(request.url.toString())
+//                                Log.d(TAG, "xxxxxx: ${url}")
+//                                return Uri.parse(url)
+//                            }
+//
+//                            @SuppressLint("NewApi")
+//                            override fun isForMainFrame(): Boolean {
+//                                return request.isForMainFrame
+//                            }
+//
+//                            @SuppressLint("NewApi")
+//                            override fun isRedirect(): Boolean {
+//                                return request.isRedirect
+//                            }
+//
+//                            @SuppressLint("NewApi")
+//                            override fun hasGesture(): Boolean {
+//                                return request.hasGesture()
+//                            }
+//
+//                            @SuppressLint("NewApi")
+//                            override fun getMethod(): String {
+//                                return request.method
+//                            }
+//
+//                            @SuppressLint("NewApi")
+//                            override fun getRequestHeaders(): Map<String, String> {
+//                                return request.requestHeaders
+//                            }
+//                        }
+//                        override fun shouldInterceptRequest(
+//                            view: WebView?,
+//                            url: String?
+//                        ): WebResourceResponse? {
+//                            if (url != null) {
+//                                if (!(url.startsWith("http://127.0.0.1") || url.startsWith(
+//                                        "https://unpkg.com"
+//                                    ))
+//                                ) {
+//                                    return super.shouldInterceptRequest(view,
+//                                        url.let { gateWay(it) })
+//                                }
+//                            }
+//                            return super.shouldInterceptRequest(view, url)
+//                        }
 
                         override fun shouldOverrideUrlLoading(
                             view: WebView?,
                             request: WebResourceRequest?
                         ): Boolean {
                             Log.i(ITAG, "Override Url Loading: ${request?.url}")
-                            if (request !== null && customUrlScheme?.isCrossDomain(request) == true) {
+                            if (request !== null && customUrlScheme.isCrossDomain(request)) {
                                 return false
                             }
                             return super.shouldOverrideUrlLoading(view, request)

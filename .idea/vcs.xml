@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/src/main/assets/app" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plaoc" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plaoc/plugin/common" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/rust_lib" vcs="Git" />

@@ -118,6 +118,14 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
     // 序列化反序列化
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.13.+"
+    // region Networking - Okhttp
+    implementation "com.squareup.okhttp3:logging-interceptor:4.2.2"
+    // endregion
+
+    // region Networking - Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.6.2"
+    implementation "com.squareup.retrofit2:converter-gson:2.6.2"
+    // endregion
 }
 
 
