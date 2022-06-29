@@ -1,7 +1,7 @@
 {
   "name": "plaoc",
   "main": "./dist/esm/index.mjs",
-  "types": ".bfsp/tsc/index.d.ts",
+  "types": "./.bfsp/tsc/index.d.ts",
   "type": "module",
   "version": "1.0.0",
   "private": true,
@@ -10,8 +10,8 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/esm/index.mjs",
-      "types": ".bfsp/tsc/index.d.ts"
+      "types": "./.bfsp/tsc/index.d.ts",
+      "import": "./dist/esm/index.mjs"
     }
   },
   "imports": {},

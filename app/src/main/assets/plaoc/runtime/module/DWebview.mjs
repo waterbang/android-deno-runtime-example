@@ -12,7 +12,8 @@ class DWebview {
     });
   }
   activity(entry) {
-    deno.callFunction(callDeno.openDWebView, entry);
+    console.log(new URL(entry, this.url).href);
+    deno.callFunction(callDeno.openDWebView, new URL(entry, this.url).href);
   }
 }
 export { DWebview };

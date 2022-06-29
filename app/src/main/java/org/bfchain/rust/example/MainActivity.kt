@@ -180,13 +180,12 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun openDWebViewActivity(url: String = "/hello_runtime.html") {
+    fun openDWebViewActivity(url: String) {
         LogUtils.d("启动了DWebView:$url")
         // 需要在这里判断是远程的还是本地的
-        var prefix = "file:///android_asset/"
         openDWebWindow(
             activity = getContext(),
-            url = "$prefix$url" //  先这样实现，不安全的拼接方法
+            url = url
         )
     }
 

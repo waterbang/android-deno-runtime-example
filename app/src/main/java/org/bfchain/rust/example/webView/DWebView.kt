@@ -36,10 +36,7 @@ import org.bfchain.rust.example.webView.topbar.TopBarFFI
 import org.bfchain.rust.example.webView.topbar.TopBarState
 import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.example.webkit.*
-import java.io.ByteArrayInputStream
-import java.net.HttpURLConnection
 import java.net.URI
-import java.net.URL
 import kotlin.math.min
 
 
@@ -362,75 +359,30 @@ fun DWebView(
                             view: WebView?,
                             request: WebResourceRequest?
                         ): WebResourceResponse? {
+                            test()
                             Log.i(ITAG, "Intercept Request: ${request?.url}")
-                            val url = request?.url.toString()
-//                             拦截跳过本地和远程脚本？
-                            if (request !== null && !(url.startsWith("http://127.0.0.1") || url.startsWith(
-                                    "https://unpkg.com"
-                                ))
-                            ) {
-                                try {
-                                    val connection =
-                                        URL(gateWay(url)).openConnection() as HttpURLConnection
-                                    connection.requestMethod = request.method
-                                    val statusCode = connection.responseCode
-                                    val response = connection.responseMessage
-                                    val res = connection.inputStream
-                                    Log.i(ITAG, "xxxxxxxx Request: ${connection.url}")
-                                    Log.i(ITAG, "xxxxxxxx Request: ${connection.contentType}")
-                                    Log.i(ITAG, "xxxxxxxx Request: ${connection.responseMessage}")
-                                    return WebResourceResponse(
-                                        "application/json",
-                                        "utf-8",
-                                        res
-                                    )
-                                } catch (e: java.lang.Exception) {
-                                    e.printStackTrace()
+                            if (request !== null) {
+                                val url = request.url.toString()
+//                             拦截，跳过本地和远程脚本
+                                if (!(url.startsWith("http://127.0.0.1")
+                                            || url.startsWith("https://unpkg.com"))
+                                ) {
+                                    if (url.endsWith(".html")) {
+                                        return viewGateWay(customUrlScheme, request)
+                                    }
+                                    return dataGateWay(request)
                                 }
-                            }
-                            if (request !== null && customUrlScheme.isMatch(request)) {
-                                return customUrlScheme.handleRequest(
-                                    request,
-                                    request.url.toString()
-                                )
+                                if (customUrlScheme.isMatch(request)) {
+                                    return customUrlScheme.handleRequest(
+                                        request,
+                                        request.url.toString()
+                                    )
+                                }
                             }
                             return super.shouldInterceptRequest(view, request)
                         }
 
                         // API < 21
-//                        val req = object : WebResourceRequest {
-//                            @Override
-//                            override fun getUrl(): Uri {
-//                                var url = gateWay(request.url.toString())
-//                                Log.d(TAG, "xxxxxx: ${url}")
-//                                return Uri.parse(url)
-//                            }
-//
-//                            @SuppressLint("NewApi")
-//                            override fun isForMainFrame(): Boolean {
-//                                return request.isForMainFrame
-//                            }
-//
-//                            @SuppressLint("NewApi")
-//                            override fun isRedirect(): Boolean {
-//                                return request.isRedirect
-//                            }
-//
-//                            @SuppressLint("NewApi")
-//                            override fun hasGesture(): Boolean {
-//                                return request.hasGesture()
-//                            }
-//
-//                            @SuppressLint("NewApi")
-//                            override fun getMethod(): String {
-//                                return request.method
-//                            }
-//
-//                            @SuppressLint("NewApi")
-//                            override fun getRequestHeaders(): Map<String, String> {
-//                                return request.requestHeaders
-//                            }
-//                        }
 //                        override fun shouldInterceptRequest(
 //                            view: WebView?,
 //                            url: String?

@@ -17,7 +17,7 @@ function openDWebView() {
     name: "defaultApp",
     versionCode: 1,
     minBfsVersionCode: 1,
-    defaultEntry: "/app/bfchain.dev/index.html",
+    defaultEntry: "app/bfchain.dev/index.html",
     entryResourceMap: entryMap
   });
 }

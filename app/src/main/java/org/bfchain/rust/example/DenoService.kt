@@ -54,7 +54,6 @@ class DenoService : IntentService("DenoService") {
         nativeSetCallback(object : IHandleCallback {
             override fun handleCallback(callHandle: String) {
                 Log.d("handleCallback", "now rust says:$callHandle")
-//                Gson().fromJson(callHandle, RustHandle::class.java)
                 //允许使用未带引号的字段名
                 mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
                 //允许使用单引号
@@ -68,17 +67,17 @@ class DenoService : IntentService("DenoService") {
         })
         // 独立启动webView和web Socket
         openWebView(object : IOpenWebView {
-            override fun webViewCallback(view: String) {
-                Log.d("webViewCallback", "now rust webViewCallback says:$view")
-                callable_map["openDWebView"]?.let { it(view) }
+            override fun webViewCallback(string: String) {
+                Log.d("webViewCallback", "now rust webViewCallback says:$string")
+                callable_map["openDWebView"]?.let { it("https://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb/$string") }
             }
         })
     }
 }
 
 data class RustHandle(
-    var function: Array<String>? = null,
-    var public_key: String? = null,
-    var data: String? = null
+    val function: Array<String>? = null,
+    val public_key: String? = null,
+    val data: String? = null
 )
 

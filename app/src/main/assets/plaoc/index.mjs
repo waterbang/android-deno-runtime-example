@@ -8,7 +8,7 @@ const DwebviewEntry = new ManifestEntry("dwebview");
 const copyEntry = new ManifestEntry("./copy.cjs");
 entryMap.set("dwebview", DwebviewEntry);
 entryMap.set("./copy.cjs", copyEntry);
-(async function () {
+(async function() {
   await getWebSocket();
 })();
 function openDWebView() {

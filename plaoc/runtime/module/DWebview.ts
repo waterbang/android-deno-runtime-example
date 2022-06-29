@@ -1,4 +1,4 @@
-import { callDeno } from "../../deno/fn.type";
+import { callDeno } from "../../deno/android.fn";
 import { Deno } from "../../deno/index";
 
 const deno = new Deno();
@@ -18,6 +18,7 @@ export class DWebview {
   }
 
   activity(entry: string) {
-    deno.callFunction(callDeno.openDWebView, entry);
+    console.log(new URL(entry, this.url).href);
+    deno.callFunction(callDeno.openDWebView, new URL(entry, this.url).href);
   }
 }

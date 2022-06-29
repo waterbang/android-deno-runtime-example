@@ -3,7 +3,7 @@
     {
       "url": "/getBlockInfo",
       "header": {
-        "method": "get",
+        "method": "get"
       }
     },
     {
@@ -14,5 +14,9 @@
         "response": "3600090"
       }
     }
+  ],
+  // 这里配置的白名单将不被拦截
+  "whitelist": [
+    "https://unpkg.com"
   ]
 }

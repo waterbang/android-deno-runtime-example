@@ -1,13 +1,12 @@
 package org.bfchain.rust.example.webView.urlscheme
 
 import android.content.res.AssetManager
-import android.content.res.Resources
 import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import androidx.compose.runtime.Stable
-import org.bfchain.rust.example.webView.gateWay
+import okhttp3.internal.notifyAll
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
@@ -97,10 +96,10 @@ class CustomUrlScheme(
             isForMainFrame = req.isForMainFrame,
         )
         Log.d(TAG, "handleRequest urlMimeType: $urlMimeType")
-        Log.d(TAG, "handleRequest urlEncoding: $urlEncoding")
         Log.d(TAG, "handleRequest urlExt: $urlExt")
         Log.d(TAG, "handleRequest url: ${req.url}")
-        val responseBodyStream = requestHandler.onRequest(urlState)
+        Log.d(TAG, "handleRequest urlState url: $urlEncoding")
+        val responseBodyStream = requestHandler.onHttpRequest(urlState)
             ?: return WebResourceResponse(
                 urlMimeType, urlEncoding, 404, "Resource No Found", mapOf(),
                 nullInputStream
@@ -129,8 +128,8 @@ fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): Requ
             }
         }
 
-        override fun onRequest(urlState: UrlState): InputStream? {
-            val uri = URI(urlState.href)
+        override fun onRequest(req: UrlState): InputStream? {
+            val uri = URI(req.href)
             val urlPath = Path(basePath, uri.path).toString()
             Log.d(TAG, "onRequest: $urlPath")
             // 使用 context.assets.open 来读取文件
@@ -148,17 +147,20 @@ fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): Requ
             return inputStream
         }
 
-        override fun onHttpRequest(urlState: UrlState): InputStream? {
-            val urlPath = urlState.href
+        override fun onHttpRequest(req: UrlState): InputStream? {
+            val urlPath = req.href
             Log.d(TAG, "onHttpRequest: $urlPath")
             // 使用 context.assets.open 来读取文件
             var inputStream = openInputStream(urlPath)
             // 判断 isFile，不是的话就看 isDirectory，如果是的话就尝试访问 index.html
             if (inputStream == null) {
-//                val fileLists = assetManager.list(urlPath) ?: return null
-
-//                val indexName = fileLists.find { it == "index.html" } ?: return null
+                val fileLists = assetManager.list(urlPath) ?: return null
+                if (fileLists.isEmpty()) {
+                    return null
+                }
+                val indexName = fileLists.find { it == "index.html" } ?: return null
                 // 如果加上 index.html 后 isFile 仍然是 false，那么返回 null
+                return openInputStream(Path(urlPath, indexName).toString())
             }
             return inputStream
         }

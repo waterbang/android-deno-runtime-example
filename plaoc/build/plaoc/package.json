@@ -10,8 +10,8 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/default/esm/index.mjs",
-      "types": "./typings/default/index.d.ts"
+      "types": "./typings/default/index.d.ts",
+      "import": "./dist/default/esm/index.mjs"
     }
   },
   "imports": {},
@@ -24,9 +24,7 @@
     "dist",
     "typings"
   ],
-  "dependencies": {
-    "ajax-hook": "2.1.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "tslib": "^2.3.1"
   },

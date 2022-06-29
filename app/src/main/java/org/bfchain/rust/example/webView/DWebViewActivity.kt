@@ -94,44 +94,41 @@ private fun NavFun(activity: ComponentActivity) {
     val navController = rememberNavController(bottomSheetNavigator)
 
     ModalBottomSheetLayout(bottomSheetNavigator) {
-        NavHost(navController = navController, startDestination = "dweb/{url}") {
+        NavHost(navController = navController, startDestination = "https://{url}") {
             composable(
-                "dweb/{url}",
+                "https://{url}",
                 arguments = listOf(
                     navArgument("url") {
                         type = NavType.StringType
                     }
                 ),
                 deepLinks = listOf(navDeepLink {
-                    uriPattern = "dweb://{url}"
+                    uriPattern = "https://{url}"
                 })
             ) { entry ->
                 // 请求文件路径
                 var urlStr = entry.arguments?.getString("url")
                     .let { it -> URLDecoder.decode(it, "UTF-8") }
                     ?: "file:///android_asset/index.html"
-                var customUrlScheme = CustomUrlScheme(
-                    "dweb", urlStr,
-                    requestHandlerFromAssets(LocalContext.current.assets, urlStr)
-                )
 
-                // 内建应用的路径
-                val internalAppFilePathPrefix = "file:///android_asset/app/"
-                Log.d(TAG, "NavFun: ${urlStr.startsWith(internalAppFilePathPrefix)}")
-                // 如果是内建应用发来的数据
-                if (urlStr.startsWith(internalAppFilePathPrefix)) {
-                    // 拿到发送请求的文件名 index.html
-                    val host = Path(urlStr.substring(internalAppFilePathPrefix.length)).getName(0)
-                        .toString()
-                    val assetBasePath = "app/$host/"
-                    // 设置规则
-                    customUrlScheme = CustomUrlScheme(
-                        "dweb", host,
-                        requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)
-                    )
-                    urlStr =
-                        customUrlScheme.resolveUrl(urlStr.substring(internalAppFilePathPrefix.length + host.length))
-                }
+
+                val host = Path(urlStr).getName(1).toString()
+                val assetBasePath = "https://$host/"
+                Log.d(TAG, "NavFun host : $host")
+                Log.d(TAG, "NavFun urlStr : $urlStr")
+                // 设置规则
+                val customUrlScheme = CustomUrlScheme(
+                    "https", host,
+                    requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)
+                )
+                urlStr = customUrlScheme.resolveUrl(Path(urlStr).getName(2).toString())
+
+//                val assetBasePath = "app/$host/"
+//                customUrlScheme = CustomUrlScheme(
+//                    "dweb", host,
+//                    requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)
+//                )
+
                 DWebView(
                     state = rememberAdWebViewState(urlStr),
                     navController = navController,
@@ -150,15 +147,11 @@ private fun NavFun(activity: ComponentActivity) {
 
 
 fun openDWebWindow(activity: ComponentActivity, url: String) {
-//    activity.applicationContext
-//                        navController.navigate("demo-web/$to")
     var intent = Intent(activity.applicationContext, DWebViewActivity::class.java).also {
         it.data =
-            Uri.parse("dweb://" + URLEncoder.encode(url, "UTF-8"))
-//        it.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-//        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//        it.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            Uri.parse("https://" + URLEncoder.encode(url, "UTF-8"))
     }
+    Log.d(TAG, "openDWebWindow: ${URLEncoder.encode(url, "UTF-8")}")
     activity.startActivity(intent)
 }
 

@@ -119,6 +119,9 @@ dependencies {
     // 序列化反序列化
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.13.+"
     // region Networking - Okhttp
+    //okhttp 4.9版本的依赖
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    //网络请求日志拦截器
     implementation "com.squareup.okhttp3:logging-interceptor:4.2.2"
     // endregion
 

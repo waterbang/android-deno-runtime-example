@@ -8,7 +8,6 @@
   },
   "files": [
     "./core/core.type.ts",
-    "./deno/fn.type.ts",
     "./gateway/gateway.type.ts",
     "./plugin/navigation/ffi#android.type.ts",
     "./plugin/navigation/index.type.ts",
@@ -16,6 +15,7 @@
     "./runtime/app.type.ts",
     "./util/proxy/proxy.type.ts",
     "./core/index.ts",
+    "./deno/android.fn.ts",
     "./deno/index.ts",
     "./deno/navigation.ts",
     "./gateway/WebSockets.ts",
@@ -37,9 +37,9 @@
     "./runtime/module/File.ts",
     "./runtime/module/Script.ts",
     "./util/EventEmitter.ts",
-    "./util/proxy/proxy.ts",
+    "./util/common.ts",
     "./util/proxy/hook.ts",
-    "./util/common.ts"
+    "./util/proxy/proxy.ts"
   ],
   "references": []
 }
