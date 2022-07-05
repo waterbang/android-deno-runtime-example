@@ -11,12 +11,10 @@
 <body>
    <fieldset>
       <h1>启动内建app</h1>
-      <button onclick="navTo('./app/bfchain.dev/index.html')" type="button">启动app.bfchain.dev</button>
-      <!--      <button onclick="callAndroid('JS调用了android中的hello方法')" type="button">点击调用Android代码</button>-->
-      <!--      <button onclick="onCallAndroid()" type="button">Android调用JS</button>-->
+      <button onclick="openAPP('./app/bfchain.dev/index.html')" type="button">启动app.bfchain.dev</button>
       <script type="module">
-         import { openDWebView } from "./plaoc/index.mjs";
-         window.navTo = function navTo(url) {
+         import { openDWebView, openDefaultDWebView } from "./plaoc/index.mjs";
+         window.openAPP = function navTo(url) {
             console.log(url)
             openDWebView()
             // installApp({
@@ -27,21 +25,6 @@
             //    defaultEntry: url,
             //    entryResourceMap: entryMap,
             // });
-
-         }
-         function callAndroid(msg) {
-            Android_nav.showToast(msg);
-         }
-
-         function onCallAndroid() {
-            Android_nav.onBackPressed();
-         }
-
-         function onBackPressed() {
-            let con = confirm("Android调用JS，确定要关闭页面?"); //在页面上弹出对话框
-            console.log("Con ===============> ", con);
-            if (con == true) Android_nav.finishActivity();
-            return "JS的返回值，Android可以接收到"
          }
       </script>
    </fieldset>
@@ -121,7 +104,6 @@
          getBlockHigh
       </button>
       <script type="text/javascript">
-         new URL()
          async function testUrl(url) {
             let msg = await onClick(url);
             document.getElementById('response').innerHTML += `拦截结果：${msg}`

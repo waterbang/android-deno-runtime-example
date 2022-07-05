@@ -38,6 +38,7 @@
     "./util/EventEmitter.ts",
     "./util/common.ts",
     "./util/proxy/hook.ts",
-    "./util/proxy/proxy.ts"
+    "./util/proxy/proxy.ts",
+    "./BFS-App-Metadata.ts"
   ]
 }

@@ -7,5 +7,6 @@ class Deno {
     return webSockets.sendData(handleFn, data);
   }
 }
-export { Deno };
+const deno = new Deno();
+export { deno };
 //# sourceMappingURL=index.mjs.map

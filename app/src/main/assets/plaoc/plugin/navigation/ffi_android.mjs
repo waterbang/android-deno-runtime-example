@@ -1,9 +1,7 @@
 import { EvtOut } from "../common/EvtOut.mjs";
-import { Deno } from "../../deno/index.mjs";
-const deno = new Deno();
+import { deno } from "../../deno/index.mjs";
 const navigator_ffi = {};
 navigator_ffi.init = function init() {
-  console.log("navigator-> init");
   let code;
   return JSON.stringify({
     scannerData: async () => {

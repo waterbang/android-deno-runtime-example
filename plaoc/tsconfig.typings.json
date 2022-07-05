@@ -14,6 +14,7 @@
     "./plugin/statusBar/statusBar.type.ts",
     "./runtime/app.type.ts",
     "./util/proxy/proxy.type.ts",
+    "./deno/deno.type.ts",
     "./core/index.ts",
     "./deno/android.fn.ts",
     "./deno/index.ts",
@@ -39,7 +40,8 @@
     "./util/EventEmitter.ts",
     "./util/common.ts",
     "./util/proxy/hook.ts",
-    "./util/proxy/proxy.ts"
+    "./util/proxy/proxy.ts",
+    "./BFS-App-Metadata.ts"
   ],
   "references": []
 }

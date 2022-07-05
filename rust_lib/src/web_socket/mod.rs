@@ -3,7 +3,11 @@ use std::collections::HashMap;
 use std::convert::Infallible;
 use std::sync::Arc;
 use tokio::sync::{mpsc, RwLock};
-use warp::{hyper, ws::Message, Filter, Rejection};
+use warp::{
+    hyper::{self, header, Method},
+    ws::Message,
+    Filter, Rejection,
+};
 
 pub(crate) mod handler;
 pub(crate) mod ws;
@@ -56,7 +60,21 @@ pub async fn start() {
         .or(register_routes)
         .or(ws_route)
         .or(publish)
-        .with(warp::cors().allow_any_origin());
+        .with(
+            warp::cors()
+                .allow_credentials(true)
+                .allow_methods(&[
+                    Method::OPTIONS,
+                    Method::GET,
+                    Method::POST,
+                    Method::DELETE,
+                    Method::PUT,
+                ])
+                .allow_headers(vec![header::CONTENT_TYPE, header::ACCEPT])
+                .expose_headers(vec![header::LINK])
+                .max_age(300)
+                .allow_any_origin(),
+        );
 
     warp::serve(routes).run(([127, 0, 0, 1], 8000)).await;
 }

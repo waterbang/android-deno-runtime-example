@@ -10,6 +10,7 @@ export default defineConfig((info) => {
       license: "MIT",
       author: "mac",
       dependencies: {},
+      devDependencies: {},
     },
   };
   return config;

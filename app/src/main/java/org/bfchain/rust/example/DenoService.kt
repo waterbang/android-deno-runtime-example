@@ -5,6 +5,13 @@ import android.content.Intent
 import android.util.Log
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import org.bfchain.rust.example.webView.network.test
+import retrofit2.http.HTTP
+import retrofit2.http.Header
+import java.lang.reflect.Method
+import java.net.URLDecoder
+import kotlin.reflect.jvm.internal.impl.metadata.jvm.deserialization.JvmMemberSignature
 
 
 private const val TAG = "DENO_SERVICE"
@@ -27,12 +34,8 @@ class DenoService : IntentService("DenoService") {
         fun handleCallback(string: String)
     }
 
-    interface IOpenWebView {
-        fun webViewCallback(string: String)
-    }
-
     external fun nativeSetCallback(callback: IHandleCallback)
-    external fun openWebView(callback: IOpenWebView)
+    private external fun initDeno()
     external fun getScanningData(
         scannerData: String,
         public_key: String? = rust_call_map["openScanner"]
@@ -45,33 +48,25 @@ class DenoService : IntentService("DenoService") {
     }
 
     override fun onHandleIntent(p0: Intent?) {
-        println("工作线程是: " + Thread.currentThread().name)
-        val task: String? = p0?.getStringExtra("task")
-        println("任务是 :$task")
-
+        // 初始化的操作（1.启动内置的webSocket。
+        initDeno()
         val appContext = applicationContext
-//        makeStatusNotification("有医保的先rush", appContext)
         nativeSetCallback(object : IHandleCallback {
             override fun handleCallback(callHandle: String) {
                 Log.d("handleCallback", "now rust says:$callHandle")
-                //允许使用未带引号的字段名
+                //允许出现特殊字符和转义符
                 mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
                 //允许使用单引号
                 mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-                val handle = mapper.readValue(callHandle, RustHandle::class.java)
+                val handle =
+                    mapper.readValue(callHandle, RustHandle::class.java)
                 // 存一下public_key，返回数据的时候才知道给谁
                 rust_call_map[(handle.function?.get(0)).toString()] = (handle.public_key).toString()
                 // 执行函数
                 callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
             }
         })
-        // 独立启动webView和web Socket
-        openWebView(object : IOpenWebView {
-            override fun webViewCallback(string: String) {
-                Log.d("webViewCallback", "now rust webViewCallback says:$string")
-                callable_map["openDWebView"]?.let { it("https://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb/$string") }
-            }
-        })
+
     }
 }
 
@@ -80,4 +75,3 @@ data class RustHandle(
     val public_key: String? = null,
     val data: String? = null
 )
-

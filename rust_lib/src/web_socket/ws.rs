@@ -1,10 +1,11 @@
 use crate::js_bridge::call_android_js;
 use crate::web_socket::{Client, Clients};
 use android_logger::Config;
+use core::fmt::Debug;
 use futures::{FutureExt, StreamExt};
-use log::Level;
 use serde::Deserialize;
 use serde_json::from_str;
+use std::any::Any;
 use std::fmt;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
@@ -60,13 +61,6 @@ pub async fn client_connection(ws: WebSocket, id: String, clients: Clients, mut 
 }
 #[allow(dead_code)]
 async fn client_msg(id: &str, msg: Message, clients: &Clients) {
-    android_logger::init_once(
-        // 生产环境记得删除
-        Config::default()
-            .with_min_level(Level::Debug)
-            .with_tag("myrust::handleCallback"),
-    );
-
     let message = match msg.to_str() {
         Ok(v) => v,
         Err(_) => return,
@@ -74,8 +68,8 @@ async fn client_msg(id: &str, msg: Message, clients: &Clients) {
     if message == "ping" || message == "ping\n" {
         return;
     }
-    log::info!("message: {:?} ", message); // 生产环境记得删除
-    let topics_req: TopicsRequest = match from_str(&message) {
+    log::info!("message2: {:?} ", message); // 生产环境记得删除
+    let topics_req: TopicsRequest = match from_str(message) {
         Ok(v) => {
             log::info!("vvvvvv: {:?} ", &v); // 生产环境记得删除
             v

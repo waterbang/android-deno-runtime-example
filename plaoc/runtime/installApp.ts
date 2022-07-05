@@ -1,7 +1,7 @@
 import { AppRuntime } from "./AppRuntime";
 import { DWebview } from "./module/DWebview";
 
-export const installApp = (app: runtime.ManifestApp) => {
+export const installApp = (app: Runtime.IManifestApp) => {
   const appRuntime = new AppRuntime(app.id, app.defaultEntry);
   const dwebview = appRuntime.inker() as DWebview;
 

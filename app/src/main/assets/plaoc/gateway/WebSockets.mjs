@@ -34,7 +34,7 @@ class WebSockets {
     return state;
   }
   sendData(fun, data) {
-    let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":"'${data}'"}`;
+    let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":${data}}`;
     if (fun == void 0) {
       throw new Error("\u7684\u4F20\u9012websocket\u6D88\u606F\u4E3A\u7A7A");
     }

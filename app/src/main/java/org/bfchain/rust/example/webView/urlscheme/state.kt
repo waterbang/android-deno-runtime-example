@@ -95,10 +95,10 @@ class CustomUrlScheme(
             isRedirect = req.isRedirect,
             isForMainFrame = req.isForMainFrame,
         )
-        Log.d(TAG, "handleRequest urlMimeType: $urlMimeType")
-        Log.d(TAG, "handleRequest urlExt: $urlExt")
-        Log.d(TAG, "handleRequest url: ${req.url}")
-        Log.d(TAG, "handleRequest urlState url: $urlEncoding")
+//        Log.d(TAG, "handleRequest urlMimeType: $urlMimeType")
+//        Log.d(TAG, "handleRequest urlExt: $urlExt")
+//        Log.d(TAG, "handleRequest url: ${req.url}")
+//        Log.d(TAG, "handleRequest urlState url: $urlEncoding")
         val responseBodyStream = requestHandler.onHttpRequest(urlState)
             ?: return WebResourceResponse(
                 urlMimeType, urlEncoding, 404, "Resource No Found", mapOf(),
@@ -130,8 +130,7 @@ fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): Requ
 
         override fun onRequest(req: UrlState): InputStream? {
             val uri = URI(req.href)
-            val urlPath = Path(basePath, uri.path).toString()
-            Log.d(TAG, "onRequest: $urlPath")
+            var urlPath = Path(basePath, uri.path).toString()
             // 使用 context.assets.open 来读取文件
             var inputStream = openInputStream(urlPath)
             // 判断 isFile，不是的话就看 isDirectory，如果是的话就尝试访问 index.html
@@ -148,10 +147,13 @@ fun requestHandlerFromAssets(assetManager: AssetManager, basePath: String): Requ
         }
 
         override fun onHttpRequest(req: UrlState): InputStream? {
-            val urlPath = req.href
-            Log.d(TAG, "onHttpRequest: $urlPath")
+            var urlPath = req.href
+            // 本地文件前面不能有 /,必须直接写不然读不到，下面再做一成保险，帮用户去掉前缀
+            if (urlPath.startsWith("/")) {
+                urlPath = urlPath.substring(urlPath.indexOf("/") + 1)
+            }
             // 使用 context.assets.open 来读取文件
-            var inputStream = openInputStream(urlPath)
+            val inputStream = openInputStream(urlPath)
             // 判断 isFile，不是的话就看 isDirectory，如果是的话就尝试访问 index.html
             if (inputStream == null) {
                 val fileLists = assetManager.list(urlPath) ?: return null

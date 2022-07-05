@@ -3,8 +3,8 @@ import { ScriptModule } from "./module/Script";
 import { DWebview } from "./module/DWebview";
 import { ManifestEntry } from "./AppRuntime";
 declare global {
-    namespace runtime {
-        interface ManifestApp {
+    namespace Runtime {
+        interface IManifestApp {
             id: string;
             name: string;
             versionCode: number;
@@ -19,7 +19,7 @@ declare global {
             dwebview: DWebview;
             url: string;
         }
-        type module_fn = {
+        type TModule_fn = {
             [fn: string]: Function;
         };
     }

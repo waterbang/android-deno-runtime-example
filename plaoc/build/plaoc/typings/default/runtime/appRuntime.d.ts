@@ -1,3 +1,4 @@
+import { Mathod } from "./app.type";
 export declare class AppRuntime {
     app_root: string;
     appId: string;
@@ -7,6 +8,8 @@ export declare class AppRuntime {
 }
 export declare class ManifestEntry {
     url: null;
-    constructor(url: string);
+    method: string;
+    contentType: string;
+    constructor(url: string, method?: Mathod, contentType?: string);
     getUrl(): null;
 }

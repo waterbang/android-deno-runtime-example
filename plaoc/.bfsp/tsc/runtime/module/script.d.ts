@@ -6,4 +6,4 @@ export declare class ScriptModule {
  * @param module {add:()=>{},egg:()=>{}}
  * @returns URL
  */
-export declare const fnTransformURL: (module: runtime.module_fn) => string;
+export declare const fnTransformURL: (module: Runtime.TModule_fn) => string;

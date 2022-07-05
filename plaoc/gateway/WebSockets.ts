@@ -9,7 +9,7 @@ export class WebSockets {
   }
 
   // 注册客户端
-  async sendSubscriptionToBackEnd(body: webSocket.registerBody) {
+  async sendSubscriptionToBackEnd(body: WebSocket.registerBody) {
     return fetch(this.registerUrl, {
       method: "POST",
       headers: {
@@ -29,7 +29,7 @@ export class WebSockets {
   }
 
   async connect(
-    body: webSocket.registerBody = {
+    body: WebSocket.registerBody = {
       public_key: "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj",
     }
   ) {
@@ -46,9 +46,9 @@ export class WebSockets {
     return state;
   }
 
-  sendData(fun: string, data?: string) {
+  sendData(fun: string, data?: Deno.callData) {
     // 携带函数和自己的公钥，不然返回数据是异步的，不知道给谁
-    let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":"'${data}'"}`;
+    let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":${data}}`;
     if (fun == undefined) {
       throw new Error("的传递websocket消息为空");
     }

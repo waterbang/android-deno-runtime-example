@@ -6,3 +6,4 @@
 /// <reference path="./tsc/plugin/statusBar/statusBar.type.d.ts" />
 /// <reference path="./tsc/runtime/app.type.d.ts" />
 /// <reference path="./tsc/util/proxy/proxy.type.d.ts" />
+/// <reference path="./tsc/deno/deno.type.d.ts" />

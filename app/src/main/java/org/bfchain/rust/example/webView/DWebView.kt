@@ -22,12 +22,17 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import org.bfchain.rust.example.dWebView_host
 import org.bfchain.rust.example.webView.bottombar.BottomBarFFI
 import org.bfchain.rust.example.webView.bottombar.BottomBarState
 import org.bfchain.rust.example.webView.bottombar.DWebBottomBar
 import org.bfchain.rust.example.webView.dialog.*
 import org.bfchain.rust.example.webView.jsutil.JsUtil
 import org.bfchain.rust.example.webView.navigator.NavigatorFFI
+import org.bfchain.rust.example.webView.network.dataGateWay
+import org.bfchain.rust.example.webView.network.jumpWhitelist
+import org.bfchain.rust.example.webView.network.test
+import org.bfchain.rust.example.webView.network.viewGateWay
 import org.bfchain.rust.example.webView.systemui.SystemUIState
 import org.bfchain.rust.example.webView.systemui.SystemUiFFI
 import org.bfchain.rust.example.webView.systemui.js.VirtualKeyboardFFI
@@ -37,6 +42,7 @@ import org.bfchain.rust.example.webView.topbar.TopBarState
 import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.example.webkit.*
 import java.net.URI
+import java.net.URL
 import kotlin.math.min
 
 
@@ -160,7 +166,6 @@ fun DWebView(
         topBar = { if (!topBarState.overlay.value and topBarState.enabled.value) TopAppBar() },
         bottomBar = { if (!bottomBarState.overlay.value and bottomBarState.isEnabled) BottomAppBar() },
         content = { innerPadding ->
-            DWebBackground(innerPadding, hook, activity)
 
             Log.i(TAG, "innerPadding:${innerPadding}")
 
@@ -359,24 +364,35 @@ fun DWebView(
                             view: WebView?,
                             request: WebResourceRequest?
                         ): WebResourceResponse? {
-                            test()
                             Log.i(ITAG, "Intercept Request: ${request?.url}")
                             if (request !== null) {
+                                // 这里出来的url全部都用是小写，俺觉得这是个bug
                                 val url = request.url.toString()
-//                             拦截，跳过本地和远程脚本
-                                if (!(url.startsWith("http://127.0.0.1")
-                                            || url.startsWith("https://unpkg.com"))
-                                ) {
-                                    if (url.endsWith(".html")) {
-                                        return viewGateWay(customUrlScheme, request)
+                                // 拦截，跳过本地和远程脚本
+                                if (jumpWhitelist(url)) {
+                                    try {
+                                        // 拦截视图文件
+                                        if (url.endsWith(".html")) {
+                                            return viewGateWay(customUrlScheme, request)
+                                        }
+                                        /**
+                                         * 这里放行了所以的资源文件（比如 .css .gif .js) 只有api类型的数据会被拦截到
+                                         * 下面这种实现方法会有安全问题（比如说一些.php,.jsp的提权），可能需要完善一下下面规则的健壮性。
+                                         */
+                                        val temp = url.substring(url.lastIndexOf("/") + 1)
+                                        val suffixIndex = temp.lastIndexOf(".")
+                                        // 只拦截数据文件,忽略资源文件
+                                        if (suffixIndex == -1) {
+                                            return dataGateWay(request)
+                                        }
+                                        // 映射本地文件的资源文件 https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/plaoc/index.mjs -> /plaoc/index.mjs
+                                        if (Regex(dWebView_host).containsMatchIn(url)) {
+                                            val path = URL(url).path
+                                            return customUrlScheme.handleRequest(request, path)
+                                        }
+                                    } catch (e: java.lang.Exception) {
+                                        e.printStackTrace()
                                     }
-                                    return dataGateWay(request)
-                                }
-                                if (customUrlScheme.isMatch(request)) {
-                                    return customUrlScheme.handleRequest(
-                                        request,
-                                        request.url.toString()
-                                    )
                                 }
                             }
                             return super.shouldInterceptRequest(view, request)
@@ -432,8 +448,6 @@ fun DWebView(
                 },
             )
 
-            //<editor-fold desc="Native UI">
-
             if (topBarState.overlay.value and topBarState.enabled.value) {
                 Box(
                     contentAlignment = Alignment.TopCenter,
@@ -472,35 +486,6 @@ fun DWebView(
 
 private operator fun <T> Array<T>.component6(): Any {
     return this.elementAt(5) as Any
-}
-
-@Composable
-private fun DWebBackground(
-    innerPadding: PaddingValues,
-    hook: AdWebViewHook,
-    activity: ComponentActivity
-) {
-    Column {
-//        Text(text = "~~~", fontSize = 30.sp)
-//        Text(text = "这是Android原生的文本")
-//        Text(text = "他们渲染在WebView的背景上")
-//        Text(text = "如果你看到这些内容，就说明html的背景是有透明度的")
-//        Text(text = "你可以通过 SystemUI 的 Disable Touch Event 来禁用于 WebView 的交互，从而获得与这一层 Native 交互的能力")
-//        Button(onClick = {
-//            hook.onTouchEvent = null
-//            Toast.makeText(
-//                activity.applicationContext,
-//                "控制权已经回到Web中了",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }) {
-//            Text(text = "归还Web的交互权")
-//        }
-//        Text(text = "~~~", fontSize = 30.sp)
-//        Text(text = "也就是说，你可以将一些原生的组件防止在这里，仅仅提供渲染，而Web层提供控制与逻辑执行，比如说游戏的渲染")
-//        Text(text = "~~~", fontSize = 30.sp)
-//        Text(text = "又或者，我们也可以制定部分的WebView区域是可控制的，其余的穿透到native层")
-    }
 }
 
 

@@ -10,7 +10,8 @@ export class AppRuntime {
     this.app_root = app_root;
     this.appId = appId;
   }
-  inker(): runtime.TLinker {
+  inker(): Runtime.TLinker {
+    console.log("inker:", this.app_root, getExtension(this.app_root) == "html");
     if (this.app_root === "node:bnrtc") {
       return new ScriptModule("code", "node:bnrtc");
     }
@@ -18,6 +19,7 @@ export class AppRuntime {
     if (getExtension(this.app_root) == "html") {
       return new DWebview(this.appId);
     }
+    // 本地文件
     if (this.app_root.startsWith("File:///")) {
       return new FileModule(
         new URL(this.app_root, `https://${this.appId}.dweb`)
@@ -25,31 +27,30 @@ export class AppRuntime {
     }
     return `https://${this.appId}.dweb`;
   }
-
-  // const scriptUrl = worker.module_loader({
-  //   add: (a: number, b: number) => {
-  //     return a + b;
-  //   },
-  //   egg: () => {
-  //     console.log("咯咯哒");
-  //   },
-  // });
-  // const obj = new Worker(scriptUrl);
-  // console.log(obj);
-  // worker.injectFFI({
-  //   op_fs_read: (path) => {
-  //     fs.read(new URL(path, app_root));
-  //   },
-  // });
   import(url: URL) {}
 }
 
 export class ManifestEntry {
   url = null;
-  constructor(url: string) {
+  method = "GET";
+  contentType = "application/json";
+  constructor(
+    url: string,
+    method: Mathod = Mathod.GET,
+    contentType: string = "application/json"
+  ) {
     url;
+    method;
+    contentType;
   }
   public getUrl() {
     return this.url;
   }
+}
+
+export enum Mathod {
+  GET = "GET",
+  POST = "POST",
+  DELETE = "DELETE",
+  PUT = "PUT",
 }

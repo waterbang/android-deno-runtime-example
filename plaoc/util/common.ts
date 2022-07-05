@@ -4,6 +4,6 @@
  * @returns
  */
 export const getExtension = (fileName: string) => {
-  console.log(fileName, fileName.lastIndexOf("."));
+  // console.log(fileName, fileName.lastIndexOf("."));
   return fileName.substring(fileName.lastIndexOf(".") + 1);
 };

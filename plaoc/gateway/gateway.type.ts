@@ -1,5 +1,5 @@
 declare global {
-  export namespace webSocket {
+  export namespace WebSocket {
     interface registerBody {
       public_key: string;
     }

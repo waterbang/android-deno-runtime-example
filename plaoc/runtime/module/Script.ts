@@ -7,7 +7,7 @@ export class ScriptModule {
  * @param module {add:()=>{},egg:()=>{}}
  * @returns URL
  */
-export const fnTransformURL = (module: runtime.module_fn) => {
+export const fnTransformURL = (module: Runtime.TModule_fn) => {
   const arrFn = Object.keys(module).map((fnName) => {
     return `const ${fnName} = ${module[fnName]}`;
   });

@@ -24,3 +24,9 @@ declare global {
         };
     }
 }
+export declare enum Mathod {
+    GET = "GET",
+    POST = "POST",
+    DELETE = "DELETE",
+    PUT = "PUT"
+}

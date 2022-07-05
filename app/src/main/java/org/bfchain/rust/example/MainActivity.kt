@@ -3,15 +3,12 @@ package org.bfchain.rust.example
 
 import android.Manifest
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.Color
 import org.bfchain.rust.example.webView.systemui.SystemUiFFI
 import com.google.mlkit.vision.barcode.Barcode
 import com.king.app.dialog.AppDialog
@@ -27,16 +24,18 @@ import org.bfchain.rust.example.barcode.QRCodeScanningActivity
 import org.bfchain.rust.example.lib.drawRect
 import org.bfchain.rust.example.webView.DWebViewActivity
 import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
+import org.bfchain.rust.example.webView.network.initMetaData
 import org.bfchain.rust.example.webView.openDWebWindow
+import java.net.URL
+import java.util.*
 import java.util.regex.Pattern
 
 
 //var start_zzzz: (() -> Unit)? = null
 val callable_map = mutableMapOf<String, (data: String) -> Unit>()
+var dWebView_host = ""
 
 class MainActivity : AppCompatActivity() {
-
-
     var isQRCode = false //是否是识别二维码
     fun getContext() = this
 
@@ -53,16 +52,16 @@ class MainActivity : AppCompatActivity() {
         callable_map["openDWebView"] = {
             openDWebViewActivity(it)
         }
+        callable_map["initMetaData"] = {
+            initMetaData(it)
+        }
 
-        // Navigator
-//        callable_map["setNavigationBarColor"] = { SystemUiFFI().setNavigationBarColor() }
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)
-        deno.putExtra("task", "openScanner")
         startService(deno)
     }
 
-    // 选择图片回调
+    // 选择图片后回调到这
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -89,12 +88,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    // 扫码后显示一下Toast
     private fun processScanResult(data: Intent?) {
         val text = CameraScan.parseScanResult(data)
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
+    // 显示扫码的结果，是显示一张图片
     private fun processPhoto(data: Intent?) {
         data?.let {
             try {
@@ -142,10 +142,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 启动activity
     private fun startActivity(cls: Class<*>) {
         startActivity(Intent(this, cls))
     }
 
+    // 相册的二维码
     private fun pickPhotoClicked(isQRCode: Boolean) {
         this.isQRCode = isQRCode
         if (PermissionUtils.checkPermission(
@@ -163,6 +165,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 打开相册
     private fun startPickPhoto() {
         val pickIntent = Intent(
             Intent.ACTION_PICK,
@@ -172,7 +175,6 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(pickIntent, REQUEST_CODE_PHOTO)
     }
 
-
     fun openScannerActivity() {
         startActivityForResult(
             Intent(this, QRCodeScanningActivity::class.java),
@@ -181,8 +183,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openDWebViewActivity(url: String) {
-        LogUtils.d("启动了DWebView:$url")
-        // 需要在这里判断是远程的还是本地的
+        // 存储一下host，用来判断是远程的还是本地的
+        val host = URL(url).host
+        dWebView_host = host.lowercase(Locale.ROOT) // 为了适配一下DwebView拦截出来都是小写
+        LogUtils.d("启动了DWebView:$url，host为： $host")
         openDWebWindow(
             activity = getContext(),
             url = url
@@ -202,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                 LogUtils.d("启动了DWebView")
                 openDWebWindow(
                     activity = getContext(),
-                    url = "file:///android_asset/hello_runtime.html"
+                    url = "https://bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj.dweb/hello_runtime.html"
                 )
             }
         }

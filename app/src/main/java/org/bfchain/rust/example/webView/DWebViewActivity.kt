@@ -109,11 +109,10 @@ private fun NavFun(activity: ComponentActivity) {
                 // 请求文件路径
                 var urlStr = entry.arguments?.getString("url")
                     .let { it -> URLDecoder.decode(it, "UTF-8") }
-                    ?: "file:///android_asset/index.html"
 
 
                 val host = Path(urlStr).getName(1).toString()
-                val assetBasePath = "https://$host/"
+                val assetBasePath = "./"
                 Log.d(TAG, "NavFun host : $host")
                 Log.d(TAG, "NavFun urlStr : $urlStr")
                 // 设置规则
@@ -121,14 +120,9 @@ private fun NavFun(activity: ComponentActivity) {
                     "https", host,
                     requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)
                 )
-                urlStr = customUrlScheme.resolveUrl(Path(urlStr).getName(2).toString())
-
-//                val assetBasePath = "app/$host/"
-//                customUrlScheme = CustomUrlScheme(
-//                    "dweb", host,
-//                    requestHandlerFromAssets(LocalContext.current.assets, assetBasePath)
-//                )
-
+//                urlStr =
+//                    customUrlScheme.resolveUrl(urlStr)
+//                Log.d(TAG, "NavFun customUrlScheme resolveUrl urlStr : $urlStr")
                 DWebView(
                     state = rememberAdWebViewState(urlStr),
                     navController = navController,
@@ -148,8 +142,7 @@ private fun NavFun(activity: ComponentActivity) {
 
 fun openDWebWindow(activity: ComponentActivity, url: String) {
     var intent = Intent(activity.applicationContext, DWebViewActivity::class.java).also {
-        it.data =
-            Uri.parse("https://" + URLEncoder.encode(url, "UTF-8"))
+        it.data = Uri.parse("https://" + URLEncoder.encode(url, "UTF-8"))
     }
     Log.d(TAG, "openDWebWindow: ${URLEncoder.encode(url, "UTF-8")}")
     activity.startActivity(intent)
