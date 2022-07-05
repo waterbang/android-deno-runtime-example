@@ -31,7 +31,6 @@ import org.bfchain.rust.example.webView.jsutil.JsUtil
 import org.bfchain.rust.example.webView.navigator.NavigatorFFI
 import org.bfchain.rust.example.webView.network.dataGateWay
 import org.bfchain.rust.example.webView.network.jumpWhitelist
-import org.bfchain.rust.example.webView.network.test
 import org.bfchain.rust.example.webView.network.viewGateWay
 import org.bfchain.rust.example.webView.systemui.SystemUIState
 import org.bfchain.rust.example.webView.systemui.SystemUiFFI

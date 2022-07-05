@@ -9,9 +9,8 @@ class DWebview {
   initAppMetaData() {
     if (Object.keys(metaData).length === 0)
       return;
-    const stringData = `"'${btoa(JSON.stringify(metaData))}'"`;
-    console.log("xxxxx:", stringData);
-    deno.callFunction(callDeno.initMetaData, stringData);
+    `"'${JSON.stringify(metaData)}'"`;
+    deno.callFunction(callDeno.initMetaData, JSON.stringify(JSON.stringify(metaData)));
   }
   async onRequest(url) {
     const response = await fetch(url);

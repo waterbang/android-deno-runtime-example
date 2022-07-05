@@ -1,5 +1,4 @@
 export * from "./plugin/index";
-import { getWebSocket } from "./gateway";
 import { ManifestEntry } from "./runtime/AppRuntime";
 import { installApp } from "./runtime/installApp";
 ///start
@@ -9,9 +8,6 @@ const copyEntry = new ManifestEntry("./copy.cjs");
 entryMap.set("dwebview", DwebviewEntry);
 entryMap.set("./copy.cjs", copyEntry);
 ///end
-(async function () {
-  await getWebSocket(); // 初始化连接BFS后端
-})();
 
 export function openDWebView() {
   installApp({

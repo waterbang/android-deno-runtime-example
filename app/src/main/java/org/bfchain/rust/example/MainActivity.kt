@@ -25,6 +25,7 @@ import org.bfchain.rust.example.lib.drawRect
 import org.bfchain.rust.example.webView.DWebViewActivity
 import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
 import org.bfchain.rust.example.webView.network.initMetaData
+import org.bfchain.rust.example.webView.network.test
 import org.bfchain.rust.example.webView.openDWebWindow
 import java.net.URL
 import java.util.*
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity() {
         callable_map["initMetaData"] = {
             initMetaData(it)
         }
-
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)
         startService(deno)

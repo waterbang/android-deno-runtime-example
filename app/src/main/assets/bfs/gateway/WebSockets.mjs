@@ -41,12 +41,7 @@ class WebSockets {
     console.log("sendData:", val);
     return new Promise(async (resolve, reject) => {
       this.ws.send(val);
-      let timer = setTimeout(() => {
-        reject("\u8FDE\u63A5\u8D85\u65F6");
-        clearTimeout(timer);
-      }, 2e4);
       this.ws.onmessage = (res) => {
-        clearTimeout(timer);
         resolve(res.data);
       };
     });

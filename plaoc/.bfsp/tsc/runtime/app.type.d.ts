@@ -23,4 +23,19 @@ declare global {
             [fn: string]: Function;
         };
     }
+    namespace appData {
+        interface metaData {
+            router: router[];
+            whitelist: string[];
+        }
+        interface router {
+            url: string;
+            header: {
+                method?: string;
+                contentType?: string;
+                response: string;
+                StatusCode?: number;
+            };
+        }
+    }
 }

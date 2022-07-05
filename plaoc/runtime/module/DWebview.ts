@@ -11,9 +11,11 @@ export class DWebview {
   // 初始化app元数据
   initAppMetaData() {
     if (Object.keys(metaData).length === 0) return;
-    const stringData = `"'${btoa(JSON.stringify(metaData))}'"`;
-    console.log("xxxxx:", stringData);
-    deno.callFunction(callDeno.initMetaData, stringData);
+    const stringData = `"'${JSON.stringify(metaData)}'"`;
+    deno.callFunction(
+      callDeno.initMetaData,
+      JSON.stringify(JSON.stringify(metaData))
+    );
   }
   // 乱写的 咯咯哒🥚
   async onRequest(url: string) {

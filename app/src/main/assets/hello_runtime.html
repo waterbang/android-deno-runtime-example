@@ -2,17 +2,17 @@
 <html>
 
 <head>
-   <meta charset="utf-8">
-   <title>测试</title>
-   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-   <script type="module" src="./plaoc/index.mjs"></script>
+    <meta charset="utf-8">
+    <title>测试</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
-   <fieldset>
-      <h1>启动内建app</h1>
-      <button onclick="openAPP('./app/bfchain.dev/index.html')" type="button">启动app.bfchain.dev</button>
-      <script type="module">
+<fieldset>
+    <h1>启动内建app</h1>
+    <button onclick="openAPP('./app/bfchain.dev/index.html')" type="button">启动app.bfchain.dev
+    </button>
+    <script type="module">
          import { openDWebView, openDefaultDWebView } from "./plaoc/index.mjs";
          window.openAPP = function navTo(url) {
             console.log(url)
@@ -26,19 +26,20 @@
             //    entryResourceMap: entryMap,
             // });
          }
-      </script>
-   </fieldset>
-   <fieldset>
-      <h1>websockets简单示例</h1><br>
-      <div id="message"></div>
-      <div>
-         <button id="connect" onclick="connect()">建立连接</button>
-         <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
-         <br>
-         <button onclick='sendData("openScanner")'>启动二维码扫描</button>
-         <button onclick='sendData("openDWebView")'>启动webView</button>
-      </div>
-      <script type="text/javascript">
+
+    </script>
+</fieldset>
+<fieldset>
+    <h1>websockets简单示例</h1><br>
+    <div id="message"></div>
+    <div>
+        <button id="connect" onclick="connect()">建立连接</button>
+        <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
+        <br>
+        <button onclick='sendData("openScanner")'>启动二维码扫描</button>
+        <button onclick='sendData("openDWebView")'>启动webView</button>
+    </div>
+    <script type="text/javascript">
          let websockets;
          let statusArr = [
             { state: 0, value: '正在连接' },
@@ -91,43 +92,45 @@
             websockets.close();
          }
 
-      </script>
-   </fieldset>
 
-   <fieldset>
-      <h2>拦截https://appID.dweb请求测试</h2>
-      <div id="response"></div>
-      <button id="request" onclick="testUrl('/getBlockInfo')">
-         getBlockInfo
-      </button>
-      <button id="request" onclick="testUrl('/getBlockHigh')">
-         getBlockHigh
-      </button>
-      <script type="text/javascript">
+    </script>
+</fieldset>
+
+<fieldset>
+    <h2>拦截https://appID.dweb请求测试</h2>
+    <div id="response"></div>
+    <button id="request" onclick="testUrl('/getBlockInfo')">
+        getBlockInfo
+    </button>
+    <button id="request" onclick="testUrl('/getBlockHigh')">
+        getBlockHigh
+    </button>
+    <script type="text/javascript">
          async function testUrl(url) {
             let msg = await onClick(url);
             document.getElementById('response').innerHTML += `拦截结果：${msg}`
          }
          function onClick(url) {
-            return axios.get(url)
+            return axios.post(url)
                .then((response) => {
                   // handle success
                   console.log('sucess onClick', JSON.stringify(response.data));
-                  return response.data;
+                  return JSON.stringify(response.data);
                }).catch((e) => {
                   console.log('error onClick', JSON.stringify(e));
                   return e
                })
          }
 
-      </script>
-   </fieldset>
-   <fieldset>
-      <h2>从android拿回数据</h2>
-      <div id="navigator"></div>
-      <dweb-navigator onCreate="callAndroid('dweb-navigator')"></dweb-navigator>
-      <script src="./plaoc/index.mjs" type="module"></script>
-   </fieldset>
+
+    </script>
+</fieldset>
+<fieldset>
+    <h2>从android拿回数据</h2>
+    <div id="navigator"></div>
+    <dweb-navigator onCreate="callAndroid('dweb-navigator')"></dweb-navigator>
+    <script src="./plaoc/index.mjs" type="module"></script>
+</fieldset>
 </body>
 
 </html>

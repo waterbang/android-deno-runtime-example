@@ -35,7 +35,7 @@ fun dataGateWay(
         val trueUrl = front_to_rear_map[url]?.url.toString()
         val connection = URL(trueUrl).openConnection() as HttpURLConnection
         connection.requestMethod = request.method
-//        Log.i(TAG, " gateWay: ${connection.url}")
+        Log.i(TAG, " gateWay: ${request.method}")
 //        Log.i(TAG, " gateWay: ${connection.contentType}")
 //        Log.i(TAG, " gateWay: ${connection.responseMessage}")
         return WebResourceResponse(
@@ -127,12 +127,12 @@ fun jumpWhitelist(url: String): Boolean {
     return true
 }
 
-// 假装读取到了配置文件 ， mock : https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo
+// 读取到了配置文件 ， mock : https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo
 /**
  * 1. 用户如果知道自己请求的是哪个dweb，那么用户在请求的时候会自己加上，域名前缀。如果在自己的DwebView里发送请求则不用携带前缀，只需要写请求路径。
  * 2. 在读取用户配置的时候，需要把前缀和请求的路径拼接起来。
  * 3. 这里的匹配需要使用正则匹配，用户如果填写了一个主域名，那么默认主域名下的所有资源都是被包括的。
- * 4. 存储的规则统一用小写的
+ * 4. 存储的规则统一用小写的,因为kotlin拦截出来是小写的
  * (ps:前缀：https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb，请求的路径：getBlockInfo)
  */
 fun test() {
@@ -163,7 +163,7 @@ data class RearRouter(val url: String, val header: UserHeader)
 
 data class UserMetaData(
     val router: Array<UserRouter> = arrayOf(UserRouter()),
-    val whitelist: Array<String> = arrayOf("https://unpkg.com")
+    val whitelist: Array<String> = arrayOf("http://localhost")
 )
 
 data class UserRouter(

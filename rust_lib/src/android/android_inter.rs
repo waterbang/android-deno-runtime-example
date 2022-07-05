@@ -17,6 +17,11 @@ use jni::{
     JNIEnv, JavaVM, NativeMethod,
 };
 
+use crate::module_loader::AssetsModuleLoader;
+use crate::my_deno_runtime::bootstrap_deno_runtime;
+use std::ptr::NonNull;
+use std::sync::Arc;
+
 // 添加一个全局变量来缓存回调对象
 lazy_static! {
     // jvm
@@ -71,8 +76,6 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_initialiseLoggi
     std::env::set_var("NO_COLOR", "true");
 }
 
-use std::ptr::NonNull;
-
 #[no_mangle]
 pub extern "system" fn Java_org_bfchain_rust_example_DenoService_hello(
     env: JNIEnv,
@@ -114,36 +117,7 @@ pub extern "system" fn Java_org_bfchain_rust_example_DenoService_hello2(
     );
 }
 
-use crate::module_loader::AssetsModuleLoader;
-use crate::my_deno_runtime::bootstrap_deno_runtime;
-use std::sync::Arc;
-
-#[no_mangle]
-#[tokio::main]
-pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_helloDenoRuntime(
-    env: JNIEnv,
-    _context: JObject,
-    jasset_manager: JObject,
-) {
-    let asset_manager_ptr = unsafe {
-        ndk_sys::AAssetManager_fromJava(env.get_native_interface(), jasset_manager.cast())
-    };
-    android_logger::init_once(
-        Config::default()
-            .with_min_level(Level::Debug)
-            .with_tag("myrust::helloDenoRuntime"),
-    );
-    bootstrap_deno_runtime(
-        Arc::new(AssetsModuleLoader::from_ptr(
-            NonNull::new(asset_manager_ptr).unwrap(),
-        )),
-        "assets/hello_runtime.js",
-    )
-    .await
-    .unwrap();
-}
-
-/// 动态库被 java 加载时 会出发此函数, 在此动态注册本地方法
+/// 动态库被 java 加载时 会触发此函数, 在此动态注册本地方法
 #[no_mangle]
 #[allow(non_snake_case)]
 unsafe fn JNI_OnLoad(jvm: JavaVM, _reserved: *mut c_void) -> jint {
@@ -199,8 +173,6 @@ unsafe fn register_natives(jvm: &JavaVM, class_name: &str, methods: &[NativeMeth
         JNI_ERR
     }
 }
-
-
 
 /// 回调 Callback 对象的 { void handleCallback(string: String) } 函数
 pub fn call_java_callback(fun_type: &'static str) {

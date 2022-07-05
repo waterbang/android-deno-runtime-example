@@ -24,4 +24,4 @@ const copyFile = (sourcePath, targetPath) => {
   })
 }
 
-copyFile('./dist/esm', "../app/src/main/assets/plaoc")
+copyFile('./dist/esm', "../app/src/main/assets/bfs")

@@ -2,16 +2,11 @@ package org.bfchain.rust.example
 
 import android.app.IntentService
 import android.content.Intent
+import android.content.res.AssetManager
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import org.bfchain.rust.example.webView.network.test
-import retrofit2.http.HTTP
-import retrofit2.http.Header
-import java.lang.reflect.Method
-import java.net.URLDecoder
-import kotlin.reflect.jvm.internal.impl.metadata.jvm.deserialization.JvmMemberSignature
 
 
 private const val TAG = "DENO_SERVICE"
@@ -26,7 +21,6 @@ class DenoService : IntentService("DenoService") {
         init {
             // 加载rust编译的so
             System.loadLibrary("rust_lib")
-
         }
     }
 
@@ -34,23 +28,22 @@ class DenoService : IntentService("DenoService") {
         fun handleCallback(string: String)
     }
 
-    external fun nativeSetCallback(callback: IHandleCallback)
-    private external fun initDeno()
+    private external fun nativeSetCallback(callback: IHandleCallback)
+    private external fun initDeno(assets: AssetManager)
     external fun getScanningData(
         scannerData: String,
         public_key: String? = rust_call_map["openScanner"]
     )
 
-//    external fun helloDenoRuntime(assets: AssetManager)
+    private external fun denoRuntime(assets: AssetManager)
 //    external fun initialiseLogging()
 
     fun startForeground() {
     }
 
     override fun onHandleIntent(p0: Intent?) {
-        // 初始化的操作（1.启动内置的webSocket。
-        initDeno()
         val appContext = applicationContext
+        // native回调
         nativeSetCallback(object : IHandleCallback {
             override fun handleCallback(callHandle: String) {
                 Log.d("handleCallback", "now rust says:$callHandle")
@@ -66,7 +59,8 @@ class DenoService : IntentService("DenoService") {
                 callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
             }
         })
-
+        // BFS初始化的操作
+        initDeno(appContext.assets)
     }
 }
 

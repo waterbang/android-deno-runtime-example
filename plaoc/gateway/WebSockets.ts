@@ -56,13 +56,13 @@ export class WebSockets {
     return new Promise(async (resolve, reject) => {
       this.ws.send(val);
       // 设置超时时间
-      let timer = setTimeout(() => {
-        reject("连接超时");
-        clearTimeout(timer);
-      }, 20000);
+      // let timer = setTimeout(() => {
+      //   reject(500);
+      //   clearTimeout(timer);
+      // }, 20000);
       //监听接收消息的情况
       this.ws.onmessage = (res) => {
-        clearTimeout(timer);
+        // clearTimeout(timer);
         resolve(res.data);
       };
     });
@@ -89,7 +89,7 @@ export class WebSockets {
           break;
         }
         index++;
-        await sleep(10); // 不要太快发请求
+        await sleep(20); // 不要太快发请求
       } while (index <= 10);
       reject("连接超时");
     });
