@@ -1,4 +1,4 @@
-use crate::js_bridge::call_android_js;
+use crate::js_bridge::call_android_function;
 use crate::web_socket::{Client, Clients};
 use android_logger::Config;
 use core::fmt::Debug;
@@ -83,7 +83,7 @@ async fn client_msg(id: &str, msg: Message, clients: &Clients) {
     // topics_req: TopicsRequest { public_key: "",function: ["openScanner"],data: ""}
     log::info!("&topics_req.function[0]: {:?} ", &topics_req); // 生产环境记得删除
 
-    call_android_js::call_android(&topics_req); // 通知FFI函数
+    call_android_function::call_android(&topics_req); // 通知FFI函数
 
     let mut locked = clients.write().await;
     if let Some(v) = locked.get_mut(id) {

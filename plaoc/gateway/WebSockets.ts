@@ -46,7 +46,7 @@ export class WebSockets {
     return state;
   }
 
-  sendData(fun: string, data?: Deno.callData) {
+  sendData(fun: string, data?: DenoFFI.callData) {
     // 携带函数和自己的公钥，不然返回数据是异步的，不知道给谁
     let val = `{"function":["${fun}"],"public_key":"'${this.public_key}'","data":${data}}`;
     if (fun == undefined) {
@@ -56,13 +56,13 @@ export class WebSockets {
     return new Promise(async (resolve, reject) => {
       this.ws.send(val);
       // 设置超时时间
-      // let timer = setTimeout(() => {
-      //   reject(500);
-      //   clearTimeout(timer);
-      // }, 20000);
+      let timer = setTimeout(() => {
+        reject(500);
+        clearTimeout(timer);
+      }, 20000);
       //监听接收消息的情况
       this.ws.onmessage = (res) => {
-        // clearTimeout(timer);
+        clearTimeout(timer);
         resolve(res.data);
       };
     });

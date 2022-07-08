@@ -25,7 +25,7 @@ android {
 
     sourceSets {
         main {
-            jniLibs.srcDirs = ['src/main/libs']
+            jniLibs.srcDirs = ['src/main/assets/libs']
         }
     }
 
@@ -150,13 +150,13 @@ archTriplets.each { arch, target ->
     tasks.create(name: "sync-rust-deps-${arch}", type: Sync, dependsOn: "cargo-build-${arch}") {
         from "${rustBasePath}/src/libs/${arch}"
         include "*.so"
-        into "src/main/libs/${arch}"
+        into "src/main/assets/libs/${arch}"
     }
     // Copy build libs into this app's libs directory
     tasks.create(name: "rust-deploy-${arch}", type: Copy, dependsOn: "sync-rust-deps-${arch}", description: "Copy rust libs for (${arch}) to jniLibs") {
         from "${project.ext.cargo_target_directory}/${target}/release"
         include "*.so"
-        into "src/main/libs/${arch}"
+        into "src/main/assets/libs/${arch}"
     }
 
     // Hook up tasks to execute before building java

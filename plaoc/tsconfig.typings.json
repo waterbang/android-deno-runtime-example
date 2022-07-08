@@ -19,6 +19,7 @@
     "./core/index.ts",
     "./deno/android.fn.ts",
     "./deno/index.ts",
+    "./deno/rust.ffi.ts",
     "./gateway/WebSockets.ts",
     "./gateway/index.ts",
     "./index.ts",

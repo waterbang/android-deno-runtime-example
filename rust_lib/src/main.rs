@@ -12,7 +12,6 @@ mod js_bridge;
 
 struct SimpleLogger;
 
-
 impl log::Log for SimpleLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
         metadata.level() <= Level::Info
@@ -29,8 +28,7 @@ impl log::Log for SimpleLogger {
 
 static LOGGER: SimpleLogger = SimpleLogger;
 
-#[tokio::main]
-async fn main() {
+fn main() {
     log::set_logger(&LOGGER)
         .map(|()| log::set_max_level(log::LevelFilter::Info))
         .unwrap();

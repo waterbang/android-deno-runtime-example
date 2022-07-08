@@ -2,7 +2,7 @@
 use crate::colors;
 use crate::ext_js;
 use crate::inspector_server::InspectorServer;
-// use crate::js;
+use crate::js;
 use crate::ops;
 use crate::permissions::Permissions;
 use crate::tokio_util::run_basic;
@@ -390,8 +390,8 @@ impl WebWorker {
             deno_broadcast_channel::init(options.broadcast_channel.clone(), unstable),
             deno_crypto::init(options.seed),
             // deno_webgpu::init(unstable),
-            // // ffi
-            // deno_ffi::init::<Permissions>(unstable),
+            // ffi
+            deno_ffi::init::<Permissions>(unstable),
             // Runtime ops that are always initialized for WebWorkers
             ops::web_worker::init(),
             ops::runtime::init(main_module.clone()),
@@ -435,7 +435,7 @@ impl WebWorker {
 
         let mut js_runtime = JsRuntime::new(RuntimeOptions {
             module_loader: Some(options.module_loader.clone()),
-            // startup_snapshot: Some(js::deno_isolate_init()),
+            startup_snapshot: Some(js::deno_isolate_init()),
             source_map_getter: options.source_map_getter,
             // js_error_create_fn: options.js_error_create_fn.clone(),
             get_error_class_fn: options.get_error_class_fn,

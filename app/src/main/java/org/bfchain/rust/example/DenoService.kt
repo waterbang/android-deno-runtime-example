@@ -38,8 +38,6 @@ class DenoService : IntentService("DenoService") {
     private external fun denoRuntime(assets: AssetManager)
 //    external fun initialiseLogging()
 
-    fun startForeground() {
-    }
 
     override fun onHandleIntent(p0: Intent?) {
         val appContext = applicationContext

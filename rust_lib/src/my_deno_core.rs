@@ -2,6 +2,8 @@
 //!  This example shows you how to define ops in Rust and then call them from
 //!  JavaScript.
 
+use std::path::Path;
+
 use deno_core::{op, Extension, JsRuntime, RuntimeOptions, Snapshot};
 
 // This is a hack to make the `#[op]` macro work with
@@ -53,10 +55,16 @@ pub fn bootstrap_deno_core() {
             unreachable!("snapshotting!")
         }
     }
+    impl deno_ffi::FfiPermissions for Permissions {
+        fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
+            unreachable!("snapshotting!")
+        }
+    }
 
     // Initialize a runtime instance
     let mut runtime = JsRuntime::new(RuntimeOptions {
         extensions: vec![
+            // deno_ffi::init::<Permissions>(false),
             deno_webidl::init(),
             deno_url::init(),
             deno_tls::init(),

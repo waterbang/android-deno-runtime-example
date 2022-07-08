@@ -40,7 +40,10 @@ set RUSTY_V8_ARCHIVE=D:\dev\AndroidStudioProjects\RustEample\rust_lib\assets\rus
 export RUSTY_V8_MIRROR="/mnt/d/dev/AndroidStudioProjects/RustEample/rust_lib/assets/rusty_v8_mirror/"
 export RUSTY_V8_ARCHIVE="/mnt/d/dev/AndroidStudioProjects/RustEample/rust_lib/assets/rusty_v8_mirror/v0.42.0/librusty_v8_release_aarch64-linux-android.a"
 
+export RUSTY_V8_MIRROR="/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/rust_lib/assets/rusty_v8_mirror/"
 export RUSTY_V8_ARCHIVE="/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/rust_lib/assets/rusty_v8_mirror/v0.42.0/librusty_v8_release_aarch64-linux-android.a"
+
+
 export RUSTY_V8_ARCHIVE="/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/rust_lib/assets/rusty_v8_mirror/v0.42.0/librusty_v8_release_aarch64-apple-darwin.a"
 ```
 
@@ -73,4 +76,16 @@ RUST_BACKTRACE=1 cargo build --target=aarch64-linux-android --release
   error occurred: Failed to find tool. Is `aarch64-linux-android-clang` installed?
 ```
 
-原因是.cargo/config.toml里面的env把NDK地址写入环境变量没有生效，导致读不到
+原因是环境变量的名称错误，需要更改一下
+
+```bash
+cd /Users/mac/Library/Android/sdk/ndk/21.3.6528147/toolchains/llvm/prebuilt/darwin-x86_64/bin/
+
+cp aarch64-linux-android28-clang aarch64-linux-android-clang 
+```
+
+### 修复error: failed to run custom build command for `libffi-sys v1.3.2`
+
+```
+brew install autoconf automake libtool   
+```

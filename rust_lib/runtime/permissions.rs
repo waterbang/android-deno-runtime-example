@@ -1336,11 +1336,11 @@ impl deno_websocket::WebSocketPermissions for Permissions {
   }
 }
 
-// impl deno_ffi::FfiPermissions for Permissions {
-//   fn check(&mut self, path: Option<&Path>) -> Result<(), AnyError> {
-//     self.ffi.check(path)
-//   }
-// }
+impl deno_ffi::FfiPermissions for Permissions {
+  fn check(&mut self, path: Option<&Path>) -> Result<(), AnyError> {
+    self.ffi.check(path)
+  }
+}
 
 fn unit_permission_from_flag_bool(
   flag: bool,

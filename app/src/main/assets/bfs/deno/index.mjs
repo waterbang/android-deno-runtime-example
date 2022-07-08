@@ -1,9 +1,11 @@
-class Deno {
+class _Deno {
   constructor() {
   }
-  async callFunction(handleFn, data) {
+  callFunction(_handleFn, _data) {
+  }
+  async structureBinary() {
   }
 }
-const deno = new Deno();
+const deno = new _Deno();
 export { deno };
 //# sourceMappingURL=index.mjs.map

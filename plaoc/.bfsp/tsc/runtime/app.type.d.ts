@@ -10,7 +10,7 @@ declare global {
             versionCode: number;
             minBfsVersionCode: number;
             defaultEntry: string;
-            entryResourceMap: Map<string, ManifestEntry>;
+            entryResourceMap?: Map<string, ManifestEntry>;
         }
         type TLinker = ScriptModule | FileModule | DWebview | String;
         interface ILinker {

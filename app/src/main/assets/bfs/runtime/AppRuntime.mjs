@@ -23,22 +23,5 @@ class AppRuntime {
   import(url) {
   }
 }
-class ManifestEntry {
-  constructor(url, method = Mathod.GET, contentType = "application/json") {
-    this.url = null;
-    this.method = "GET";
-    this.contentType = "application/json";
-  }
-  getUrl() {
-    return this.url;
-  }
-}
-var Mathod = /* @__PURE__ */ ((Mathod2) => {
-  Mathod2["GET"] = "GET";
-  Mathod2["POST"] = "POST";
-  Mathod2["DELETE"] = "DELETE";
-  Mathod2["PUT"] = "PUT";
-  return Mathod2;
-})(Mathod || {});
-export { AppRuntime, ManifestEntry, Mathod };
+export { AppRuntime };
 //# sourceMappingURL=AppRuntime.mjs.map

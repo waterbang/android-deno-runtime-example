@@ -1,5 +1,4 @@
 #![cfg(target_os = "android")]
-use crate::js_bridge::call_android_js;
 use android_logger::Config;
 use lazy_static::*;
 use log::{debug, error, info, Level};
