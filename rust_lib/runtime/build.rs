@@ -173,20 +173,20 @@ fn main() {
 
     println!("cargo:rustc-env=TARGET={}", env::var("TARGET").unwrap());
     println!("cargo:rustc-env=PROFILE={}", env::var("PROFILE").unwrap());
-    let o = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+    // let o = PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
-    // Main snapshot
-    let runtime_snapshot_path = o.join("CLI_SNAPSHOT.bin");
+    // // Main snapshot
+    // let runtime_snapshot_path = o.join("CLI_SNAPSHOT.bin");
 
     // If we're building on docs.rs we just create
     // and empty snapshot file and return, because `rusty_v8`
     // doesn't actually compile on docs.rs
-    if env::var_os("DOCS_RS").is_some() {
-        let snapshot_slice = &[];
-        std::fs::write(&runtime_snapshot_path, snapshot_slice).unwrap();
-        return;
-    }
+    // if env::var_os("DOCS_RS").is_some() {
+    //     let snapshot_slice = &[];
+    //     std::fs::write(&runtime_snapshot_path, snapshot_slice).unwrap();
+    //     return;
+    // }
 
-    #[cfg(not(feature = "docsrs"))]
-    not_docs::build_snapshot(runtime_snapshot_path)
+    // #[cfg(not(feature = "docsrs"))]
+    // not_docs::build_snapshot(runtime_snapshot_path)
 }

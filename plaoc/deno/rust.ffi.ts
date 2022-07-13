@@ -11,16 +11,8 @@ switch (Deno.build.os) {
     libSuffix = "so";
     break;
 }
-console.log("import.meta.url: %s", import.meta.url);
-console.log("you OS: ", libSuffix);
-console.log("Deno Apis: %o", JSON.stringify(Object.keys(Deno)));
 
-function stringToArrayBuffer(msg: string): any {
-  const reader = new FileReader();
-  return reader.readAsArrayBuffer(new Blob([msg]));
-}
-
-const libName = `../../libs/arm64-v8a/librust_lib.${libSuffix}`;
+const libName = `librust_lib.${libSuffix}`;
 
 try {
   const dylib = Deno.dlopen(libName, {

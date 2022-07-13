@@ -125,8 +125,8 @@ impl MainWorker {
             deno_broadcast_channel::init(options.broadcast_channel.clone(), unstable),
             deno_crypto::init(options.seed),
             // deno_webgpu::init(unstable),
-            // // ffi
-            // deno_ffi::init::<Permissions>(unstable),
+            // ffi
+            deno_ffi::init::<Permissions>(unstable),
             // Runtime ops
             ops::runtime::init(main_module.clone()),
             ops::worker_host::init(
@@ -356,7 +356,7 @@ mod tests {
                 is_tty: false,
                 runtime_version: "x".to_string(),
                 ts_version: "x".to_string(),
-                unstable: false,
+                unstable: true,
             },
             extensions: vec![],
             user_agent: "x".to_string(),

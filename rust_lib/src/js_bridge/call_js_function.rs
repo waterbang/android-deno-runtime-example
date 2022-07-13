@@ -6,9 +6,12 @@ pub extern "C" fn js_call_function(a: &str) -> String {
 }
 
 #[no_mangle]
-pub extern "C" fn add(a: isize, b: isize) -> isize {
+pub extern "C" fn add_i32(a: i32, b: i32) -> i32 {
     a + b
 }
 
 #[no_mangle]
-pub extern "C" fn send_data_to_deno(callBack: CString) {}
+pub unsafe extern "C" fn print_buffer(ptr: *const u8, len: usize) {
+    let buf = std::slice::from_raw_parts(ptr, len);
+    println!("{:?}", buf);
+}
