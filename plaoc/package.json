@@ -1,5 +1,5 @@
 {
-  "name": "plaoc",
+  "name": "bfsa",
   "main": "./dist/esm/index.mjs",
   "types": "./.bfsp/tsc/index.d.ts",
   "type": "module",

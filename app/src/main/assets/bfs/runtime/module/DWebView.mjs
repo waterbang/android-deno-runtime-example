@@ -1,16 +1,17 @@
 import { callDeno } from "../../deno/android.fn.mjs";
 import { deno } from "../../deno/index.mjs";
 import { metaData } from "../../BFS-App-Metadata.mjs";
-class DWebview {
+class DWebView {
   constructor(id) {
     this.url = `https://${id}.dweb`;
     this.initAppMetaData();
+    deno.createHeader();
   }
   initAppMetaData() {
     if (Object.keys(metaData).length === 0)
       return;
-    `"'${JSON.stringify(metaData)}'"`;
-    deno.callFunction(callDeno.initMetaData, JSON.stringify(JSON.stringify(metaData)));
+    metaData.baseUrl = this.url;
+    deno.callFunction(callDeno.initMetaData, `'${JSON.stringify(metaData)}'`);
   }
   async onRequest(url) {
     const response = await fetch(url);
@@ -19,9 +20,8 @@ class DWebview {
     return responseData;
   }
   activity(entry) {
-    console.log(new URL(entry, this.url).href);
-    deno.callFunction(callDeno.openDWebView, `"'${new URL(entry, this.url).href}'"`);
+    deno.callFunction(callDeno.openDWebView, `"${new URL(entry, this.url).href}"`);
   }
 }
-export { DWebview };
-//# sourceMappingURL=DWebview.mjs.map
+export { DWebView };
+//# sourceMappingURL=DWebView.mjs.map

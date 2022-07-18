@@ -34,9 +34,7 @@ import com.king.mlkit.vision.camera.CameraScan
 import com.king.mlkit.vision.camera.analyze.Analyzer
 import com.king.mlkit.vision.camera.util.LogUtils
 import com.king.mlkit.vision.camera.util.PermissionUtils
-import org.bfchain.rust.example.DenoService
-import org.bfchain.rust.example.MainActivity
-import org.bfchain.rust.example.R
+import org.bfchain.rust.example.*
 import org.bfchain.rust.example.lib.drawRect
 
 
@@ -123,7 +121,7 @@ class QRCodeScanningActivity : QRCodeCameraScanActivity() {
             intent.putExtra(CameraScan.SCAN_RESULT, results[0].displayValue)
             // 拿到扫完的数据，传递给rust方法
             results[0].displayValue?.let {
-                DenoService().getScanningData(it)
+                DenoService().backDataToRust(createBytesFactory(ExportNative().openScanner, it))
             }
             setResult(RESULT_OK, intent)
             finish()

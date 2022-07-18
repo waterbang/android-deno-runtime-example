@@ -5,7 +5,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import com.fasterxml.jackson.databind.DeserializationFeature
 import org.bfchain.rust.example.RustHandle
-import org.bfchain.rust.example.dWebView_host
 import org.bfchain.rust.example.mapper
 import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
 import org.json.JSONObject
@@ -22,6 +21,7 @@ private const val TAG = "NetworkMap"
 
 // 这里是存储客户端的映射规则的，这样才知道需要如何转发给后端 <String,RearRouter>
 val front_to_rear_map = mutableMapOf<String, RearRouter>()
+var dWebView_host = ""
 
 // ð这里是路由的白名单
 var network_whitelist = "http://127.0.0.1"
@@ -82,11 +82,11 @@ fun viewGateWay(
 }
 
 fun initMetaData(metaData: String) {
-    val decoder: Base64.Decoder = Base64.getDecoder()
-    val deJson = String(decoder.decode(metaData))
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     val metaJson =
-        mapper.readValue(deJson, UserMetaData::class.java)
+        mapper.readValue(metaData, UserMetaData::class.java)
+    // 设置域名
+    dWebView_host = metaJson.baseUrl.lowercase(Locale.ROOT)
     // 设置路由
     for (router in metaJson.router) {
         if (router.url !== null) {
@@ -115,7 +115,7 @@ fun resolveUrl(path: String): String {
     } else {
         "/$path"
     }
-    return dWebView_host + pathname
+    return (dWebView_host + pathname)
 }
 
 // 跳过白名单（因为每次请求都会走这个方法，所以抛弃循环的方法，用contains进行模式匹配，保证了速度）
@@ -135,33 +135,11 @@ fun jumpWhitelist(url: String): Boolean {
  * 4. 存储的规则统一用小写的,因为kotlin拦截出来是小写的
  * (ps:前缀：https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb，请求的路径：getBlockInfo)
  */
-fun test() {
-    val b =
-        RearRouter(
-            "https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo",
-            UserHeader("GET", "application/json", 200, "xxx hi  this is response")
-        )
-    val c1 =
-        RearRouter(
-            "hello_runtime.html",
-            UserHeader("GET", "application/json", 200, "xxx hi  this is response")
-        )
-    val c2 =
-        RearRouter(
-            "app/bfchain.dev/index.html",
-            UserHeader("GET", "application/json", 200, "xxx hi  this is response")
-        )
-    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/hello_runtime.html"] = c1
-    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/app/bfchain.dev/index.html"] =
-        c2
-    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/getblockinfo"] = b
-    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/getBlockHigh"] = b
-
-}
 
 data class RearRouter(val url: String, val header: UserHeader)
 
 data class UserMetaData(
+    val baseUrl: String = "",
     val router: Array<UserRouter> = arrayOf(UserRouter()),
     val whitelist: Array<String> = arrayOf("http://localhost")
 )
@@ -177,4 +155,29 @@ data class UserHeader(
     val StatusCode: Number = 200,
     val response: Any = ""
 )
+
+
+//fun test() {
+//    val b =
+//        RearRouter(
+//            "https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo",
+//            UserHeader("GET", "application/json", 200, "xxx hi  this is response")
+//        )
+//    val c1 =
+//        RearRouter(
+//            "hello_runtime.html",
+//            UserHeader("GET", "application/json", 200, "xxx hi  this is response")
+//        )
+//    val c2 =
+//        RearRouter(
+//            "app/bfchain.dev/index.html",
+//            UserHeader("GET", "application/json", 200, "xxx hi  this is response")
+//        )
+//    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/hello_runtime.html"] = c1
+//    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/app/bfchain.dev/index.html"] =
+//        c2
+//    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/getblockinfo"] = b
+//    front_to_rear_map["https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/getBlockHigh"] = b
+//
+//}
 

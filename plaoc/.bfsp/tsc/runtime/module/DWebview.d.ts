@@ -1,4 +1,4 @@
-export declare class DWebview {
+export declare class DWebView {
     url: string;
     constructor(id: string);
     initAppMetaData(): void;

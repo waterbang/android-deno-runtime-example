@@ -1,6 +1,6 @@
 import { FileModule } from "./module/File";
 import { ScriptModule } from "./module/Script";
-import { DWebview } from "./module/DWebview";
+import { DWebView } from "./module/DWebView";
 import { ManifestEntry } from "./AppRuntime";
 declare global {
   namespace Runtime {
@@ -12,11 +12,11 @@ declare global {
       defaultEntry: string;
       entryResourceMap?: Map<string, ManifestEntry>;
     }
-    type TLinker = ScriptModule | FileModule | DWebview | String;
+    type TLinker = ScriptModule | FileModule | DWebView | String;
     interface ILinker {
       script: ScriptModule;
       file: FileModule;
-      dwebview: DWebview;
+      dwebview: DWebView;
       url: string;
     }
     type TModule_fn = {
@@ -25,6 +25,7 @@ declare global {
   }
   namespace appData {
     interface metaData {
+      baseUrl?: string;
       router: router[];
       whitelist: string[];
     }

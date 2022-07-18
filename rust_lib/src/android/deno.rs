@@ -9,6 +9,7 @@ use jni::{
     objects::{JObject, JString, JValue},
     JNIEnv,
 };
+use jni_sys::jbyteArray;
 use std::sync::Arc;
 use std::ptr::NonNull;
 
@@ -63,6 +64,26 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_denoRunti
     .await
     .unwrap();
 }
+
+/// 接收返回的数据
+#[no_mangle]
+#[tokio::main]
+pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_backDataToRust(
+    env: JNIEnv,
+    _context: JObject,
+    byteData: jbyteArray,
+) {
+    let scannerData = env.convert_byte_array(byteData).unwrap();
+    log::info!(" getScanningData ->public_key:{:?}", &scannerData);
+    // let body = web_socket::handler::Event {
+    //     function: String::from("openScanner"),
+    //     public_key: Some(public_key),
+    //     message: scannerData,
+    // };
+    // 告知js扫码的数据
+    // web_socket::handler::publish_handler(body, web_socket::CLIENTS.clone()).await;
+}
+
 
 // #[no_mangle]
 // #[allow(non_snake_case)]

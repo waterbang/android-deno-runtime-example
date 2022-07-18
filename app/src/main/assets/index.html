@@ -112,6 +112,72 @@
         //     content.innerHTML = "no";
         // }
     </script>
+    <!-- <fieldset>
+        <h1>websockets简单示例</h1><br>
+        <div id="message"></div>
+        <div>
+            <button id="connect" onclick="connect()">建立连接</button>
+            <button id="closeConnect" onclick="closeConnect()">关闭连接</button>
+            <br>
+            <button onclick='sendData("openScanner")'>启动二维码扫描</button>
+            <button onclick='sendData("openDWebView")'>启动webView</button>
+        </div>
+        <script type="text/javascript">
+            let websockets;
+            let statusArr = [
+                { state: 0, value: '正在连接' },
+                { state: 1, value: '已建立连接' },
+                { state: 2, value: '正在关闭连接' },
+                { state: 3, value: '已关闭连接' },
+            ]
+            function getResponse(url = "http://127.0.0.1:8000/register") {
+                return fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ "public_key": "bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj" })
+                })
+                    .then(response => response.json())
+                    .then(function (responseData) {
+                        console.log(JSON.stringify(responseData));
+                        return responseData;
+                    });
+            }
+            async function connect() {
+                const res = await getResponse();
+                websockets = new WebSocket(res.url);
+                websockets.onopen = (event) => socketChange();
+                websockets.onmessage = (res) => {
+                    document.querySelector("#message").innerHTML += `<p>接收数据: ${res.data}</p>`
+                }
+                websockets.onclose = (event) => socketChange();
+            }
+            function socketChange() {
+                let state = websockets.readyState;
+                let val = statusArr.map((item) => {
+                    if (item.state == state) {
+                        return item.value
+                    }
+                });
+                document.querySelector("#message").innerHTML += `<p>当前的socket连接状态是: ${val}</p>`
+            }
+            function sendData(fun) {
+                let val = `{"function":["${fun}"],"public_key": "'bMr9vohVtvBvWRS3p4bwgzSMoLHTPHSvVj'","data":"'dweb://appid'"}`;
+                if (val == "" || val == undefined) {
+                    document.querySelector("#message").innerHTML += "<p>发送数据为空，请填写完成后再发送！</p>";
+                    return;
+                }
+                websockets.send(val);
+                document.querySelector("#message").innerHTML += `<p>发送数据:${val}</p>`;
+            }
+            function closeConnect() {
+                websockets.close();
+            }
+
+
+        </script>
+    </fieldset> -->
 </body>
 
 </html>

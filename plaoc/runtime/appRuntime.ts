@@ -1,5 +1,5 @@
 import { getExtension } from "../util/common";
-import { DWebview } from "./module/DWebview";
+import { DWebView } from "./module/DWebView";
 import { FileModule } from "./module/File";
 import { ScriptModule } from "./module/Script";
 
@@ -10,14 +10,15 @@ export class AppRuntime {
     this.app_root = app_root;
     this.appId = appId;
   }
-  inker(): Runtime.TLinker {
+
+  installRuntime(): Runtime.TLinker {
     console.log("inker:", this.app_root, getExtension(this.app_root) == "html");
     if (this.app_root === "node:bnrtc") {
       return new ScriptModule("code", "node:bnrtc");
     }
     // 如果是html
     if (getExtension(this.app_root) == "html") {
-      return new DWebview(this.appId);
+      return new DWebView(this.appId);
     }
     // 本地文件
     if (this.app_root.startsWith("File:///")) {
@@ -27,7 +28,6 @@ export class AppRuntime {
     }
     return `https://${this.appId}.dweb`;
   }
-  import(url: URL) {}
 }
 
 export class ManifestEntry {

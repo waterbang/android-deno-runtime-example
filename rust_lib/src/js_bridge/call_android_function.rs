@@ -1,4 +1,4 @@
-#[cfg(target_os = "android")]
+#![cfg(target_os = "android")]
 use crate::android::android_inter;
 use crate::web_socket::ws::TopicsRequest;
 use std::sync::mpsc::{Receiver, Sender};
@@ -43,11 +43,11 @@ impl HandleFunction {
     }
 }
 /// 调用android方法
-pub fn call_android(handle: &TopicsRequest) {
+pub fn call_android(bit: Vec<u8>) {
     // let fun_type = &handle.function;
     // let public_key = &handle.public_key;
     // let data = &handle.data;
-    let callback = Box::leak(String::from(handle.to_string()).into_boxed_str());
-    #[cfg(target_os = "android")]
+    // 转换为static str
+    let callback = Box::leak(bit.into_boxed_slice());
     android_inter::call_java_callback(callback);
 }

@@ -1,1 +1,1 @@
-export declare const installApp: (app: Runtime.IManifestApp) => void;
+export declare const openDWebView: (app: Runtime.IManifestApp) => void;

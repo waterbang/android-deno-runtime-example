@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import org.bfchain.rust.example.dWebView_host
+import org.bfchain.rust.example.webView.network.dWebView_host
 import org.bfchain.rust.example.webView.bottombar.BottomBarFFI
 import org.bfchain.rust.example.webView.bottombar.BottomBarState
 import org.bfchain.rust.example.webView.bottombar.DWebBottomBar
@@ -375,7 +375,7 @@ fun DWebView(
                                             return viewGateWay(customUrlScheme, request)
                                         }
                                         /**
-                                         * 这里放行了所以的资源文件（比如 .css .gif .js) 只有api类型的数据会被拦截到
+                                         * 这里放行了所有的资源文件（比如 .css .gif .js) 只有api类型的数据会被拦截到
                                          * 下面这种实现方法会有安全问题（比如说一些.php,.jsp的提权），可能需要完善一下下面规则的健壮性。
                                          */
                                         val temp = url.substring(url.lastIndexOf("/") + 1)

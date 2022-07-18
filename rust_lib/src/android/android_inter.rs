@@ -10,14 +10,14 @@ use std::{
     thread,
 };
 // 引用 jni 库的一些内容，就是上面添加的 jni 依赖
+use crate::module_loader::AssetsModuleLoader;
+use crate::my_deno_runtime::bootstrap_deno_runtime;
 use jni::{
-    objects::{GlobalRef, JObject, JString, JValue},
+    objects::{GlobalRef, JByteBuffer, JObject, JString, JValue},
     sys::{jint, jstring, JNI_ERR, JNI_VERSION_1_4},
     JNIEnv, JavaVM, NativeMethod,
 };
-
-use crate::module_loader::AssetsModuleLoader;
-use crate::my_deno_runtime::bootstrap_deno_runtime;
+use jni_sys::jbyteArray;
 use std::ptr::NonNull;
 use std::sync::Arc;
 
@@ -98,23 +98,6 @@ pub extern "C" fn rust_lib_ndk_context_initialize(vm: JavaVM, context: JObject) 
     );
 }
 
-#[no_mangle]
-pub extern "system" fn Java_org_bfchain_rust_example_DenoService_hello2(
-    env: JNIEnv,
-    _context: JObject,
-    jasset_manager: JObject,
-) {
-    let asset_manager_ptr = unsafe {
-        ndk_sys::AAssetManager_fromJava(env.get_native_interface(), jasset_manager.cast())
-    };
-    let aml = crate::module_loader::AssetsModuleLoader::from_ptr(
-        NonNull::new(asset_manager_ptr).unwrap(),
-    );
-    log::info!(
-        "hello_runtime.js: {}",
-        aml.get_string_asset("hello_runtime.js")
-    );
-}
 
 /// 动态库被 java 加载时 会触发此函数, 在此动态注册本地方法
 #[no_mangle]
@@ -174,7 +157,7 @@ unsafe fn register_natives(jvm: &JavaVM, class_name: &str, methods: &[NativeMeth
 }
 
 /// 回调 Callback 对象的 { void handleCallback(string: String) } 函数
-pub fn call_java_callback(fun_type: &'static str) {
+pub fn call_java_callback(fun_type: &'static [u8]) {
     android_logger::init_once(
         Config::default()
             .with_min_level(Level::Debug)
@@ -182,16 +165,13 @@ pub fn call_java_callback(fun_type: &'static str) {
     );
     log::info!("i am call_java_callback {:?}", fun_type);
     call_jvm(&JNI_CALLBACK, move |obj: JObject, env: &JNIEnv| {
-        let s = String::from(fun_type);
-        let response: JString = env
-            .new_string(fun_type)
+        // let response: JString = env
+        //     .new_string(fun_type)
+        //     .expect("Couldn't create java string!");
+        let response: jbyteArray = env
+            .byte_array_from_slice(fun_type)
             .expect("Couldn't create java string!");
-        match env.call_method(
-            obj,
-            "handleCallback",
-            "(Ljava/lang/String;)V",
-            &[JValue::from(JObject::from(response))],
-        ) {
+        match env.call_method(obj, "handleCallback", "([B)V", &[JValue::from(response)]) {
             Ok(jvalue) => {
                 debug!("callback succeed: {:?}", jvalue);
             }

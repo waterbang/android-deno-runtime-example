@@ -1,19 +1,19 @@
-
-const [libPrefix, libSuffix] = {
-  ios: ["lib", "dylib"],
-  android: ["lib", "so"],
-  windows: ["", "dll"],
-}[Deno.build.os];
-
-try {
-  const dylib = Deno.dlopen(`${libPrefix}rust_lib.${libSuffix}`, {
-     "add_i32": { parameters: ["i32", "i32"], result: "i32" }
-  });
-  const { add_i32 } = dylib.symbols;
-  Deno.bench("add_i32()", () => {
-    add_i32(1, 2);
-  });
-} catch (e) {
-  console.log("err:", e);
+let libSuffix = "";
+switch (Deno.build.os) {
+  case "windows":
+    libSuffix = "dll";
+    break;
+  case "darwin":
+    libSuffix = "dylib";
+    break;
+  default:
+    libSuffix = "so";
+    break;
 }
-// # sourceMappingURL=rust.ffi.mjs.map
+const libName = `librust_lib.${libSuffix}`;
+const dylib = Deno.dlopen(libName, {
+  print_buffer: { parameters: ["pointer", "usize"], result: "void" }
+});
+const Rust = dylib.symbols;
+export { Rust as default };
+//# sourceMappingURL=rust.ffi.mjs.map

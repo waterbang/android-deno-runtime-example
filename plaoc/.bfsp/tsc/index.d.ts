@@ -1,3 +1,4 @@
 export * from "./plugin/index";
-import "./deno/rust.ffi";
-export declare function openDWebView(): void;
+import { openDWebView } from "./runtime/installApp";
+import { openScanner } from "./plugin/scanner/index";
+export { openDWebView, openScanner };

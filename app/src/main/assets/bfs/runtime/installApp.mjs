@@ -1,8 +1,8 @@
 import { AppRuntime } from "./AppRuntime.mjs";
-const installApp = (app) => {
+const openDWebView = (app) => {
   const appRuntime = new AppRuntime(app.id, app.defaultEntry);
-  const dwebview = appRuntime.inker();
+  const dwebview = appRuntime.installRuntime();
   dwebview.activity(app.defaultEntry);
 };
-export { installApp };
+export { openDWebView };
 //# sourceMappingURL=installApp.mjs.map

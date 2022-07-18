@@ -5,11 +5,11 @@ import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import org.bfchain.rust.example.webView.systemui.SystemUiFFI
 import com.google.mlkit.vision.barcode.Barcode
 import com.king.app.dialog.AppDialog
 import com.king.app.dialog.AppDialogConfig
@@ -22,19 +22,12 @@ import org.bfchain.rust.example.barcode.BarcodeScanningActivity
 import org.bfchain.rust.example.barcode.MultipleQRCodeScanningActivity
 import org.bfchain.rust.example.barcode.QRCodeScanningActivity
 import org.bfchain.rust.example.lib.drawRect
-import org.bfchain.rust.example.webView.DWebViewActivity
-import org.bfchain.rust.example.webView.jsutil.toBooleanOrNull
 import org.bfchain.rust.example.webView.network.initMetaData
-import org.bfchain.rust.example.webView.network.test
 import org.bfchain.rust.example.webView.openDWebWindow
 import java.net.URL
-import java.util.*
-import java.util.regex.Pattern
 
 
-//var start_zzzz: (() -> Unit)? = null
 val callable_map = mutableMapOf<String, (data: String) -> Unit>()
-var dWebView_host = ""
 
 class MainActivity : AppCompatActivity() {
     var isQRCode = false //是否是识别二维码
@@ -49,11 +42,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        callable_map["openScanner"] = { openScannerActivity() }
-        callable_map["openDWebView"] = {
+        callable_map[ExportNative().openScanner] = { openScannerActivity() }
+        callable_map[ExportNative().openDWebView] = {
             openDWebViewActivity(it)
         }
-        callable_map["initMetaData"] = {
+        callable_map[ExportNative().initMetaData] = {
             initMetaData(it)
         }
         // 启动Deno服务
@@ -185,7 +178,7 @@ class MainActivity : AppCompatActivity() {
     fun openDWebViewActivity(url: String) {
         // 存储一下host，用来判断是远程的还是本地的
         val host = URL(url).host
-        dWebView_host = host.lowercase(Locale.ROOT) // 为了适配一下DwebView拦截出来都是小写
+//        dWebView_host = host.lowercase(Locale.ROOT) // 为了适配一下DwebView拦截出来都是小写
         LogUtils.d("启动了DWebView:$url，host为： $host")
         openDWebWindow(
             activity = getContext(),

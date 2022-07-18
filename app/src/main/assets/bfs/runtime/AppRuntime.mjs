@@ -1,5 +1,5 @@
 import { getExtension } from "../util/common.mjs";
-import { DWebview } from "./module/DWebview.mjs";
+import { DWebView } from "./module/DWebView.mjs";
 import { FileModule } from "./module/File.mjs";
 import { ScriptModule } from "./module/Script.mjs";
 class AppRuntime {
@@ -7,20 +7,18 @@ class AppRuntime {
     this.app_root = app_root;
     this.appId = appId;
   }
-  inker() {
+  installRuntime() {
     console.log("inker:", this.app_root, getExtension(this.app_root) == "html");
     if (this.app_root === "node:bnrtc") {
       return new ScriptModule("code", "node:bnrtc");
     }
     if (getExtension(this.app_root) == "html") {
-      return new DWebview(this.appId);
+      return new DWebView(this.appId);
     }
     if (this.app_root.startsWith("File:///")) {
       return new FileModule(new URL(this.app_root, `https://${this.appId}.dweb`));
     }
     return `https://${this.appId}.dweb`;
-  }
-  import(url) {
   }
 }
 export { AppRuntime };

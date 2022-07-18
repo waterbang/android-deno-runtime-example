@@ -14,15 +14,10 @@ switch (Deno.build.os) {
 
 const libName = `librust_lib.${libSuffix}`;
 
-try {
-  const dylib = Deno.dlopen(libName, {
-    add: { parameters: ["isize", "isize"], result: "isize" },
-  } as const); // Call the symbol `add`
-  const result = dylib.symbols.add(35, 34); // 69
+const dylib = Deno.dlopen(libName, {
+  send_buffer: { parameters: ["pointer", "usize"], result: "void" },
+});
 
-  console.log(`Result from external addition of 35 and 34: ${result}`);
-} catch (e) {
-  console.log("err:", e);
-}
+const Rust = dylib.symbols;
 
-export {};
+export default Rust;

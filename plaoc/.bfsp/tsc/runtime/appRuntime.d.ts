@@ -2,8 +2,7 @@ export declare class AppRuntime {
     app_root: string;
     appId: string;
     constructor(appId: string, app_root: string);
-    inker(): Runtime.TLinker;
-    import(url: URL): void;
+    installRuntime(): Runtime.TLinker;
 }
 export declare class ManifestEntry {
     url: null;

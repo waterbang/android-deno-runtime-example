@@ -4,15 +4,23 @@ import android.app.IntentService
 import android.content.Intent
 import android.content.res.AssetManager
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
+import java.nio.ByteBuffer
 
 
 private const val TAG = "DENO_SERVICE"
 
-// 这里当做一个连接池，每当有客户端传过来方法就注册一下，返回的时候就知道数据是谁要的了 <public_key,handleFunction>
-val rust_call_map = mutableMapOf<String, String>()
+/** 针对64位
+ * 第一块分区：版本号（versionId） 2^8 8位，一个字节 1：表示消息，2：表示广播，3：心跳检测
+ * 第二块分区：头部标记（headId） 2^16 16位 两个字节  根据版本号这里各有不同，假如是消息，就是0，1；如果是广播则是组
+ * 第三块分区：数据主体 动态创建
+ */
+// 这里当做一个连接池，每当有客户端传过来方法就注册一下，返回的时候就知道数据是谁要的了 <handleFunction,headId>
+val rust_call_map = mutableMapOf<String, ByteArray>()
+
+// 存储版本号 <versionID,headerID>
+val version_head_map = mutableMapOf<ByteArray, ByteArray>()
 val mapper = ObjectMapper()
 
 class DenoService : IntentService("DenoService") {
@@ -25,34 +33,33 @@ class DenoService : IntentService("DenoService") {
     }
 
     interface IHandleCallback {
-        fun handleCallback(string: String)
+        fun handleCallback(bytes: ByteArray)
     }
 
     private external fun nativeSetCallback(callback: IHandleCallback)
     private external fun initDeno(assets: AssetManager)
-    external fun getScanningData(
-        scannerData: String,
-        public_key: String? = rust_call_map["openScanner"]
+    external fun backDataToRust(
+        scannerData: ByteArray,
     )
 
     private external fun denoRuntime(assets: AssetManager)
-//    external fun initialiseLogging()
-
 
     override fun onHandleIntent(p0: Intent?) {
+
         val appContext = applicationContext
         // native回调
         nativeSetCallback(object : IHandleCallback {
-            override fun handleCallback(callHandle: String) {
-                Log.d("handleCallback", "now rust says:$callHandle")
+            override fun handleCallback(bytes: ByteArray) {
+                // 处理二进制
+                val (headId, stringData) = parseBytesFactory(bytes)
                 //允许出现特殊字符和转义符
                 mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
                 //允许使用单引号
                 mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-                val handle =
-                    mapper.readValue(callHandle, RustHandle::class.java)
-                // 存一下public_key，返回数据的时候才知道给谁
-                rust_call_map[(handle.function?.get(0)).toString()] = (handle.public_key).toString()
+                val handle = mapper.readValue(stringData, RustHandle::class.java)
+                // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
+                val funName = (handle.function?.get(0)).toString()
+                rust_call_map[funName] = headId
                 // 执行函数
                 callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
             }
@@ -62,8 +69,42 @@ class DenoService : IntentService("DenoService") {
     }
 }
 
+// 解析二进制数据
+fun parseBytesFactory(bytes: ByteArray): ByteData {
+    val versionId = bytes.sliceArray(0..0)
+    val headId = bytes.sliceArray(1..2)
+    val message = bytes.sliceArray(3 until bytes.size)
+    version_head_map[headId] = versionId // 存版本号
+    val stringData = String(message)
+    Log.d("bytesFactory", "now versionId :${versionId}")
+    Log.d("bytesFactory", "now headId:${headId}")
+    Log.d("bytesFactory", "now message says:$stringData")
+    return ByteData(headId, stringData)
+}
+
+
+/**
+ * 创建二进制数据返回
+ */
+fun createBytesFactory(callFun: String, message: String): ByteArray {
+    val headId = rust_call_map[callFun] ?: return message.toByteArray()
+    val versionId = version_head_map[headId] ?: ByteArray(1).plus(0x01)
+    val msgBit = message.encodeToByteArray()
+    val result = ByteBuffer.allocate(headId.size + versionId.size + msgBit.size)
+        .put(headId)
+        .put(versionId)
+        .put(msgBit)
+    // 移除使用完的标记
+    rust_call_map.remove(callFun)
+    version_head_map.remove(headId)
+    return ByteArray(result.capacity())
+}
+
+
 data class RustHandle(
     val function: Array<String>? = null,
-    val public_key: String? = null,
     val data: String? = null
 )
+
+
+data class ByteData(var headId: ByteArray, var stringData: String)
