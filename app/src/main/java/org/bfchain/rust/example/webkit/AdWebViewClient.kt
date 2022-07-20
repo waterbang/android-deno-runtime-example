@@ -1,10 +1,8 @@
 package org.bfchain.rust.example.webkit
 
 import android.graphics.Bitmap
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.util.Log
+import android.webkit.*
 
 /**
  * AccompanistWebViewClient
@@ -61,10 +59,10 @@ open class AdWebViewClient : WebViewClient() {
         error: WebResourceError?
     ) {
         super.onReceivedError(view, request, error)
-
         if (error != null) {
             state.errorsForCurrentRequest.add(AdWebViewError(request, error))
-        }
+        } else
+            Log.d("AdWebViewClient", "$request -- error $error")
     }
 
     override fun shouldOverrideUrlLoading(

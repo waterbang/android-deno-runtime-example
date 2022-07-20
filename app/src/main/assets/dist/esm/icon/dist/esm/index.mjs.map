@@ -1,1 +1,0 @@
-{"version":3,"file":"index.mjs","sources":["../../../../../../icon/dist/esm/index.mjs"],"sourcesContent":["import { BfspIcon } from \"./bfspIcon_android.mjs\";\ncustomElements.define(\"dweb-icon\", BfspIcon);\n//# sourceMappingURL=index.mjs.map\n"],"names":[],"mappings":";AACA,eAAe,OAAO,aAAa,QAAQ;"}

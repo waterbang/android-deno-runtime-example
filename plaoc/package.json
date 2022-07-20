@@ -1,35 +1,11 @@
 {
-  "name": "bfsa",
-  "main": "./dist/esm/index.mjs",
-  "types": "./.bfsp/tsc/index.d.ts",
-  "type": "module",
-  "version": "1.0.0",
+  "name": "bfsp-workspace",
   "private": true,
-  "engines": {
-    "node": ">=14.19.0"
-  },
-  "exports": {
-    ".": {
-      "types": "./.bfsp/tsc/index.d.ts",
-      "import": "./dist/esm/index.mjs"
-    }
-  },
-  "imports": {},
-  "scripts": {
-    "dev": "bfsp dev",
-    "build": "bfsp build",
-    "test": "bfsp test"
-  },
-  "files": [
-    "dist",
-    "typings"
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "tslib": "^2.3.1"
-  },
-  "peerDependencies": {},
-  "optionalDependencies": {},
-  "license": "MIT",
-  "author": "mac"
+  "packageManager": "yarn@1.22.18",
+  "workspaces": [
+    "./core",
+    "./plugin",
+    "./dweb-manifest",
+    "./typings"
+  ]
 }

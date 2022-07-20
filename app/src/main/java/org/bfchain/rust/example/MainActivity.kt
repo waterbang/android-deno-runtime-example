@@ -49,6 +49,9 @@ class MainActivity : AppCompatActivity() {
         callable_map[ExportNative().initMetaData] = {
             initMetaData(it)
         }
+        callable_map[ExportNative().denoRuntime] = {
+            DenoService().denoRuntime(this.assets, it)
+        }
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)
         startService(deno)

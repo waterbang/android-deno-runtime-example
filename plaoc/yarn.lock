@@ -2,7 +2,26 @@
 # yarn lockfile v1
 
 
-tslib@^2.3.1:
-  version "2.4.0"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
-  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
+"@bfsa/dweb-manifest@^0.0.1":
+  "resolved" "file:dweb-manifest"
+  "version" "0.0.1"
+
+"@bfsa/plugin@file:/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/plaoc/plugin":
+  "resolved" "file:plugin"
+  "version" "0.0.1"
+
+"@bfsa/typings@^0.0.1":
+  "resolved" "file:typings"
+  "version" "0.0.1"
+
+"@bfsx/core@file:/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/plaoc/core":
+  "resolved" "file:core"
+  "version" "0.0.1"
+  dependencies:
+    "@bfsa/dweb-manifest" "^0.0.1"
+    "@bfsa/typings" "^0.0.1"
+
+"tslib@^2.3.1":
+  "integrity" "sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ=="
+  "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz"
+  "version" "2.4.0"

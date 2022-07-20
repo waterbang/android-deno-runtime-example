@@ -89,3 +89,6 @@ cp aarch64-linux-android28-clang aarch64-linux-android-clang
 ```
 brew install autoconf automake libtool   
 ```
+
+然后 在ext/ffi/cargo.toml
+修改版本为：libffi = "3.0.0"

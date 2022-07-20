@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.webkit.ConsoleMessage
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +29,7 @@ import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import org.bfchain.rust.example.R
 import org.bfchain.rust.example.ui.theme.RustApplicationTheme
 import org.bfchain.rust.example.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.example.webView.urlscheme.requestHandlerFromAssets
@@ -43,6 +46,7 @@ class DWebViewActivity : AppCompatActivity() {
     companion object {
         val ALL = mutableListOf<DWebViewActivity>()
     }
+    
 
     override fun onBackPressed() {
         Log.i(TAG, "parentActivityIntent:${this.parentActivityIntent}")

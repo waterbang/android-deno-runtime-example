@@ -10,8 +10,8 @@ use jni::{
     JNIEnv,
 };
 use jni_sys::jbyteArray;
-use std::sync::Arc;
 use std::ptr::NonNull;
+use std::sync::Arc;
 
 /// 初始化的一些操作
 #[no_mangle]
@@ -46,20 +46,22 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_denoRunti
     env: JNIEnv,
     _context: JObject,
     jasset_manager: JObject,
+    path: JString,
 ) {
+    let asset_path = String::from(env.get_string(path).unwrap());
     let asset_manager_ptr = unsafe {
         ndk_sys::AAssetManager_fromJava(env.get_native_interface(), jasset_manager.cast())
     };
     android_logger::init_once(
         Config::default()
             .with_min_level(Level::Debug)
-            .with_tag("myrust::helloDenoRuntime"),
+            .with_tag("myrust::denoRuntime"),
     );
     bootstrap_deno_runtime(
         Arc::new(AssetsModuleLoader::from_ptr(
             NonNull::new(asset_manager_ptr).unwrap(),
         )),
-        "assets/hello_runtime.js",
+        asset_path.as_str(),
     )
     .await
     .unwrap();
@@ -83,7 +85,6 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_backDataT
     // 告知js扫码的数据
     // web_socket::handler::publish_handler(body, web_socket::CLIENTS.clone()).await;
 }
-
 
 // #[no_mangle]
 // #[allow(non_snake_case)]

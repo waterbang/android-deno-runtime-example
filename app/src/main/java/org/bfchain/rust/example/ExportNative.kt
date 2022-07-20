@@ -5,5 +5,6 @@ class ExportNative {
     val openScanner = "openScanner"
     val openDWebView = "openDWebView"
     val initMetaData = "initMetaData"
+    val denoRuntime = "denoRuntime"
 }
 

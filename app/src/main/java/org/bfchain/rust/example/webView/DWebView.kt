@@ -356,6 +356,7 @@ fun DWebView(
                     class MyWebViewClient : AdWebViewClient() {
                         private val ITAG = "$TAG/CUSTOM-SCHEME"
 
+
                         // API >= 21
                         @SuppressLint("NewApi")
                         @Override

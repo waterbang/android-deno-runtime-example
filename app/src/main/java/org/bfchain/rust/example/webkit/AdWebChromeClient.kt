@@ -4,6 +4,8 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Process
+import android.util.Log
+import android.webkit.ConsoleMessage
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -79,5 +81,16 @@ open class AdWebChromeClient : WebChromeClient() {
 
 
         return true
+    }
+
+    override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+        consoleMessage?.apply {
+            Log.d("WebChromeClient", "${message()} -- From line ${lineNumber()} of ${sourceId()}")
+        }
+        return true
+    }
+
+    override fun onConsoleMessage(message: String, lineNumber: Int, sourceID: String) {
+        Log.d("MyApplication", "$message -- From line $lineNumber of $sourceID")
     }
 }
