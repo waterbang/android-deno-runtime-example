@@ -48,28 +48,25 @@ class DenoService : IntentService("DenoService") {
 
         val appContext = applicationContext
         // native回调
-        try {
-            nativeSetCallback(object : IHandleCallback {
-                override fun handleCallback(bytes: ByteArray) {
-                    // 处理二进制
-                    val (headId, stringData) = parseBytesFactory(bytes)
-                    //允许出现特殊字符和转义符
-                    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-                    //允许使用单引号
-                    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-                    val handle = mapper.readValue(stringData, RustHandle::class.java)
-                    // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
-                    val funName = (handle.function?.get(0)).toString()
-                    rust_call_map[funName] = headId
-                    // 执行函数
-                    callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
-                }
-            })
-            // BFS初始化的操作
-            initDeno(appContext.assets)
-        } catch (e: Exception) {
-            Log.i("DenoService", "xxxxxxxx->" + e)
-        }
+        nativeSetCallback(object : IHandleCallback {
+            override fun handleCallback(bytes: ByteArray) {
+                // 处理二进制
+                val (headId, stringData) = parseBytesFactory(bytes)
+                //允许出现特殊字符和转义符
+                mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+                //允许使用单引号
+                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+                val handle = mapper.readValue(stringData, RustHandle::class.java)
+                // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
+                val funName = (handle.function?.get(0)).toString()
+                rust_call_map[funName] = headId
+                // 执行函数
+                callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
+            }
+        })
+        // BFS初始化的操作
+        initDeno(appContext.assets)
+
     }
 }
 

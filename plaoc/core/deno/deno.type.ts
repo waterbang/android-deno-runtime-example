@@ -6,7 +6,7 @@
 declare namespace DenoFFI {
   type callData = string | Object;
 
-  export function JsCallFunction(funName: string, data: string): String;
+  function JsCallFunction(funName: string, data: string): String;
 }
 
 declare interface ImportMeta {
@@ -68,36 +68,36 @@ declare interface PerformanceMeasureOptions {
 
 declare namespace Deno {
   /** A set of error constructors that are raised by Deno APIs. */
-  export namespace errors {
-    export class NotFound extends Error {}
-    export class PermissionDenied extends Error {}
-    export class ConnectionRefused extends Error {}
-    export class ConnectionReset extends Error {}
-    export class ConnectionAborted extends Error {}
-    export class NotConnected extends Error {}
-    export class AddrInUse extends Error {}
-    export class AddrNotAvailable extends Error {}
-    export class BrokenPipe extends Error {}
-    export class AlreadyExists extends Error {}
-    export class InvalidData extends Error {}
-    export class TimedOut extends Error {}
-    export class Interrupted extends Error {}
-    export class WriteZero extends Error {}
-    export class UnexpectedEof extends Error {}
-    export class BadResource extends Error {}
-    export class Http extends Error {}
-    export class Busy extends Error {}
-    export class NotSupported extends Error {}
+  namespace errors {
+    class NotFound extends Error {}
+    class PermissionDenied extends Error {}
+    class ConnectionRefused extends Error {}
+    class ConnectionReset extends Error {}
+    class ConnectionAborted extends Error {}
+    class NotConnected extends Error {}
+    class AddrInUse extends Error {}
+    class AddrNotAvailable extends Error {}
+    class BrokenPipe extends Error {}
+    class AlreadyExists extends Error {}
+    class InvalidData extends Error {}
+    class TimedOut extends Error {}
+    class Interrupted extends Error {}
+    class WriteZero extends Error {}
+    class UnexpectedEof extends Error {}
+    class BadResource extends Error {}
+    class Http extends Error {}
+    class Busy extends Error {}
+    class NotSupported extends Error {}
   }
 
   /** The current process id of the runtime. */
-  export const pid: number;
+  const pid: number;
   /**
    * The pid of the current process's parent.
    */
-  export const ppid: number;
+  const ppid: number;
 
-  export interface MemoryUsage {
+  interface MemoryUsage {
     rss: number;
     heapTotal: number;
     heapUsed: number;
@@ -108,16 +108,16 @@ declare namespace Deno {
    * Returns an object describing the memory usage of the Deno process measured
    * in bytes.
    */
-  export function memoryUsage(): MemoryUsage;
+  function memoryUsage(): MemoryUsage;
 
   /** Reflects the `NO_COLOR` environment variable at program start.
    *
    * See: https://no-color.org/ */
-  export const noColor: boolean;
+  const noColor: boolean;
 
-  export type PermissionOptions = "inherit" | "none" | PermissionOptionsObject;
+  type PermissionOptions = "inherit" | "none" | PermissionOptionsObject;
 
-  export interface PermissionOptionsObject {
+  interface PermissionOptionsObject {
     /** Specifies if the `env` permission should be requested or revoked.
      * If set to `"inherit"`, the current `env` permission will be inherited.
      * If set to `true`, the global `env` permission will be requested.
@@ -250,7 +250,7 @@ declare namespace Deno {
     write?: "inherit" | boolean | Array<string | URL>;
   }
 
-  export interface TestContext {
+  interface TestContext {
     /**
      * The current test name.
      */
@@ -282,7 +282,7 @@ declare namespace Deno {
     ): Promise<boolean>;
   }
 
-  export interface TestStepDefinition {
+  interface TestStepDefinition {
     fn: (t: TestContext) => void | Promise<void>;
     /**
      * The current test name.
@@ -302,7 +302,7 @@ declare namespace Deno {
     sanitizeExit?: boolean;
   }
 
-  export interface TestDefinition {
+  interface TestDefinition {
     fn: (t: TestContext) => void | Promise<void>;
     /**
      * The current test name.
@@ -363,7 +363,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function test(t: TestDefinition): void;
+  function test(t: TestDefinition): void;
 
   /** Register a test which will be run when `deno test` is used on the command
    * line and the containing module looks like a test module.
@@ -383,7 +383,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function test(
+  function test(
     name: string,
     fn: (t: TestContext) => void | Promise<void>
   ): void;
@@ -406,7 +406,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function test(fn: (t: TestContext) => void | Promise<void>): void;
+  function test(fn: (t: TestContext) => void | Promise<void>): void;
 
   /** Register a test which will be run when `deno test` is used on the command
    * line and the containing module looks like a test module.
@@ -426,7 +426,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function test(
+  function test(
     name: string,
     options: Omit<TestDefinition, "fn" | "name">,
     fn: (t: TestContext) => void | Promise<void>
@@ -450,7 +450,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function test(
+  function test(
     options: Omit<TestDefinition, "fn">,
     fn: (t: TestContext) => void | Promise<void>
   ): void;
@@ -473,7 +473,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function test(
+  function test(
     options: Omit<TestDefinition, "fn" | "name">,
     fn: (t: TestContext) => void | Promise<void>
   ): void;
@@ -487,9 +487,9 @@ declare namespace Deno {
    * Deno.exit(5);
    * ```
    */
-  export function exit(code?: number): never;
+  function exit(code?: number): never;
 
-  export const env: {
+  const env: {
     /** Retrieve the value of an environment variable. Returns `undefined` if that
      * key doesn't exist.
      *
@@ -543,7 +543,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` permission.
    */
-  export function execPath(): string;
+  function execPath(): string;
 
   /**
    * Change the current working directory to the specified path.
@@ -560,7 +560,7 @@ declare namespace Deno {
    *
    * Requires --allow-read.
    */
-  export function chdir(directory: string | URL): void;
+  function chdir(directory: string | URL): void;
 
   /**
    * Return a string representing the current working directory.
@@ -576,7 +576,7 @@ declare namespace Deno {
    *
    * Requires --allow-read
    */
-  export function cwd(): string;
+  function cwd(): string;
 
   /**
    * Synchronously creates `newpath` as a hard link to `oldpath`.
@@ -586,7 +586,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` and `allow-write` permissions. */
-  export function linkSync(oldpath: string, newpath: string): void;
+  function linkSync(oldpath: string, newpath: string): void;
 
   /**
    * Creates `newpath` as a hard link to `oldpath`.
@@ -596,15 +596,15 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` and `allow-write` permissions. */
-  export function link(oldpath: string, newpath: string): Promise<void>;
+  function link(oldpath: string, newpath: string): Promise<void>;
 
-  export enum SeekMode {
+  enum SeekMode {
     Start = 0,
     Current = 1,
     End = 2,
   }
 
-  export interface Reader {
+  interface Reader {
     /** Reads up to `p.byteLength` bytes into `p`. It resolves to the number of
      * bytes read (`0` < `n` <= `p.byteLength`) and rejects if any error
      * encountered. Even if `read()` resolves to `n` < `p.byteLength`, it may
@@ -630,7 +630,7 @@ declare namespace Deno {
     read(p: Uint8Array): Promise<number | null>;
   }
 
-  export interface ReaderSync {
+  interface ReaderSync {
     /** Reads up to `p.byteLength` bytes into `p`. It resolves to the number
      * of bytes read (`0` < `n` <= `p.byteLength`) and rejects if any error
      * encountered. Even if `readSync()` returns `n` < `p.byteLength`, it may use
@@ -655,7 +655,7 @@ declare namespace Deno {
     readSync(p: Uint8Array): number | null;
   }
 
-  export interface Writer {
+  interface Writer {
     /** Writes `p.byteLength` bytes from `p` to the underlying data stream. It
      * resolves to the number of bytes written from `p` (`0` <= `n` <=
      * `p.byteLength`) or reject with the error encountered that caused the
@@ -668,7 +668,7 @@ declare namespace Deno {
     write(p: Uint8Array): Promise<number>;
   }
 
-  export interface WriterSync {
+  interface WriterSync {
     /** Writes `p.byteLength` bytes from `p` to the underlying data
      * stream. It returns the number of bytes written from `p` (`0` <= `n`
      * <= `p.byteLength`) and any error encountered that caused the write to
@@ -681,11 +681,11 @@ declare namespace Deno {
     writeSync(p: Uint8Array): number;
   }
 
-  export interface Closer {
+  interface Closer {
     close(): void;
   }
 
-  export interface Seeker {
+  interface Seeker {
     /** Seek sets the offset for the next `read()` or `write()` to offset,
      * interpreted according to `whence`: `Start` means relative to the
      * start of the file, `Current` means relative to the current offset,
@@ -700,7 +700,7 @@ declare namespace Deno {
     seek(offset: number, whence: SeekMode): Promise<number>;
   }
 
-  export interface SeekerSync {
+  interface SeekerSync {
     /** Seek sets the offset for the next `readSync()` or `writeSync()` to
      * offset, interpreted according to `whence`: `Start` means relative
      * to the start of the file, `Current` means relative to the current
@@ -732,7 +732,7 @@ declare namespace Deno {
    * @param dst The destination to copy to
    * @param options Can be used to tune size of the buffer. Default size is 32kB
    */
-  export function copy(
+  function copy(
     src: Reader,
     dst: Writer,
     options?: {
@@ -774,7 +774,7 @@ declare namespace Deno {
    * https://deno.land/std/streams/conversion.ts instead. `Deno.iter` will be
    * removed in Deno 2.0.
    */
-  export function iter(
+  function iter(
     r: Reader,
     options?: {
       bufSize?: number;
@@ -815,7 +815,7 @@ declare namespace Deno {
    * https://deno.land/std/streams/conversion.ts instead. `Deno.iterSync` will
    * be removed in Deno 2.0.
    */
-  export function iterSync(
+  function iterSync(
     r: ReaderSync,
     options?: {
       bufSize?: number;
@@ -835,7 +835,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` and/or `allow-write` permissions depending on options.
    */
-  export function openSync(path: string | URL, options?: OpenOptions): FsFile;
+  function openSync(path: string | URL, options?: OpenOptions): FsFile;
 
   /** Open a file and resolve to an instance of `Deno.FsFile`.  The
    * file does not need to previously exist if using the `create` or `createNew`
@@ -850,10 +850,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` and/or `allow-write` permissions depending on options.
    */
-  export function open(
-    path: string | URL,
-    options?: OpenOptions
-  ): Promise<FsFile>;
+  function open(path: string | URL, options?: OpenOptions): Promise<FsFile>;
 
   /** Creates a file if none exists or truncates an existing file and returns
    *  an instance of `Deno.FsFile`.
@@ -864,7 +861,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` and `allow-write` permissions.
    */
-  export function createSync(path: string | URL): FsFile;
+  function createSync(path: string | URL): FsFile;
 
   /** Creates a file if none exists or truncates an existing file and resolves to
    *  an instance of `Deno.FsFile`.
@@ -875,7 +872,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` and `allow-write` permissions.
    */
-  export function create(path: string | URL): Promise<FsFile>;
+  function create(path: string | URL): Promise<FsFile>;
 
   /** Synchronously read from a resource ID (`rid`) into an array buffer (`buffer`).
    *
@@ -900,7 +897,7 @@ declare namespace Deno {
    * Deno.close(file.rid);
    * ```
    */
-  export function readSync(rid: number, buffer: Uint8Array): number | null;
+  function readSync(rid: number, buffer: Uint8Array): number | null;
 
   /** Read from a resource ID (`rid`) into an array buffer (`buffer`).
    *
@@ -925,7 +922,7 @@ declare namespace Deno {
    * Deno.close(file.rid);
    * ```
    */
-  export function read(rid: number, buffer: Uint8Array): Promise<number | null>;
+  function read(rid: number, buffer: Uint8Array): Promise<number | null>;
 
   /** Synchronously write to the resource ID (`rid`) the contents of the array
    * buffer (`data`).
@@ -945,7 +942,7 @@ declare namespace Deno {
    * Deno.close(file.rid);
    * ```
    */
-  export function writeSync(rid: number, data: Uint8Array): number;
+  function writeSync(rid: number, data: Uint8Array): number;
 
   /** Write to the resource ID (`rid`) the contents of the array buffer (`data`).
    *
@@ -964,7 +961,7 @@ declare namespace Deno {
    * Deno.close(file.rid);
    * ```
    */
-  export function write(rid: number, data: Uint8Array): Promise<number>;
+  function write(rid: number, data: Uint8Array): Promise<number>;
 
   /** Synchronously seek a resource ID (`rid`) to the given `offset` under mode
    * given by `whence`.  The new position within the resource (bytes from the
@@ -997,11 +994,7 @@ declare namespace Deno {
    * console.log(Deno.seekSync(file.rid, -2, Deno.SeekMode.End)); // "9" (e.g. 11-2)
    * ```
    */
-  export function seekSync(
-    rid: number,
-    offset: number,
-    whence: SeekMode
-  ): number;
+  function seekSync(rid: number, offset: number, whence: SeekMode): number;
 
   /** Seek a resource ID (`rid`) to the given `offset` under mode given by `whence`.
    * The call resolves to the new position within the resource (bytes from the start).
@@ -1034,11 +1027,7 @@ declare namespace Deno {
    * console.log(await Deno.seek(file.rid, -2, Deno.SeekMode.End)); // "9" (e.g. 11-2)
    * ```
    */
-  export function seek(
-    rid: number,
-    offset: number,
-    whence: SeekMode
-  ): Promise<number>;
+  function seek(rid: number, offset: number, whence: SeekMode): Promise<number>;
 
   /**
    * Synchronously flushes any pending data and metadata operations of the given file stream to disk.
@@ -1050,7 +1039,7 @@ declare namespace Deno {
    * console.log(new TextDecoder().decode(Deno.readFileSync("my_file.txt"))); // H
    * ```
    */
-  export function fsyncSync(rid: number): void;
+  function fsyncSync(rid: number): void;
 
   /**
    * Flushes any pending data and metadata operations of the given file stream to disk.
@@ -1062,7 +1051,7 @@ declare namespace Deno {
    * console.log(new TextDecoder().decode(await Deno.readFile("my_file.txt"))); // H
    * ```
    */
-  export function fsync(rid: number): Promise<void>;
+  function fsync(rid: number): Promise<void>;
 
   /*
    * Synchronously flushes any pending data operations of the given file stream to disk.
@@ -1073,7 +1062,7 @@ declare namespace Deno {
    * console.log(new TextDecoder().decode(Deno.readFileSync("my_file.txt"))); // Hello World
    * ```
    */
-  export function fdatasyncSync(rid: number): void;
+  function fdatasyncSync(rid: number): void;
 
   /**
    * Flushes any pending data operations of the given file stream to disk.
@@ -1084,7 +1073,7 @@ declare namespace Deno {
    * console.log(new TextDecoder().decode(await Deno.readFile("my_file.txt"))); // Hello World
    * ```
    */
-  export function fdatasync(rid: number): Promise<void>;
+  function fdatasync(rid: number): Promise<void>;
 
   /** Close the given resource ID (rid) which has been previously opened, such
    * as via opening or creating a file.  Closing a file when you are finished
@@ -1096,10 +1085,10 @@ declare namespace Deno {
    * Deno.close(file.rid);
    * ````
    */
-  export function close(rid: number): void;
+  function close(rid: number): void;
 
   /** The Deno abstraction for reading and writing files. */
-  export class FsFile
+  class FsFile
     implements
       Reader,
       ReaderSync,
@@ -1131,7 +1120,7 @@ declare namespace Deno {
    *
    * The Deno abstraction for reading and writing files.
    */
-  export class File
+  class File
     implements
       Reader,
       ReaderSync,
@@ -1159,28 +1148,28 @@ declare namespace Deno {
   }
 
   /** A handle for `stdin`. */
-  export const stdin: Reader &
+  const stdin: Reader &
     ReaderSync &
     Closer & {
       readonly rid: number;
       readonly readable: ReadableStream<Uint8Array>;
     };
   /** A handle for `stdout`. */
-  export const stdout: Writer &
+  const stdout: Writer &
     WriterSync &
     Closer & {
       readonly rid: number;
       readonly writable: WritableStream<Uint8Array>;
     };
   /** A handle for `stderr`. */
-  export const stderr: Writer &
+  const stderr: Writer &
     WriterSync &
     Closer & {
       readonly rid: number;
       readonly writable: WritableStream<Uint8Array>;
     };
 
-  export interface OpenOptions {
+  interface OpenOptions {
     /** Sets the option for read access. This option, when `true`, means that the
      * file should be read-able if opened. */
     read?: boolean;
@@ -1214,7 +1203,7 @@ declare namespace Deno {
     mode?: number;
   }
 
-  export interface ReadFileOptions {
+  interface ReadFileOptions {
     /**
      * An abort signal to allow cancellation of the file read operation.
      * If the signal becomes aborted the readFile operation will be stopped
@@ -1236,7 +1225,7 @@ declare namespace Deno {
    * Deno.close(ttyRid);
    * ```
    */
-  export function isatty(rid: number): boolean;
+  function isatty(rid: number): boolean;
 
   /**
    * @deprecated Use Buffer from https://deno.land/std/io/buffer.ts instead. Deno.Buffer will be removed in Deno 2.0.
@@ -1255,7 +1244,7 @@ declare namespace Deno {
    * of ArrayBuffer.
    *
    * Based on [Go Buffer](https://golang.org/pkg/bytes/#Buffer). */
-  export class Buffer implements Reader, ReaderSync, Writer, WriterSync {
+  class Buffer implements Reader, ReaderSync, Writer, WriterSync {
     constructor(ab?: ArrayBuffer);
     /** Returns a slice holding the unread portion of the buffer.
      *
@@ -1344,7 +1333,7 @@ declare namespace Deno {
    * @deprecated Use `readAll` from https://deno.land/std/streams/conversion.ts
    * instead. `Deno.readAll` will be removed in Deno 2.0.
    */
-  export function readAll(r: Reader): Promise<Uint8Array>;
+  function readAll(r: Reader): Promise<Uint8Array>;
 
   /**
    * Synchronously reads Reader `r` until EOF (`null`) and returns the content
@@ -1370,7 +1359,7 @@ declare namespace Deno {
    * https://deno.land/std/streams/conversion.ts instead. `Deno.readAllSync`
    * will be removed in Deno 2.0.
    */
-  export function readAllSync(r: ReaderSync): Uint8Array;
+  function readAllSync(r: ReaderSync): Uint8Array;
 
   /**
    * Write all the content of the array buffer (`arr`) to the writer (`w`).
@@ -1400,7 +1389,7 @@ declare namespace Deno {
    * @deprecated Use `writeAll` from https://deno.land/std/streams/conversion.ts
    * instead. `Deno.writeAll` will be removed in Deno 2.0.
    */
-  export function writeAll(w: Writer, arr: Uint8Array): Promise<void>;
+  function writeAll(w: Writer, arr: Uint8Array): Promise<void>;
 
   /**
    * Synchronously write all the content of the array buffer (`arr`) to the
@@ -1432,9 +1421,9 @@ declare namespace Deno {
    * https://deno.land/std/streams/conversion.ts instead. `Deno.writeAllSync`
    * will be removed in Deno 2.0.
    */
-  export function writeAllSync(w: WriterSync, arr: Uint8Array): void;
+  function writeAllSync(w: WriterSync, arr: Uint8Array): void;
 
-  export interface MkdirOptions {
+  interface MkdirOptions {
     /** Defaults to `false`. If set to `true`, means that any intermediate
      * directories will also be created (as with the shell command `mkdir -p`).
      * Intermediate directories are created with the same permissions.
@@ -1459,7 +1448,7 @@ declare namespace Deno {
    * Defaults to throwing error if the directory already exists.
    *
    * Requires `allow-write` permission. */
-  export function mkdirSync(path: string | URL, options?: MkdirOptions): void;
+  function mkdirSync(path: string | URL, options?: MkdirOptions): void;
 
   /** Creates a new directory with the specified path.
    *
@@ -1472,12 +1461,9 @@ declare namespace Deno {
    * Defaults to throwing error if the directory already exists.
    *
    * Requires `allow-write` permission. */
-  export function mkdir(
-    path: string | URL,
-    options?: MkdirOptions
-  ): Promise<void>;
+  function mkdir(path: string | URL, options?: MkdirOptions): Promise<void>;
 
-  export interface MakeTempOptions {
+  interface MakeTempOptions {
     /** Directory where the temporary directory should be created (defaults to
      * the env variable TMPDIR, or the system's default, usually /tmp).
      *
@@ -1511,7 +1497,7 @@ declare namespace Deno {
    *
    * Requires `allow-write` permission. */
   // TODO(ry) Doesn't check permissions.
-  export function makeTempDirSync(options?: MakeTempOptions): string;
+  function makeTempDirSync(options?: MakeTempOptions): string;
 
   /** Creates a new temporary directory in the default directory for temporary
    * files, unless `dir` is specified. Other optional options include
@@ -1531,7 +1517,7 @@ declare namespace Deno {
    *
    * Requires `allow-write` permission. */
   // TODO(ry) Doesn't check permissions.
-  export function makeTempDir(options?: MakeTempOptions): Promise<string>;
+  function makeTempDir(options?: MakeTempOptions): Promise<string>;
 
   /** Synchronously creates a new temporary file in the default directory for
    * temporary files, unless `dir` is specified.
@@ -1550,7 +1536,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-write` permission. */
-  export function makeTempFileSync(options?: MakeTempOptions): string;
+  function makeTempFileSync(options?: MakeTempOptions): string;
 
   /** Creates a new temporary file in the default directory for temporary
    * files, unless `dir` is specified.  Other
@@ -1569,7 +1555,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-write` permission. */
-  export function makeTempFile(options?: MakeTempOptions): Promise<string>;
+  function makeTempFile(options?: MakeTempOptions): Promise<string>;
 
   /** Synchronously changes the permission of a specific file/directory of
    * specified path.  Ignores the process's umask.
@@ -1583,7 +1569,7 @@ declare namespace Deno {
    * NOTE: This API currently throws on Windows
    *
    * Requires `allow-write` permission. */
-  export function chmodSync(path: string | URL, mode: number): void;
+  function chmodSync(path: string | URL, mode: number): void;
 
   /** Changes the permission of a specific file/directory of specified path.
    * Ignores the process's umask.
@@ -1613,7 +1599,7 @@ declare namespace Deno {
    * NOTE: This API currently throws on Windows
    *
    * Requires `allow-write` permission. */
-  export function chmod(path: string | URL, mode: number): Promise<void>;
+  function chmod(path: string | URL, mode: number): Promise<void>;
 
   /** Synchronously change owner of a regular file or directory. This functionality
    * is not available on Windows.
@@ -1630,7 +1616,7 @@ declare namespace Deno {
    * @param uid user id (UID) of the new owner, or `null` for no change
    * @param gid group id (GID) of the new owner, or `null` for no change
    */
-  export function chownSync(
+  function chownSync(
     path: string | URL,
     uid: number | null,
     gid: number | null
@@ -1651,13 +1637,13 @@ declare namespace Deno {
    * @param uid user id (UID) of the new owner, or `null` for no change
    * @param gid group id (GID) of the new owner, or `null` for no change
    */
-  export function chown(
+  function chown(
     path: string | URL,
     uid: number | null,
     gid: number | null
   ): Promise<void>;
 
-  export interface RemoveOptions {
+  interface RemoveOptions {
     /** Defaults to `false`. If set to `true`, path will be removed even if
      * it's a non-empty directory. */
     recursive?: boolean;
@@ -1674,7 +1660,7 @@ declare namespace Deno {
    * directory and the `recursive` option isn't set to `true`.
    *
    * Requires `allow-write` permission. */
-  export function removeSync(path: string | URL, options?: RemoveOptions): void;
+  function removeSync(path: string | URL, options?: RemoveOptions): void;
 
   /** Removes the named file or directory.
    *
@@ -1687,10 +1673,7 @@ declare namespace Deno {
    * directory and the `recursive` option isn't set to `true`.
    *
    * Requires `allow-write` permission. */
-  export function remove(
-    path: string | URL,
-    options?: RemoveOptions
-  ): Promise<void>;
+  function remove(path: string | URL, options?: RemoveOptions): Promise<void>;
 
   /** Synchronously renames (moves) `oldpath` to `newpath`. Paths may be files or
    * directories.  If `newpath` already exists and is not a directory,
@@ -1707,10 +1690,7 @@ declare namespace Deno {
    * they are. It's always an error to rename anything to a non-empty directory.
    *
    * Requires `allow-read` and `allow-write` permissions. */
-  export function renameSync(
-    oldpath: string | URL,
-    newpath: string | URL
-  ): void;
+  function renameSync(oldpath: string | URL, newpath: string | URL): void;
 
   /** Renames (moves) `oldpath` to `newpath`.  Paths may be files or directories.
    * If `newpath` already exists and is not a directory, `rename()` replaces it.
@@ -1727,10 +1707,7 @@ declare namespace Deno {
    * they are. It's always an error to rename anything to a non-empty directory.
    *
    * Requires `allow-read` and `allow-write` permission. */
-  export function rename(
-    oldpath: string | URL,
-    newpath: string | URL
-  ): Promise<void>;
+  function rename(oldpath: string | URL, newpath: string | URL): Promise<void>;
 
   /** Synchronously reads and returns the entire contents of a file as utf8
    *  encoded string. Reading a directory throws an error.
@@ -1741,7 +1718,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function readTextFileSync(path: string | URL): string;
+  function readTextFileSync(path: string | URL): string;
 
   /** Asynchronously reads and returns the entire contents of a file as utf8
    *  encoded string. Reading a directory throws an error.
@@ -1752,7 +1729,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function readTextFile(
+  function readTextFile(
     path: string | URL,
     options?: ReadFileOptions
   ): Promise<string>;
@@ -1768,7 +1745,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function readFileSync(path: string | URL): Uint8Array;
+  function readFileSync(path: string | URL): Uint8Array;
 
   /** Reads and resolves to the entire contents of a file as an array of bytes.
    * `TextDecoder` can be used to transform the bytes to string if required.
@@ -1781,14 +1758,14 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function readFile(
+  function readFile(
     path: string | URL,
     options?: ReadFileOptions
   ): Promise<Uint8Array>;
 
   /** A FileInfo describes a file and is returned by `stat`, `lstat`,
    * `statSync`, `lstatSync`. */
-  export interface FileInfo {
+  interface FileInfo {
     /** True if this is info for a regular file. Mutually exclusive to
      * `FileInfo.isDirectory` and `FileInfo.isSymlink`. */
     isFile: boolean;
@@ -1865,7 +1842,7 @@ declare namespace Deno {
    * Requires `allow-read` permission for the target path.
    * Also requires `allow-read` permission for the CWD if the target path is
    * relative. */
-  export function realPathSync(path: string | URL): string;
+  function realPathSync(path: string | URL): string;
 
   /** Resolves to the absolute normalized path, with symbolic links resolved.
    *
@@ -1881,9 +1858,9 @@ declare namespace Deno {
    * Requires `allow-read` permission for the target path.
    * Also requires `allow-read` permission for the CWD if the target path is
    * relative. */
-  export function realPath(path: string | URL): Promise<string>;
+  function realPath(path: string | URL): Promise<string>;
 
-  export interface DirEntry {
+  interface DirEntry {
     name: string;
     isFile: boolean;
     isDirectory: boolean;
@@ -1902,7 +1879,7 @@ declare namespace Deno {
    * Throws error if `path` is not a directory.
    *
    * Requires `allow-read` permission. */
-  export function readDirSync(path: string | URL): Iterable<DirEntry>;
+  function readDirSync(path: string | URL): Iterable<DirEntry>;
 
   /** Reads the directory given by `path` and returns an async iterable of
    * `Deno.DirEntry`.
@@ -1916,7 +1893,7 @@ declare namespace Deno {
    * Throws error if `path` is not a directory.
    *
    * Requires `allow-read` permission. */
-  export function readDir(path: string | URL): AsyncIterable<DirEntry>;
+  function readDir(path: string | URL): AsyncIterable<DirEntry>;
 
   /** Synchronously copies the contents and permissions of one file to another
    * specified path, by default creating a new file if needed, else overwriting.
@@ -1928,10 +1905,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` permission on fromPath.
    * Requires `allow-write` permission on toPath. */
-  export function copyFileSync(
-    fromPath: string | URL,
-    toPath: string | URL
-  ): void;
+  function copyFileSync(fromPath: string | URL, toPath: string | URL): void;
 
   /** Copies the contents and permissions of one file to another specified path,
    * by default creating a new file if needed, else overwriting. Fails if target
@@ -1943,7 +1917,7 @@ declare namespace Deno {
    *
    * Requires `allow-read` permission on fromPath.
    * Requires `allow-write` permission on toPath. */
-  export function copyFile(
+  function copyFile(
     fromPath: string | URL,
     toPath: string | URL
   ): Promise<void>;
@@ -1958,7 +1932,7 @@ declare namespace Deno {
    * Throws TypeError if called with a hard link
    *
    * Requires `allow-read` permission. */
-  export function readLinkSync(path: string | URL): string;
+  function readLinkSync(path: string | URL): string;
 
   /** Resolves to the full path destination of the named symbolic link.
    *
@@ -1970,7 +1944,7 @@ declare namespace Deno {
    * Throws TypeError if called with a hard link
    *
    * Requires `allow-read` permission. */
-  export function readLink(path: string | URL): Promise<string>;
+  function readLink(path: string | URL): Promise<string>;
 
   /** Resolves to a `Deno.FileInfo` for the specified `path`. If `path` is a
    * symlink, information for the symlink will be returned instead of what it
@@ -1983,7 +1957,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function lstat(path: string | URL): Promise<FileInfo>;
+  function lstat(path: string | URL): Promise<FileInfo>;
 
   /** Synchronously returns a `Deno.FileInfo` for the specified `path`. If
    * `path` is a symlink, information for the symlink will be returned instead of
@@ -1996,7 +1970,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function lstatSync(path: string | URL): FileInfo;
+  function lstatSync(path: string | URL): FileInfo;
 
   /** Resolves to a `Deno.FileInfo` for the specified `path`. Will always
    * follow symlinks.
@@ -2008,7 +1982,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function stat(path: string | URL): Promise<FileInfo>;
+  function stat(path: string | URL): Promise<FileInfo>;
 
   /** Synchronously returns a `Deno.FileInfo` for the specified `path`. Will
    * always follow symlinks.
@@ -2020,10 +1994,10 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` permission. */
-  export function statSync(path: string | URL): FileInfo;
+  function statSync(path: string | URL): FileInfo;
 
   /** Options for writing to a file. */
-  export interface WriteFileOptions {
+  interface WriteFileOptions {
     /** Defaults to `false`. If set to `true`, will append to a file instead of
      * overwriting previous contents. */
     append?: boolean;
@@ -2055,7 +2029,7 @@ declare namespace Deno {
    * Requires `allow-write` permission, and `allow-read` if `options.create` is
    * `false`.
    */
-  export function writeFileSync(
+  function writeFileSync(
     path: string | URL,
     data: Uint8Array,
     options?: WriteFileOptions
@@ -2075,7 +2049,7 @@ declare namespace Deno {
    *
    * Requires `allow-write` permission, and `allow-read` if `options.create` is `false`.
    */
-  export function writeFile(
+  function writeFile(
     path: string | URL,
     data: Uint8Array,
     options?: WriteFileOptions
@@ -2090,7 +2064,7 @@ declare namespace Deno {
    *
    * Requires `allow-write` permission, and `allow-read` if `options.create` is `false`.
    */
-  export function writeTextFileSync(
+  function writeTextFileSync(
     path: string | URL,
     data: string,
     options?: WriteFileOptions
@@ -2105,7 +2079,7 @@ declare namespace Deno {
    *
    * Requires `allow-write` permission, and `allow-read` if `options.create` is `false`.
    */
-  export function writeTextFile(
+  function writeTextFile(
     path: string | URL,
     data: string,
     options?: WriteFileOptions
@@ -2128,7 +2102,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-write` permission. */
-  export function truncateSync(name: string, len?: number): void;
+  function truncateSync(name: string, len?: number): void;
 
   /** Truncates or extends the specified file, to reach the specified `len`. If
    * `len` is not specified then the entire file contents are truncated.
@@ -2146,9 +2120,9 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-write` permission. */
-  export function truncate(name: string, len?: number): Promise<void>;
+  function truncate(name: string, len?: number): Promise<void>;
 
-  export interface OpMetrics {
+  interface OpMetrics {
     opsDispatched: number;
     opsDispatchedSync: number;
     opsDispatchedAsync: number;
@@ -2162,7 +2136,7 @@ declare namespace Deno {
     bytesReceived: number;
   }
 
-  export interface Metrics extends OpMetrics {
+  interface Metrics extends OpMetrics {
     ops: Record<string, OpMetrics>;
   }
 
@@ -2187,7 +2161,7 @@ declare namespace Deno {
    *      │      bytesReceived      │  375   │
    *      └─────────────────────────┴────────┘
    */
-  export function metrics(): Metrics;
+  function metrics(): Metrics;
 
   interface ResourceMap {
     // deno-lint-ignore no-explicit-any
@@ -2206,7 +2180,7 @@ declare namespace Deno {
    * // { 0: "stdin", 1: "stdout", 2: "stderr", 3: "fsFile" }
    * ```
    */
-  export function resources(): ResourceMap;
+  function resources(): ResourceMap;
 
   /**
    * Additional information for FsEvent objects with the "other" kind.
@@ -2219,9 +2193,9 @@ declare namespace Deno {
    *    will need to care, and will need to refresh that representation directly
    *    from the filesystem.
    */
-  export type FsEventFlag = "rescan";
+  type FsEventFlag = "rescan";
 
-  export interface FsEvent {
+  interface FsEvent {
     kind: "any" | "access" | "create" | "modify" | "remove" | "other";
     paths: string[];
     flag?: FsEventFlag;
@@ -2233,7 +2207,7 @@ declare namespace Deno {
    * system events, and also you can stop watching the file system by calling
    * `.close()` method.
    */
-  export interface FsWatcher extends AsyncIterable<FsEvent> {
+  interface FsWatcher extends AsyncIterable<FsEvent> {
     /** The resource id of the `FsWatcher`. */
     readonly rid: number;
     /** Stops watching the file system and closes the watcher resource. */
@@ -2279,12 +2253,12 @@ declare namespace Deno {
    * }
    * ```
    */
-  export function watchFs(
+  function watchFs(
     paths: string | string[],
     options?: { recursive: boolean }
   ): FsWatcher;
 
-  export class Process<T extends RunOptions = RunOptions> {
+  class Process<T extends RunOptions = RunOptions> {
     readonly rid: number;
     readonly pid: number;
     readonly stdin: T["stdin"] extends "piped"
@@ -2354,7 +2328,7 @@ declare namespace Deno {
     kill(signo: Signal): void;
   }
 
-  export type Signal =
+  type Signal =
     | "SIGABRT"
     | "SIGALRM"
     | "SIGBREAK"
@@ -2400,7 +2374,7 @@ declare namespace Deno {
    *
    * NOTE: On Windows only SIGINT (ctrl+c) and SIGBREAK (ctrl+break) are supported.
    */
-  export function addSignalListener(signal: Signal, handler: () => void): void;
+  function addSignalListener(signal: Signal, handler: () => void): void;
 
   /** Removes the given signal listener that has been registered with
    * Deno.addSignalListener.
@@ -2415,12 +2389,9 @@ declare namespace Deno {
    *
    * NOTE: On Windows only SIGINT (ctrl+c) and SIGBREAK (ctrl+break) are supported.
    */
-  export function removeSignalListener(
-    signal: Signal,
-    handler: () => void
-  ): void;
+  function removeSignalListener(signal: Signal, handler: () => void): void;
 
-  export type ProcessStatus =
+  type ProcessStatus =
     | {
         success: true;
         code: 0;
@@ -2432,7 +2403,7 @@ declare namespace Deno {
         signal?: number;
       };
 
-  export interface RunOptions {
+  interface RunOptions {
     /** Arguments to pass. Note, the first element needs to be a path to the
      * binary */
     cmd: readonly string[] | [URL, ...string[]];
@@ -2488,9 +2459,9 @@ declare namespace Deno {
    * Details of the spawned process are returned.
    *
    * Requires `allow-run` permission. */
-  export function run<T extends RunOptions = RunOptions>(opt: T): Process<T>;
+  function run<T extends RunOptions = RunOptions>(opt: T): Process<T>;
 
-  export interface InspectOptions {
+  interface InspectOptions {
     /** Stylize output with ANSI colors. Defaults to false. */
     colors?: boolean;
     /** Try to fit more than one entry of a collection on the same line.
@@ -2548,10 +2519,10 @@ declare namespace Deno {
    * Deno.inspect({a: {b: {c: {d: 'hello'}}}}, {depth: 2}); // { a: { b: [Object] } }
    * ```
    */
-  export function inspect(value: unknown, options?: InspectOptions): string;
+  function inspect(value: unknown, options?: InspectOptions): string;
 
   /** The name of a "powerful feature" which needs permission. */
-  export type PermissionName =
+  type PermissionName =
     | "run"
     | "read"
     | "write"
@@ -2561,24 +2532,24 @@ declare namespace Deno {
     | "hrtime";
 
   /** The current status of the permission. */
-  export type PermissionState = "granted" | "denied" | "prompt";
+  type PermissionState = "granted" | "denied" | "prompt";
 
-  export interface RunPermissionDescriptor {
+  interface RunPermissionDescriptor {
     name: "run";
     command?: string | URL;
   }
 
-  export interface ReadPermissionDescriptor {
+  interface ReadPermissionDescriptor {
     name: "read";
     path?: string | URL;
   }
 
-  export interface WritePermissionDescriptor {
+  interface WritePermissionDescriptor {
     name: "write";
     path?: string | URL;
   }
 
-  export interface NetPermissionDescriptor {
+  interface NetPermissionDescriptor {
     name: "net";
     /** Optional host string of the form `"<hostname>[:<port>]"`. Examples:
      *
@@ -2588,23 +2559,23 @@ declare namespace Deno {
     host?: string;
   }
 
-  export interface EnvPermissionDescriptor {
+  interface EnvPermissionDescriptor {
     name: "env";
     variable?: string;
   }
 
-  export interface FfiPermissionDescriptor {
+  interface FfiPermissionDescriptor {
     name: "ffi";
     path?: string | URL;
   }
 
-  export interface HrtimePermissionDescriptor {
+  interface HrtimePermissionDescriptor {
     name: "hrtime";
   }
 
   /** Permission descriptors which define a permission and can be queried,
    * requested, or revoked. */
-  export type PermissionDescriptor =
+  type PermissionDescriptor =
     | RunPermissionDescriptor
     | ReadPermissionDescriptor
     | WritePermissionDescriptor
@@ -2613,11 +2584,11 @@ declare namespace Deno {
     | FfiPermissionDescriptor
     | HrtimePermissionDescriptor;
 
-  export interface PermissionStatusEventMap {
+  interface PermissionStatusEventMap {
     change: Event;
   }
 
-  export class PermissionStatus extends EventTarget {
+  class PermissionStatus extends EventTarget {
     // deno-lint-ignore no-explicit-any
     onchange: ((this: PermissionStatus, ev: Event) => any) | null;
     readonly state: PermissionState;
@@ -2649,7 +2620,7 @@ declare namespace Deno {
     ): void;
   }
 
-  export class Permissions {
+  class Permissions {
     /** Resolves to the current status of a permission.
      *
      * ```ts
@@ -2685,10 +2656,10 @@ declare namespace Deno {
   }
 
   /** Deno's permission management API. */
-  export const permissions: Permissions;
+  const permissions: Permissions;
 
   /** Build related information. */
-  export const build: {
+  const build: {
     /** The LLVM target triple */
     target: string;
     /** Instruction set architecture */
@@ -2702,7 +2673,7 @@ declare namespace Deno {
   };
 
   /** Version related information. */
-  export const version: {
+  const version: {
     /** Deno's version. For example: `"1.0.0"` */
     deno: string;
     /** The V8 version used by Deno. For example: `"8.0.0.0"` */
@@ -2720,7 +2691,7 @@ declare namespace Deno {
    *
    * [ "/etc/passwd" ]
    */
-  export const args: string[];
+  const args: string[];
 
   /**
    * A symbol which can be used as a key for a custom method which will be
@@ -2730,12 +2701,12 @@ declare namespace Deno {
    * @deprecated This symbol is deprecated since 1.9. Use
    * `Symbol.for("Deno.customInspect")` instead.
    */
-  export const customInspect: unique symbol;
+  const customInspect: unique symbol;
 
   /** The URL of the entrypoint module entered from the command-line. */
-  export const mainModule: string;
+  const mainModule: string;
 
-  export type SymlinkOptions = {
+  type SymlinkOptions = {
     type: "file" | "dir";
   };
 
@@ -2750,7 +2721,7 @@ declare namespace Deno {
    * ```
    *
    * Requires full `allow-read` and `allow-write` permissions. */
-  export function symlinkSync(
+  function symlinkSync(
     oldpath: string | URL,
     newpath: string | URL,
     options?: SymlinkOptions
@@ -2767,7 +2738,7 @@ declare namespace Deno {
    * ```
    *
    * Requires full `allow-read` and `allow-write` permissions. */
-  export function symlink(
+  function symlink(
     oldpath: string | URL,
     newpath: string | URL,
     options?: SymlinkOptions
@@ -2800,7 +2771,7 @@ declare namespace Deno {
    * console.log(new TextDecoder().decode(data)); // Hello W
    * ```
    */
-  export function ftruncateSync(rid: number, len?: number): void;
+  function ftruncateSync(rid: number, len?: number): void;
 
   /**
    * Truncates or extends the specified file stream, to reach the specified `len`.
@@ -2827,7 +2798,7 @@ declare namespace Deno {
    * console.log(new TextDecoder().decode(data)); // Hello W
    * ```
    */
-  export function ftruncate(rid: number, len?: number): Promise<void>;
+  function ftruncate(rid: number, len?: number): Promise<void>;
 
   /**
    * Synchronously returns a `Deno.FileInfo` for the given file stream.
@@ -2839,7 +2810,7 @@ declare namespace Deno {
    * assert(fileInfo.isFile);
    * ```
    */
-  export function fstatSync(rid: number): FileInfo;
+  function fstatSync(rid: number): FileInfo;
 
   /**
    * Returns a `Deno.FileInfo` for the given file stream.
@@ -2851,14 +2822,14 @@ declare namespace Deno {
    * assert(fileInfo.isFile);
    * ```
    */
-  export function fstat(rid: number): Promise<FileInfo>;
+  function fstat(rid: number): Promise<FileInfo>;
 
-  export interface RequestEvent {
+  interface RequestEvent {
     readonly request: Request;
     respondWith(r: Response | Promise<Response>): Promise<void>;
   }
 
-  export interface HttpConn extends AsyncIterable<RequestEvent> {
+  interface HttpConn extends AsyncIterable<RequestEvent> {
     readonly rid: number;
 
     nextRequest(): Promise<RequestEvent | null>;
@@ -2895,14 +2866,14 @@ declare namespace Deno {
    * ```
    */
   type Conn = /*unresolved*/ any;
-  export function serveHttp(conn: Conn): HttpConn;
+  function serveHttp(conn: Conn): HttpConn;
 
-  export interface WebSocketUpgrade {
+  interface WebSocketUpgrade {
     response: Response;
     socket: WebSocket;
   }
 
-  export interface UpgradeWebSocketOptions {
+  interface UpgradeWebSocketOptions {
     protocol?: string;
     /**
      * If the client does not respond to this frame with a
@@ -2946,7 +2917,7 @@ declare namespace Deno {
    * This operation does not yet consume the request or open the websocket. This
    * only happens once the returned response has been passed to `respondWith`.
    */
-  export function upgradeWebSocket(
+  function upgradeWebSocket(
     request: Request,
     options?: UpgradeWebSocketOptions
   ): WebSocketUpgrade;
@@ -2966,11 +2937,11 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-run` permission. */
-  export function kill(pid: number, signo: Signal): void;
+  function kill(pid: number, signo: Signal): void;
 
   /** The type of the resource record.
    * Only the listed types are supported currently. */
-  export type RecordType =
+  type RecordType =
     | "A"
     | "AAAA"
     | "ANAME"
@@ -2984,7 +2955,7 @@ declare namespace Deno {
     | "SRV"
     | "TXT";
 
-  export interface ResolveDnsOptions {
+  interface ResolveDnsOptions {
     /** The name server to be used for lookups.
      * If not specified, defaults to the system configuration e.g. `/etc/resolv.conf` on Unix. */
     nameServer?: {
@@ -2997,20 +2968,20 @@ declare namespace Deno {
   }
 
   /** If `resolveDns` is called with "CAA" record type specified, it will return an array of this interface. */
-  export interface CAARecord {
+  interface CAARecord {
     critical: boolean;
     tag: string;
     value: string;
   }
 
   /** If `resolveDns` is called with "MX" record type specified, it will return an array of this interface. */
-  export interface MXRecord {
+  interface MXRecord {
     preference: number;
     exchange: string;
   }
 
   /** If `resolveDns` is called with "NAPTR" record type specified, it will return an array of this interface. */
-  export interface NAPTRRecord {
+  interface NAPTRRecord {
     order: number;
     preference: number;
     flags: string;
@@ -3020,7 +2991,7 @@ declare namespace Deno {
   }
 
   /** If `resolveDns` is called with "SOA" record type specified, it will return an array of this interface. */
-  export interface SOARecord {
+  interface SOARecord {
     mname: string;
     rname: string;
     serial: number;
@@ -3031,50 +3002,50 @@ declare namespace Deno {
   }
 
   /** If `resolveDns` is called with "SRV" record type specified, it will return an array of this interface. */
-  export interface SRVRecord {
+  interface SRVRecord {
     priority: number;
     weight: number;
     port: number;
     target: string;
   }
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "A" | "AAAA" | "ANAME" | "CNAME" | "NS" | "PTR",
     options?: ResolveDnsOptions
   ): Promise<string[]>;
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "CAA",
     options?: ResolveDnsOptions
   ): Promise<CAARecord[]>;
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "MX",
     options?: ResolveDnsOptions
   ): Promise<MXRecord[]>;
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "NAPTR",
     options?: ResolveDnsOptions
   ): Promise<NAPTRRecord[]>;
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "SOA",
     options?: ResolveDnsOptions
   ): Promise<SOARecord[]>;
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "SRV",
     options?: ResolveDnsOptions
   ): Promise<SRVRecord[]>;
 
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: "TXT",
     options?: ResolveDnsOptions
@@ -3097,7 +3068,7 @@ declare namespace Deno {
    *
    * Requires `allow-net` permission.
    */
-  export function resolveDns(
+  function resolveDns(
     query: string,
     recordType: RecordType,
     options?: ResolveDnsOptions
@@ -3111,7 +3082,7 @@ declare namespace Deno {
     | string[][]
   >;
 
-  export interface BenchDefinition {
+  interface BenchDefinition {
     fn: () => void | Promise<void>;
     name: string;
     ignore?: boolean;
@@ -3168,7 +3139,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function bench(t: BenchDefinition): void;
+  function bench(t: BenchDefinition): void;
 
   /** Register a bench which will be run when `deno bench` is used on the command
    * line and the containing module looks like a bench module.
@@ -3188,7 +3159,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function bench(name: string, fn: () => void | Promise<void>): void;
+  function bench(name: string, fn: () => void | Promise<void>): void;
 
   /** Register a bench which will be run when `deno bench` is used on the command
    * line and the containing module looks like a bench module.
@@ -3208,7 +3179,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function bench(fn: () => void | Promise<void>): void;
+  function bench(fn: () => void | Promise<void>): void;
 
   /** Register a bench which will be run when `deno bench` is used on the command
    * line and the containing module looks like a bench module.
@@ -3228,7 +3199,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function bench(
+  function bench(
     name: string,
     options: Omit<BenchDefinition, "fn" | "name">,
     fn: () => void | Promise<void>
@@ -3252,7 +3223,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function bench(
+  function bench(
     options: Omit<BenchDefinition, "fn">,
     fn: () => void | Promise<void>
   ): void;
@@ -3275,7 +3246,7 @@ declare namespace Deno {
    * });
    * ```
    */
-  export function bench(
+  function bench(
     options: Omit<BenchDefinition, "fn" | "name">,
     fn: () => void | Promise<void>
   ): void;
@@ -3295,7 +3266,7 @@ declare namespace Deno {
    *
    * NOTE:  This API is not implemented on Windows
    */
-  export function umask(mask?: number): number;
+  function umask(mask?: number): number;
 
   /** **UNSTABLE**: New API, yet to be vetted.
    *
@@ -3305,7 +3276,7 @@ declare namespace Deno {
    * const { columns, rows } = Deno.consoleSize(Deno.stdout.rid);
    * ```
    */
-  export function consoleSize(
+  function consoleSize(
     rid: number
   ): {
     columns: number;
@@ -3327,7 +3298,7 @@ declare namespace Deno {
    *
    * Requires `allow-env` permission.
    */
-  export function loadavg(): number[];
+  function loadavg(): number[];
 
   /** **Unstable** new API. yet to be vetted. Under consideration to possibly move to
    * Deno.build or Deno.versions and if it should depend sys-info, which may not
@@ -3341,7 +3312,7 @@ declare namespace Deno {
    *
    * Requires `allow-env` permission.
    */
-  export function osRelease(): string;
+  function osRelease(): string;
 
   /** **Unstable** new API. yet to be vetted.
    *
@@ -3356,9 +3327,9 @@ declare namespace Deno {
    *
    * Requires `allow-env` permission.
    */
-  export function systemMemoryInfo(): SystemMemoryInfo;
+  function systemMemoryInfo(): SystemMemoryInfo;
 
-  export interface SystemMemoryInfo {
+  interface SystemMemoryInfo {
     /** Total installed memory */
     total: number;
     /** Unused memory */
@@ -3380,7 +3351,7 @@ declare namespace Deno {
   }
 
   /** The information of the network interface */
-  export interface NetworkInterfaceInfo {
+  interface NetworkInterfaceInfo {
     /** The network interface name */
     name: string;
     /** The IP protocol version */
@@ -3407,7 +3378,7 @@ declare namespace Deno {
    *
    * Requires `allow-env` permission.
    */
-  export function networkInterfaces(): NetworkInterfaceInfo[];
+  function networkInterfaces(): NetworkInterfaceInfo[];
 
   /** **Unstable** new API. yet to be vetted.
    *
@@ -3419,10 +3390,10 @@ declare namespace Deno {
    *
    * Requires `allow-env` permission.
    */
-  export function getUid(): number | null;
+  function getUid(): number | null;
 
   /** All possible types for interfacing with foreign functions */
-  export type NativeType =
+  type NativeType =
     | "void"
     | "u8"
     | "i8"
@@ -3440,7 +3411,7 @@ declare namespace Deno {
     | "pointer";
 
   /** A foreign function as defined by its parameter and result types */
-  export interface ForeignFunction<
+  interface ForeignFunction<
     Parameters extends readonly NativeType[] = readonly NativeType[],
     Result extends NativeType = NativeType,
     NonBlocking extends boolean = boolean
@@ -3453,14 +3424,14 @@ declare namespace Deno {
     nonblocking?: NonBlocking;
   }
 
-  export interface ForeignStatic<Type extends NativeType = NativeType> {
+  interface ForeignStatic<Type extends NativeType = NativeType> {
     /** Name of the symbol, defaults to the key name in symbols object. */
     name?: string;
     type: Exclude<Type, "void">;
   }
 
   /** A foreign library interface descriptor */
-  export interface ForeignLibraryInterface {
+  interface ForeignLibraryInterface {
     [name: string]: ForeignFunction | ForeignStatic;
   }
 
@@ -3532,7 +3503,7 @@ declare namespace Deno {
    *
    * An unsafe pointer to a memory location for passing and returning pointers to and from the ffi
    */
-  export class UnsafePointer {
+  class UnsafePointer {
     constructor(value: bigint);
 
     value: bigint;
@@ -3555,7 +3526,7 @@ declare namespace Deno {
    * `DataView` for accessing the underlying types at an memory location
    * (numbers, strings and raw bytes).
    */
-  export class UnsafePointerView {
+  class UnsafePointerView {
     constructor(pointer: UnsafePointer);
 
     pointer: UnsafePointer;
@@ -3594,7 +3565,7 @@ declare namespace Deno {
    * An unsafe pointer to a function, for calling functions that are not
    * present as symbols.
    */
-  export class UnsafeFnPointer<Fn extends ForeignFunction> {
+  class UnsafeFnPointer<Fn extends ForeignFunction> {
     pointer: UnsafePointer;
     definition: Fn;
 
@@ -3609,7 +3580,7 @@ declare namespace Deno {
   }
 
   /** A dynamic library resource */
-  export interface DynamicLibrary<S extends ForeignLibraryInterface> {
+  interface DynamicLibrary<S extends ForeignLibraryInterface> {
     /** All of the registered library along with functions for calling them */
     symbols: StaticForeignLibraryInterface<S>;
     close(): void;
@@ -3619,27 +3590,27 @@ declare namespace Deno {
    *
    * Opens a dynamic library and registers symbols
    */
-  export function dlopen<S extends ForeignLibraryInterface>(
+  function dlopen<S extends ForeignLibraryInterface>(
     filename: string | URL,
     symbols: S
   ): DynamicLibrary<S>;
 
   /** The log category for a diagnostic message. */
-  export enum DiagnosticCategory {
+  enum DiagnosticCategory {
     Warning = 0,
     Error = 1,
     Suggestion = 2,
     Message = 3,
   }
 
-  export interface DiagnosticMessageChain {
+  interface DiagnosticMessageChain {
     messageText: string;
     category: DiagnosticCategory;
     code: number;
     next?: DiagnosticMessageChain[];
   }
 
-  export interface Diagnostic {
+  interface Diagnostic {
     /** A string message summarizing the diagnostic. */
     messageText?: string;
     /** An ordered array of further diagnostics. */
@@ -3683,16 +3654,16 @@ declare namespace Deno {
    *
    * @param diagnostics An array of diagnostic items to format
    */
-  export function formatDiagnostics(diagnostics: Diagnostic[]): string;
+  function formatDiagnostics(diagnostics: Diagnostic[]): string;
 
   /** **UNSTABLE**: new API, yet to be vetted.
    *
    * A specific subset TypeScript compiler options that can be supported by the
    * Deno TypeScript compiler. */
-  export interface CompilerOptions {
+  interface CompilerOptions {
     /** Allow JavaScript files to be compiled. Defaults to `true`. */
     allowJs?: boolean;
-    /** Allow default imports from modules with no default export. This does not
+    /** Allow default imports from modules with no default . This does not
      * affect code emit, just typechecking. Defaults to `false`. */
     allowSyntheticDefaultImports?: boolean;
     /** Allow accessing UMD globals from modules. Defaults to `false`. */
@@ -3928,7 +3899,7 @@ declare namespace Deno {
    *
    * The options for `Deno.emit()` API.
    */
-  export interface EmitOptions {
+  interface EmitOptions {
     /** Indicate that the source code should be emitted to a single file
      * JavaScript bundle that is a single ES module (`"module"`) or a single
      * file self contained script executed in an immediately invoked function
@@ -3966,7 +3937,7 @@ declare namespace Deno {
    *
    * The result of `Deno.emit()` API.
    */
-  export interface EmitResult {
+  interface EmitResult {
     /** Diagnostic messages returned from the type checker (`tsc`).
      *
      * Can be used with `Deno.formatDiagnostics` to display a user
@@ -4005,7 +3976,7 @@ declare namespace Deno {
    * with `Deno.formatDiagnostics` to construct a user friendly string, which
    * has the same format as CLI diagnostics.
    */
-  export function emit(
+  function emit(
     rootSpecifier: string | URL,
     options?: EmitOptions
   ): Promise<EmitResult>;
@@ -4047,9 +4018,9 @@ declare namespace Deno {
    * console.log(`${origin.fileName}:${origin.lineNumber}:${origin.columnNumber}`);
    * ```
    */
-  export function applySourceMap(location: Location): Location;
+  function applySourceMap(location: Location): Location;
 
-  export type SetRawOptions = {
+  type SetRawOptions = {
     cbreak: boolean;
   };
 
@@ -4069,11 +4040,7 @@ declare namespace Deno {
    * Deno.setRaw(Deno.stdin.rid, true, { cbreak: true });
    * ```
    */
-  export function setRaw(
-    rid: number,
-    mode: boolean,
-    options?: SetRawOptions
-  ): void;
+  function setRaw(rid: number, mode: boolean, options?: SetRawOptions): void;
 
   /** **UNSTABLE**: needs investigation into high precision time.
    *
@@ -4086,7 +4053,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-write` permission. */
-  export function utimeSync(
+  function utimeSync(
     path: string | URL,
     atime: number | Date,
     mtime: number | Date
@@ -4103,13 +4070,13 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-write` permission. */
-  export function utime(
+  function utime(
     path: string | URL,
     atime: number | Date,
     mtime: number | Date
   ): Promise<void>;
 
-  export function run<
+  function run<
     T extends RunOptions & {
       clearEnv?: boolean;
       gid?: number;
@@ -4132,7 +4099,7 @@ declare namespace Deno {
    *
    *  Requires `allow-env` permission.
    */
-  export function hostname(): string;
+  function hostname(): string;
 
   /** **UNSTABLE**: New API, yet to be vetted.
    * A custom HttpClient for use with `fetch`.
@@ -4143,7 +4110,7 @@ declare namespace Deno {
    * const req = await fetch("https://myserver.com", { client });
    * ```
    */
-  export class HttpClient {
+  class HttpClient {
     rid: number;
     close(): void;
   }
@@ -4151,7 +4118,7 @@ declare namespace Deno {
   /** **UNSTABLE**: New API, yet to be vetted.
    * The options used when creating a [HttpClient].
    */
-  export interface CreateHttpClientOptions {
+  interface CreateHttpClientOptions {
     /** A list of root certificates that will be used in addition to the
      * default root certificates to verify the peer's certificate.
      *
@@ -4165,12 +4132,12 @@ declare namespace Deno {
     privateKey?: string;
   }
 
-  export interface Proxy {
+  interface Proxy {
     url: string;
     basicAuth?: BasicAuth;
   }
 
-  export interface BasicAuth {
+  interface BasicAuth {
     username: string;
     password: string;
   }
@@ -4189,9 +4156,7 @@ declare namespace Deno {
    * const response = await fetch("https://myserver.com", { client });
    * ```
    */
-  export function createHttpClient(
-    options: CreateHttpClientOptions
-  ): HttpClient;
+  function createHttpClient(options: CreateHttpClientOptions): HttpClient;
 
   /** **UNSTABLE**: needs investigation into high precision time.
    *
@@ -4204,7 +4169,7 @@ declare namespace Deno {
    * Deno.futimeSync(file.rid, 1556495550, new Date());
    * ```
    */
-  export function futimeSync(
+  function futimeSync(
     rid: number,
     atime: number | Date,
     mtime: number | Date
@@ -4221,7 +4186,7 @@ declare namespace Deno {
    * await Deno.futime(file.rid, 1556495550, new Date());
    * ```
    */
-  export function futime(
+  function futime(
     rid: number,
     atime: number | Date,
     mtime: number | Date
@@ -4236,12 +4201,12 @@ declare namespace Deno {
    * Deno.sleepSync(10);
    * ```
    */
-  export function sleepSync(millis: number): void;
+  function sleepSync(millis: number): void;
   type Addr = /*unresolved*/ any;
   /** **UNSTABLE**: new API, yet to be vetted.
    *
    * A generic transport listener for message-oriented protocols. */
-  export interface DatagramConn extends AsyncIterable<[Uint8Array, Addr]> {
+  interface DatagramConn extends AsyncIterable<[Uint8Array, Addr]> {
     /** **UNSTABLE**: new API, yet to be vetted.
      *
      * Waits for and resolves to the next message to the `UDPConn`. */
@@ -4260,7 +4225,7 @@ declare namespace Deno {
     [Symbol.asyncIterator](): AsyncIterableIterator<[Uint8Array, Addr]>;
   }
 
-  export interface UnixListenOptions {
+  interface UnixListenOptions {
     /** A Path to the Unix Socket. */
     path: string;
   }
@@ -4274,9 +4239,7 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` and `allow-write` permission. */
-  export function listen(
-    options: UnixListenOptions & { transport: "unix" }
-  ): Listener;
+  function listen(options: UnixListenOptions & { transport: "unix" }): Listener;
 
   /** **UNSTABLE**: new API, yet to be vetted
    *
@@ -4296,7 +4259,7 @@ declare namespace Deno {
    *
    * Requires `allow-net` permission. */
 
-  export function listenDatagram(
+  function listenDatagram(
     options: ListenOptions & { transport: "udp" }
   ): DatagramConn;
   type ListenOptions = /*unresolved*/ any;
@@ -4312,11 +4275,11 @@ declare namespace Deno {
    * ```
    *
    * Requires `allow-read` and `allow-write` permission. */
-  export function listenDatagram(
+  function listenDatagram(
     options: UnixListenOptions & { transport: "unixpacket" }
   ): DatagramConn;
 
-  export interface UnixConnectOptions {
+  interface UnixConnectOptions {
     transport: "unix";
     path: string;
   }
@@ -4339,10 +4302,10 @@ declare namespace Deno {
   type ConnectOptions = /*unresolved*/ any;
   type TcpConn = /*unresolved*/ any;
   type UnixConn = /*unresolved*/ any;
-  export function connect(options: ConnectOptions): Promise<TcpConn>;
-  export function connect(options: UnixConnectOptions): Promise<UnixConn>;
+  function connect(options: ConnectOptions): Promise<TcpConn>;
+  function connect(options: UnixConnectOptions): Promise<UnixConn>;
 
-  export interface ConnectTlsOptions {
+  interface ConnectTlsOptions {
     /** PEM formatted client certificate chain. */
     certChain?: string;
     /** PEM formatted (RSA or PKCS8) private key of client certificate. */
@@ -4356,7 +4319,7 @@ declare namespace Deno {
     alpnProtocols?: string[];
   }
 
-  export interface TlsHandshakeInfo {
+  interface TlsHandshakeInfo {
     /** **UNSTABLE**: new API, yet to be vetted.
      *
      * Contains the ALPN protocol selected during negotiation with the server.
@@ -4365,7 +4328,7 @@ declare namespace Deno {
     alpnProtocol: string | null;
   }
 
-  export interface TlsConn extends Conn {
+  interface TlsConn extends Conn {
     /** Runs the client or server handshake protocol to completion if that has
      * not happened yet. Calling this method is optional; the TLS handshake
      * will be completed automatically as soon as data is sent or received. */
@@ -4387,9 +4350,9 @@ declare namespace Deno {
    *
    * Requires `allow-net` permission.
    */
-  export function connectTls(options: ConnectTlsOptions): Promise<TlsConn>;
+  function connectTls(options: ConnectTlsOptions): Promise<TlsConn>;
 
-  export interface ListenTlsOptions {
+  interface ListenTlsOptions {
     /** **UNSTABLE**: new API, yet to be vetted.
      *
      * Application-Layer Protocol Negotiation (ALPN) protocols to announce to
@@ -4399,7 +4362,7 @@ declare namespace Deno {
     alpnProtocols?: string[];
   }
 
-  export interface StartTlsOptions {
+  interface StartTlsOptions {
     /** **UNSTABLE**: new API, yet to be vetted.
      *
      * Application-Layer Protocol Negotiation (ALPN) protocols to announce to
@@ -4409,7 +4372,7 @@ declare namespace Deno {
     alpnProtocols?: string[];
   }
 
-  export interface Listener extends AsyncIterable<Conn> {
+  interface Listener extends AsyncIterable<Conn> {
     /** **UNSTABLE**: new API, yet to be vetted.
      *
      * Make the listener block the event loop from finishing.
@@ -4430,38 +4393,38 @@ declare namespace Deno {
    * Acquire an advisory file-system lock for the provided file. `exclusive`
    * defaults to `false`.
    */
-  export function flock(rid: number, exclusive?: boolean): Promise<void>;
+  function flock(rid: number, exclusive?: boolean): Promise<void>;
 
   /** **UNSTABLE**: New API should be tested first.
    *
    * Acquire an advisory file-system lock for the provided file. `exclusive`
    * defaults to `false`.
    */
-  export function flockSync(rid: number, exclusive?: boolean): void;
+  function flockSync(rid: number, exclusive?: boolean): void;
 
   /** **UNSTABLE**: New API should be tested first.
    *
    * Release an advisory file-system lock for the provided file.
    */
-  export function funlock(rid: number): Promise<void>;
+  function funlock(rid: number): Promise<void>;
 
   /** **UNSTABLE**: New API should be tested first.
    *
    * Release an advisory file-system lock for the provided file.
    */
-  export function funlockSync(rid: number): void;
+  function funlockSync(rid: number): void;
 
   /** **UNSTABLE**: new API, yet to be vetted.
    *
    * Make the timer of the given id blocking the event loop from finishing
    */
-  export function refTimer(id: number): void;
+  function refTimer(id: number): void;
 
   /** **UNSTABLE**: new API, yet to be vetted.
    *
    * Make the timer of the given id not blocking the event loop from finishing
    */
-  export function unrefTimer(id: number): void;
+  function unrefTimer(id: number): void;
 
   /** **UNSTABLE**: new API, yet to be vetter.
    *
@@ -4473,11 +4436,9 @@ declare namespace Deno {
    * received. The promise shouldn't be awaited before responding to the
    * `request`, otherwise event loop might deadlock.
    */
-  export function upgradeHttp(
-    request: Request
-  ): Promise<[Deno.Conn, Uint8Array]>;
+  function upgradeHttp(request: Request): Promise<[Deno.Conn, Uint8Array]>;
 
-  export interface SpawnOptions {
+  interface SpawnOptions {
     /** Arguments to pass to the process. */
     args?: string[];
     /**
@@ -4531,12 +4492,12 @@ declare namespace Deno {
    * const status = await child.status;
    * ```
    */
-  export function spawnChild<T extends SpawnOptions = SpawnOptions>(
+  function spawnChild<T extends SpawnOptions = SpawnOptions>(
     command: string | URL,
     options?: T
   ): Child<T>;
 
-  export class Child<T extends SpawnOptions> {
+  class Child<T extends SpawnOptions> {
     readonly stdin: T["stdin"] extends "piped"
       ? WritableStream<Uint8Array>
       : null;
@@ -4574,7 +4535,7 @@ declare namespace Deno {
    * console.assert("world\n" === new TextDecoder().decode(stderr));
    * ```
    */
-  export function spawn<T extends SpawnOptions = SpawnOptions>(
+  function spawn<T extends SpawnOptions = SpawnOptions>(
     command: string | URL,
     options?: T
   ): Promise<SpawnOutput<T>>;
@@ -4596,12 +4557,12 @@ declare namespace Deno {
    * console.assert("world\n" === new TextDecoder().decode(stderr));
    * ```
    */
-  export function spawnSync<T extends SpawnOptions = SpawnOptions>(
+  function spawnSync<T extends SpawnOptions = SpawnOptions>(
     command: string | URL,
     options?: T
   ): SpawnOutput<T>;
 
-  export type ChildStatus =
+  type ChildStatus =
     | {
         success: true;
         code: 0;
@@ -4613,7 +4574,7 @@ declare namespace Deno {
         signal: number | null;
       };
 
-  export interface SpawnOutput<T extends SpawnOptions> {
+  interface SpawnOutput<T extends SpawnOptions> {
     status: ChildStatus;
     stdout: T["stdout"] extends "inherit" | "null" ? null : Uint8Array;
     stderr: T["stderr"] extends "inherit" | "null" ? null : Uint8Array;

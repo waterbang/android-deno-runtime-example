@@ -1,3 +1,149 @@
+try {
+const metaData = {
+  baseUrl: "",
+  manifest: {
+    origin: "bfchain",
+    author: ["waterbang,water_bang@163.com"],
+    description: "Awasome DWeb",
+    keywords: ["demo"],
+    dwebId: "DWEB_ID",
+    privateKey: "key.sign",
+    enter: "index.html"
+  },
+  router: [
+    {
+      url: "/getBlockInfo",
+      header: {
+        method: "get",
+        contentType: "application/json",
+        response: "https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo"
+      }
+    },
+    {
+      url: "/getBlockHigh",
+      header: {
+        method: "get",
+        contentType: "application/json",
+        StatusCode: 200,
+        response: "https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo"
+      }
+    },
+    {
+      url: "/index.html",
+      header: {
+        contentType: "text/plain",
+        StatusCode: 200,
+        response: "/index.html"
+      }
+    },
+    {
+      url: "/app/bfchain.dev/index.html",
+      header: {
+        contentType: "text/plain",
+        StatusCode: 200,
+        response: "/app/bfchain.dev/index.html"
+      }
+    }
+  ],
+  whitelist: ["https://unpkg.com"]
+};
+var callDeno = /* @__PURE__ */ ((callDeno2) => {
+  callDeno2["openDWebView"] = "openDWebView";
+  callDeno2["openScanner"] = "openScanner";
+  callDeno2["initMetaData"] = "initMetaData";
+  return callDeno2;
+})(callDeno || {});
+let libSuffix = "";
+switch (Deno.build.os) {
+  case "windows":
+    libSuffix = "dll";
+    break;
+  case "darwin":
+    libSuffix = "dylib";
+    break;
+  default:
+    libSuffix = "so";
+    break;
+}
+const libName = `librust_lib.${libSuffix}`;
+const dylib = Deno.dlopen(libName, {
+  send_buffer: { parameters: ["pointer", "usize"], result: "void" }
+});
+const Rust = dylib.symbols;
+const versionView = new Uint8Array(new ArrayBuffer(1));
+const headView = new Uint8Array(new ArrayBuffer(2));
+versionView[0] = 1;
+class Deno$1 {
+  createHeader() {
+    const tail = headView.length - 1;
+    headView[tail] += 1;
+    if ((headView[tail] & 255) === 255) {
+      this.bitLeftShifts();
+      headView[tail] = 0;
+    }
+    console.log("headView =======>", Array.from(headView).map((n) => n.toString(2)));
+  }
+  callFunction(handleFn, data) {
+    const uint8Array = this.structureBinary(handleFn, data);
+    Rust.send_buffer(uint8Array, uint8Array.length);
+  }
+  structureBinary(fn, data = "") {
+    const message = `{"function":["${fn}"],"data":${data}}`;
+    const encoder = new TextEncoder();
+    const uint8Array = encoder.encode(message);
+    return this.concatenate(versionView, headView, uint8Array);
+  }
+  bitLeftShifts() {
+    let rest = 0;
+    for (let i = headView.length - 1; i >= 0; i--) {
+      const v = headView[i];
+      const newRest = (v & 128) > 0 ? 1 : 0;
+      headView[i] = (v << 1 | rest) & 255;
+      rest = newRest;
+    }
+  }
+  concatenate(...arrays) {
+    let totalLength = 0;
+    for (let arr of arrays) {
+      totalLength += arr.length;
+    }
+    const result = new Uint8Array(totalLength);
+    let offset = 0;
+    for (let arr of arrays) {
+      result.set(arr, offset);
+      offset += arr.length;
+    }
+    return result;
+  }
+}
+const deno = new Deno$1();
+class DWebView {
+  constructor(metaData2) {
+    this.initAppMetaData(metaData2);
+    deno.createHeader();
+  }
+  initAppMetaData(metaData2) {
+    if (Object.keys(metaData2).length === 0)
+      return;
+    deno.callFunction(callDeno.initMetaData, `'${JSON.stringify(metaData2)}'`);
+  }
+  async onRequest(url) {
+    const response = await fetch(url);
+    const responseData = await response.text();
+    console.log(JSON.stringify(responseData));
+    return responseData;
+  }
+  activity(entry) {
+    deno.callFunction(callDeno.openDWebView, `"${new URL(entry, this.url).href}"`);
+  }
+}
+const openDWebView = (app) => {
+  const dwebview = new DWebView(app);
+  dwebview.activity(app.manifest.enter);
+};
+openDWebView(metaData);
+
+
 const p$1 = function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -1946,6 +2092,9 @@ function getTransitionRawChildren(children, keepComment = false, parentKey) {
     }
   }
   return ret;
+}
+function defineComponent(options) {
+  return isFunction(options) ? { setup: options, name: options.name } : options;
 }
 const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
 const isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
@@ -4622,16 +4771,8 @@ function normalizeContainer(container) {
 }
 const style = "";
 const _imports_0 = "/vite.svg";
-const _imports_1 = "/assets/vue.5532db34.svg";
-const HelloWorld_vue_vue_type_style_index_0_scoped_a1de4649_lang = "";
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-const _withScopeId$1 = (n) => (pushScopeId("data-v-a1de4649"), n = n(), popScopeId(), n);
+const _imports_1 = "/assets/vue.svg";
+const _withScopeId$1 = (n) => (pushScopeId("data-v-8fe7e3eb"), n = n(), popScopeId(), n);
 const _hoisted_1$1 = { class: "card" };
 const _hoisted_2 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
   /* @__PURE__ */ createTextVNode(" Edit "),
@@ -4655,10 +4796,10 @@ const _hoisted_4 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBa
   /* @__PURE__ */ createTextVNode(" in your IDE for a better DX ")
 ], -1));
 const _hoisted_5 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", { class: "read-the-docs" }, "Click on the Vite and Vue logos to learn more", -1));
-const _sfc_main$1 = {
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "HelloWorld",
   props: {
-    msg: String
+    msg: null
   },
   setup(__props) {
     const count = ref(0);
@@ -4678,10 +4819,17 @@ const _sfc_main$1 = {
       ], 64);
     };
   }
+});
+const HelloWorld_vue_vue_type_style_index_0_scoped_8fe7e3eb_lang = "";
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
 };
-const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-a1de4649"]]);
-const App_vue_vue_type_style_index_0_scoped_6d095a02_lang = "";
-const _withScopeId = (n) => (pushScopeId("data-v-6d095a02"), n = n(), popScopeId(), n);
+const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-8fe7e3eb"]]);
+const _withScopeId = (n) => (pushScopeId("data-v-086e6a54"), n = n(), popScopeId(), n);
 const _hoisted_1 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, [
   /* @__PURE__ */ createBaseVNode("a", {
     href: "https://vitejs.dev",
@@ -4704,7 +4852,7 @@ const _hoisted_1 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBase
     })
   ])
 ], -1));
-const _sfc_main = {
+const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "App",
   setup(__props) {
     return (_ctx, _cache) => {
@@ -4714,6 +4862,11 @@ const _sfc_main = {
       ], 64);
     };
   }
-};
-const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-6d095a02"]]);
+});
+const App_vue_vue_type_style_index_0_scoped_086e6a54_lang = "";
+const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-086e6a54"]]);
 createApp(App).mount("#app");
+
+} catch(e) {
+  console.log(e)
+}

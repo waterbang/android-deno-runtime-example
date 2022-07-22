@@ -71,7 +71,17 @@ fn create_web_worker_callback(
       get_error_class_fn: Some(&get_error_class_name),
       blob_store: BlobStore::default(),
       broadcast_channel: InMemoryBroadcastChannel::default(),
+      /// 用于在隔离之间传输 SharedArrayBuffers 的存储。
+      /// 如果多个isolate应该有共享的可能
+      /// SharedArrayBuffers，它们应该使用相同的[SharedArrayBufferStore]。 如果
+      /// 没有指定[SharedArrayBufferStore]，SharedArrayBuffer不能指定
+      /// 序列化。
       shared_array_buffer_store: Some(SharedArrayBufferStore::default()),
+      /// 用于在之间传输 `WebAssembly.Module` 对象的存储隔离。
+      /// 如果多个isolate应该有共享的可能
+      /// `WebAssembly.Module` 对象，它们应该使用相同的
+      /// [CompiledWasmModuleStore]。 如果没有指定 [CompiledWasmModuleStore]，
+      /// `WebAssembly.Module` 对象不能被序列化。
       compiled_wasm_module_store: Some(CompiledWasmModuleStore::default()),
       maybe_exit_code: args.maybe_exit_code,
     };

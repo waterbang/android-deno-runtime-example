@@ -1,6 +1,6 @@
-export namespace Runtime {
-  export type DwebViewId = string;
-  export interface IManifestApp {
+declare namespace Runtime {
+  type DwebViewId = string;
+  interface IManifestApp {
     id: string;
     name: string;
     versionCode: number;
@@ -9,7 +9,7 @@ export namespace Runtime {
     entryResourceMap?: Map<string, string>;
   }
 
-  export type TModule_fn = {
+  type TModule_fn = {
     [fn: string]: Function;
   };
 }

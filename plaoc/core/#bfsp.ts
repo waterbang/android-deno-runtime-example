@@ -5,7 +5,7 @@ export default defineConfig((info) => {
     exports: {
       ".": "./index.ts",
     },
-    deps: ["@bfsa/typings", "@bfsa/dweb-manifest"],
+    deps: ["@bfsx/typings", "@bfsx/metadata"],
     profiles: ["android"],
     packageJson: {
       license: "MIT",

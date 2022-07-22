@@ -16,11 +16,11 @@ var defineConfig = (cb) => {
 // bfsp-wrapper:./core/#bfsp#
 var bfsp_default = defineConfig((info) => {
   const config = {
-    name: "@bfsa/core",
+    name: "@bfsx/core",
     exports: {
       ".": "./index.ts"
     },
-    deps: ["@bfsa/typings", "@bfsa/dweb-manifest"],
+    deps: ["@bfsx/typings", "@bfsx/metadata"],
     profiles: ["android"],
     packageJson: {
       license: "MIT",
@@ -29,6 +29,11 @@ var bfsp_default = defineConfig((info) => {
       private: false,
       dependencies: {},
       devDependencies: {}
+    },
+    tsConfig: {
+      compilerOptions: {
+        lib: ["ES2020", "DOM"]
+      }
     }
   };
   return config;
@@ -49,7 +54,7 @@ var bfsp_default3 = defineConfig((info) => {
     packageJson: {
       license: "MIT",
       author: "@bfchain",
-      version: "0.0.1",
+      version: "0.0.2",
       private: false,
       dependencies: {},
       devDependencies: {}
@@ -65,7 +70,7 @@ var bfsp_default4 = newDefault2;
 // bfsp-wrapper:./typings/#bfsp#
 var bfsp_default5 = defineConfig((info) => {
   const config = {
-    name: "@bfsa/typings",
+    name: "@bfsx/typings",
     exports: {
       ".": "./index.ts"
     },
@@ -83,10 +88,10 @@ var bfsp_default5 = defineConfig((info) => {
 var newDefault3 = Object.assign(bfsp_default5 ?? {}, { relativePath: "./typings" });
 var bfsp_default6 = newDefault3;
 
-// bfsp-wrapper:./dweb-manifest/#bfsp#
+// bfsp-wrapper:./metadata/#bfsp#
 var bfsp_default7 = defineConfig((info) => {
   const config = {
-    name: "@bfsa/dweb-manifest",
+    name: "@bfsx/metadata",
     exports: {
       ".": "./index.ts"
     },
@@ -100,8 +105,8 @@ var bfsp_default7 = defineConfig((info) => {
   return config;
 });
 
-// bfsp-wrapper:/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/plaoc/dweb-manifest/#bfsp.ts
-var newDefault4 = Object.assign(bfsp_default7 ?? {}, { relativePath: "./dweb-manifest" });
+// bfsp-wrapper:/Users/mac/Desktop/waterbang/project/android-deno-runtime-example/plaoc/metadata/#bfsp.ts
+var newDefault4 = Object.assign(bfsp_default7 ?? {}, { relativePath: "./metadata" });
 var bfsp_default8 = newDefault4;
 
 // #bfsw.ts

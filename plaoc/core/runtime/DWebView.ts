@@ -1,6 +1,6 @@
 import { callDeno } from "../deno/android.fn";
 import { deno } from "../deno/index";
-import { MetaData } from "@bfsa/dweb-manifest";
+import { MetaData } from "@bfsx/metadata";
 
 export class DWebView {
   url!: string;
