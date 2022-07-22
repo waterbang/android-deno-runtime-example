@@ -1,3 +1,5 @@
+import { Runtime } from "./runtime.d";
+
 export class ScriptModule {
   constructor(code: string, url: string) {}
 }

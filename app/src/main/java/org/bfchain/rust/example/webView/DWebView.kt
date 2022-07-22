@@ -385,7 +385,7 @@ fun DWebView(
                                         if (suffixIndex == -1) {
                                             return dataGateWay(request)
                                         }
-                                        // 映射本地文件的资源文件 https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/plaoc/index.mjs -> /plaoc/index.mjs
+                                        // 映射本地文件的资源文件 https://aaa.channel.bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/plaoc/index.mjs -> /plaoc/index.mjs
                                         if (Regex(dWebView_host).containsMatchIn(url)) {
                                             val path = URL(url).path
                                             return customUrlScheme.handleRequest(request, path)

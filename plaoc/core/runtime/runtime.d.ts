@@ -1,4 +1,4 @@
-declare namespace Runtime {
+export namespace Runtime {
   type DwebViewId = string;
   interface IManifestApp {
     id: string;

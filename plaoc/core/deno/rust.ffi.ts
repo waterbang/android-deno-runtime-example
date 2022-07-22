@@ -1,4 +1,5 @@
 // your OS.
+import { Deno } from "./deno.d";
 let libSuffix = "";
 switch (Deno.build.os) {
   case "windows":
