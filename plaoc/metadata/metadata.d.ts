@@ -1,10 +1,10 @@
 export interface IMetaData {
-  manifest: Manifest;
-  dwebview: Dwebview[];
-  whitelist: string[];
-  baseUrl?: string;
+  manifest: IManifest;
+  dwebview: IDwebview;
+  whitelist?: string[];
+  baseUrl: string;
 }
-export interface Manifest {
+export interface IManifest {
   // 应用所属链的名称（系统应用的链名为通配符“*”，其合法性由节点程序自身决定，不跟随链上数据）
   origin: string;
   // 开发者
@@ -22,16 +22,11 @@ export interface Manifest {
   enter: string;
 }
 
-export interface Dwebview {
+export interface IDwebview {
   importmap: Importmap[];
 }
 
-export interface Importmap {
+export interface IImportMap {
   url: string;
-  header: {
-    method?: string;
-    contentType?: string;
-    response: string;
-    StatusCode?: number;
-  };
+  response: string;
 }

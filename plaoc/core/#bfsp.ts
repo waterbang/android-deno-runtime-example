@@ -5,15 +5,18 @@ export default defineConfig((info) => {
     exports: {
       ".": "./index.ts",
     },
-    deps: ["@bfsx/typings", "@bfsx/metadata"],
     profiles: ["android"],
     packageJson: {
       license: "MIT",
       author: "@bfchain",
-      version: "0.0.1",
+      version: "0.0.2",
       private: false,
       dependencies: {},
-      devDependencies: {},
+      devDependencies: {
+        "@bfsx/metadata": "0.0.2",
+        "@bfsx/gateway": "0.0.2",
+        "@bfsx/typings": "0.0.2",
+      },
     },
     tsConfig: {
       compilerOptions: {

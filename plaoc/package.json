@@ -6,6 +6,7 @@
     "./core",
     "./plugin",
     "./metadata",
+    "./gateway",
     "./typings"
   ]
 }

@@ -34,7 +34,7 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_initDeno(
         Arc::new(AssetsModuleLoader::from_ptr(
             NonNull::new(asset_manager_ptr).unwrap(),
         )),
-        "/bfs/index.mjs",
+        "/bfs-service/vue/plaoc-ts/bfs-serivce/index.mjs",
         // "/assets/index.js",
     )
     .await

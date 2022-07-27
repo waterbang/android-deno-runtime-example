@@ -1,4 +1,4 @@
-#![cfg(target_os = "android")]
+// #![cfg(target_os = "android")]
 use android_logger::Config;
 use lazy_static::*;
 use log::{debug, error, info, Level};
@@ -27,6 +27,7 @@ lazy_static! {
     static ref JVM_GLOBAL: Mutex<Option<JavaVM>> = Mutex::new(None);
     //callback
     static ref JNI_CALLBACK: Mutex<Option<GlobalRef>> = Mutex::new(None);
+     static ref JNI_JS_CALLBACK: Mutex<Option<GlobalRef>> = Mutex::new(None);
 }
 
 // 校验的包名
@@ -58,46 +59,45 @@ macro_rules! jni_method {
     }};
 }
 
-#[no_mangle]
-pub extern "system" fn Java_org_bfchain_rust_example_DenoService_initialiseLogging(
-    env: JNIEnv,
-    _context: JObject,
-) {
-    android_logger::init_once(
-        Config::default()
-            .with_min_level(Level::Trace)
-            .with_tag("Rust"),
-    );
-    log_panics::init();
+// #[no_mangle]
+// pub extern "system" fn Java_org_bfchain_rust_example_DenoService_initialiseLogging(
+//     env: JNIEnv,
+//     _context: JObject,
+// ) {
+//     android_logger::init_once(
+//         Config::default()
+//             .with_min_level(Level::Trace)
+//             .with_tag("Rust"),
+//     );
+//     log_panics::init();
 
-    log::info!("Logging initialised from Rust");
+//     log::info!("Logging initialised from Rust");
 
-    std::env::set_var("NO_COLOR", "true");
-}
+//     std::env::set_var("NO_COLOR", "true");
+// }
 
-#[no_mangle]
-pub extern "system" fn Java_org_bfchain_rust_example_DenoService_hello(
-    env: JNIEnv,
-    context: JObject,
-) {
-    log::info!("hello!!!hello!!!hello!!!hello!!!hello!!!");
-    let global_context = env.new_global_ref(context).unwrap();
-    rust_lib_ndk_context_initialize(env.get_java_vm().unwrap(), global_context.as_obj());
-}
+// #[no_mangle]
+// pub extern "system" fn Java_org_bfchain_rust_example_DenoService_hello(
+//     env: JNIEnv,
+//     context: JObject,
+// ) {
+//     log::info!("hello!!!hello!!!hello!!!hello!!!hello!!!");
+//     let global_context = env.new_global_ref(context).unwrap();
+//     rust_lib_ndk_context_initialize(env.get_java_vm().unwrap(), global_context.as_obj());
+// }
 
-#[no_mangle]
-pub extern "C" fn rust_lib_ndk_context_initialize(vm: JavaVM, context: JObject) {
-    unsafe {
-        ndk_context::initialize_android_context(vm.get_java_vm_pointer().cast(), context.cast())
-    };
-    log::info!("android context inited!!!!!");
-    let aml = crate::module_loader::AssetsModuleLoader::new();
-    log::info!(
-        "hello_runtime.js: {}",
-        aml.get_string_asset("hello_runtime.js")
-    );
-}
-
+// #[no_mangle]
+// pub extern "C" fn rust_lib_ndk_context_initialize(vm: JavaVM, context: JObject) {
+//     unsafe {
+//         ndk_context::initialize_android_context(vm.get_java_vm_pointer().cast(), context.cast())
+//     };
+//     log::info!("android context inited!!!!!");
+//     let aml = crate::module_loader::AssetsModuleLoader::new();
+//     log::info!(
+//         "hello_runtime.js: {}",
+//         aml.get_string_asset("hello_runtime.js")
+//     );
+// }
 
 /// 动态库被 java 加载时 会触发此函数, 在此动态注册本地方法
 #[no_mangle]
@@ -109,6 +109,10 @@ unsafe fn JNI_OnLoad(jvm: JavaVM, _reserved: *mut c_void) -> jint {
         jni_method!(
             nativeSetCallback,
             "(Lorg/bfchain/rust/example/DenoService$IHandleCallback;)V"
+        ),
+        jni_method!(
+            denoSetCallback,
+            "(Lorg/bfchain/rust/example/DenoService$IDenoCallback;)V"
         ),
     ];
 
@@ -128,6 +132,16 @@ pub fn nativeSetCallback(env: JNIEnv, _obj: JObject, callback: JObject) {
 
     // 添加到全局缓存
     let mut ptr_fn = JNI_CALLBACK.lock().unwrap();
+    *ptr_fn = Some(callback);
+}
+/// 方法实现
+#[no_mangle]
+pub fn denoSetCallback(env: JNIEnv, _obj: JObject, callback: JObject) {
+    // 创建一个全局引用,
+    let callback = env.new_global_ref(JObject::from(callback)).unwrap();
+
+    // 添加到全局缓存
+    let mut ptr_fn = JNI_JS_CALLBACK.lock().unwrap();
     *ptr_fn = Some(callback);
 }
 
@@ -156,7 +170,7 @@ unsafe fn register_natives(jvm: &JavaVM, class_name: &str, methods: &[NativeMeth
     }
 }
 
-/// 回调 Callback 对象的 { void handleCallback(string: String) } 函数
+/// 回调 Callback 对象的 { void handleCallback(byte: byteArray) } 函数
 pub fn call_java_callback(fun_type: &'static [u8]) {
     android_logger::init_once(
         Config::default()
@@ -172,6 +186,29 @@ pub fn call_java_callback(fun_type: &'static [u8]) {
             .byte_array_from_slice(fun_type)
             .expect("Couldn't create java string!");
         match env.call_method(obj, "handleCallback", "([B)V", &[JValue::from(response)]) {
+            Ok(jvalue) => {
+                debug!("callback succeed: {:?}", jvalue);
+            }
+            Err(e) => {
+                error!("callback failed : {:?}", e);
+            }
+        }
+    });
+}
+
+/// 回调 Callback 对象的 { void denoCallback(byte: Byte) } 函数
+pub fn deno_evaljs_callback(fun_type: &'static [u8]) {
+    android_logger::init_once(
+        Config::default()
+            .with_min_level(Level::Debug)
+            .with_tag("myrust::denoSetCallback"),
+    );
+    log::info!("i am deno_evaljs_callback {:?}", fun_type);
+    call_jvm(&JNI_JS_CALLBACK, move |obj: JObject, env: &JNIEnv| {
+        let response: jbyteArray = env
+            .byte_array_from_slice(fun_type)
+            .expect("Couldn't create java string!");
+        match env.call_method(obj, "denoCallback", "([B)V", &[JValue::from(response)]) {
             Ok(jvalue) => {
                 debug!("callback succeed: {:?}", jvalue);
             }

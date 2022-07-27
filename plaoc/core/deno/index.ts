@@ -2,6 +2,7 @@
 /// 这里封装调用deno的方法，然后暴露出去
 /////////////////////////////
 import Rust from "./rust.ffi";
+
 const versionView = new Uint8Array(new ArrayBuffer(1));
 const headView = new Uint8Array(new ArrayBuffer(2)); // 初始化头部标记
 versionView[0] = 0x01; // 版本号都是1，表示消息
@@ -17,10 +18,10 @@ class Deno {
       this.bitLeftShifts();
       headView[tail] = 0x00;
     }
-    console.log(
-      "headView =======>",
-      Array.from(headView).map((n) => n.toString(2))
-    );
+    // console.log(
+    //   "headView =======>",
+    //   Array.from(headView).map((n) => n.toString(2))
+    // );
   }
 
   /**

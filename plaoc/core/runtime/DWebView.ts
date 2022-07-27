@@ -1,10 +1,15 @@
 import { callDeno } from "../deno/android.fn";
 import { deno } from "../deno/index";
 import { MetaData } from "@bfsx/metadata";
+import { Channel } from "@bfsx/gateway";
 
 export class DWebView {
+  isWaitingData: boolean = false;
   url!: string;
+  channel: Channel;
   constructor(metaData: MetaData) {
+    this.channel = new Channel();
+    this.url = metaData.baseUrl;
     this.initAppMetaData(metaData);
     deno.createHeader();
   }
@@ -13,7 +18,7 @@ export class DWebView {
     if (Object.keys(metaData).length === 0) return;
     deno.callFunction(callDeno.initMetaData, `'${JSON.stringify(metaData)}'`);
   }
-  // 乱写的 咯咯哒🥚
+  // 乱写的 企图拦截网络请求未遂
   async onRequest(url: string) {
     const response = await fetch(url);
     const responseData = await response.text();

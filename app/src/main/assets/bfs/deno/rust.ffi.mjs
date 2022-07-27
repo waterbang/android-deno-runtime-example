@@ -1,1 +1,0 @@
-let e="";switch(Deno.build.os){case"windows":e="dll";break;case"darwin":e="dylib";break;default:e="so"}const s=`librust_lib.${e}`,l=Deno.dlopen(s,{send_buffer:{parameters:["pointer","usize"],result:"void"}}).symbols;export{l as default};

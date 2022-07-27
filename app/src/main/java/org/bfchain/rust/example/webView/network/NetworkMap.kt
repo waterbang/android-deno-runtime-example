@@ -19,25 +19,24 @@ import java.util.*
 
 private const val TAG = "NetworkMap"
 
-// 这里是存储客户端的映射规则的，这样才知道需要如何转发给后端 <String,RearRouter>
-val front_to_rear_map = mutableMapOf<String, RearRouter>()
+// 这里是存储客户端的映射规则的，这样才知道需要如何转发给后端 <String,ImportMap>
+val front_to_rear_map = mutableMapOf<String, String>()
 var dWebView_host = ""
 
 // ð这里是路由的白名单
 var network_whitelist = "http://127.0.0.1"
 
-// 数据资源拦截
+// 数据资源拦截 https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/open
 fun dataGateWay(
     request: WebResourceRequest
 ): WebResourceResponse {
     val url = request.url.toString().lowercase(Locale.ROOT)
+    Log.i(TAG, " xxxxxxxx: $request")
     if (front_to_rear_map.contains(url)) {
-        val trueUrl = front_to_rear_map[url]?.url.toString()
+        val trueUrl = front_to_rear_map[url]
         val connection = URL(trueUrl).openConnection() as HttpURLConnection
         connection.requestMethod = request.method
         Log.i(TAG, " gateWay: ${request.method}")
-//        Log.i(TAG, " gateWay: ${connection.contentType}")
-//        Log.i(TAG, " gateWay: ${connection.responseMessage}")
         return WebResourceResponse(
             "application/json",
             "utf-8",
@@ -57,8 +56,10 @@ fun viewGateWay(
     request: WebResourceRequest
 ): WebResourceResponse {
     val url = request.url.toString().lowercase(Locale.ROOT)
+//    Log.i(TAG, " viewGateWay: ${url}")
+//    Log.i(TAG, " viewGateWay: ${front_to_rear_map.contains(url)}")
     if (front_to_rear_map.contains(url)) {
-        val trueUrl = front_to_rear_map[url]?.url
+        val trueUrl = front_to_rear_map[url]
         if (trueUrl != null) {
             // 远程文件处理
             if (trueUrl.startsWith("https") || trueUrl.startsWith("http")) {
@@ -88,19 +89,8 @@ fun initMetaData(metaData: String) {
     // 设置域名
     dWebView_host = metaJson.baseUrl.lowercase(Locale.ROOT)
     // 设置路由
-    for (router in metaJson.router) {
-        if (router.url !== null) {
-            val header = router.header
-            front_to_rear_map[resolveUrl(router.url)] =
-                RearRouter(
-                    header.response as String,
-                    UserHeader(
-                        header.method,
-                        header.contentType,
-                        header.StatusCode,
-                    )
-                )
-        }
+    for (importMap in metaJson.dwebview.importmap) {
+        front_to_rear_map[resolveUrl(importMap.url)] = importMap.response
     }
     // 设置白名单
     for (whitelist in metaJson.whitelist) {
@@ -136,24 +126,40 @@ fun jumpWhitelist(url: String): Boolean {
  * (ps:前缀：https://bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb，请求的路径：getBlockInfo)
  */
 
-data class RearRouter(val url: String, val header: UserHeader)
+//data class RearRouter(val url: String, val header: UserHeader)
 
 data class UserMetaData(
     val baseUrl: String = "",
-    val router: Array<UserRouter> = arrayOf(UserRouter()),
+    val manifest: Manifest = Manifest("", arrayOf("xx"), "", arrayOf(""), "", "", ""),
+    val dwebview: ImportMap = ImportMap(arrayOf(DwebViewMap("", ""))),
     val whitelist: Array<String> = arrayOf("http://localhost")
 )
 
-data class UserRouter(
-    val url: String? = null,
-    val header: UserHeader = UserHeader()
+data class Manifest(
+// 应用所属链的名称（系统应用的链名为通配符“*”，其合法性由节点程序自身决定，不跟随链上数据）
+    val origin: String = "",
+// 开发者
+    val author: Array<String> = arrayOf("BFChain"),
+// 应用搜索的描述
+    val description: String = "test Application",
+// 应用搜索的关键字
+    val keywords: Array<String> = arrayOf("new test", "App"),
+// 应用ID，参考共识标准
+    val dwebId: String = "",
+// 私钥文件，用于最终的应用签名
+    val privateKey: String = "",
+// 应用入口，可以配置多个，其中index为缺省名称。
+// 外部可以使用 DWEB_ID.bfchain (等价同于index.DWEB_ID.bfchain)、admin.DWEB_ID.bfchain 来启动其它页面
+    val enter: String = "index.html"
 )
 
-data class UserHeader(
-    val method: String = "GET",
-    val contentType: String = "application/json",
-    val StatusCode: Number = 200,
-    val response: Any = ""
+data class ImportMap(
+    val importmap: Array<DwebViewMap> = arrayOf(DwebViewMap("", ""))
+)
+
+data class DwebViewMap(
+    val url: String = "",
+    val response: String = ""
 )
 
 

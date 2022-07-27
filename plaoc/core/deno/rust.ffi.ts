@@ -1,5 +1,6 @@
 // your OS.
-import { Deno } from "./deno.d";
+import "@bfsx/typings";
+
 let libSuffix = "";
 switch (Deno.build.os) {
   case "windows":

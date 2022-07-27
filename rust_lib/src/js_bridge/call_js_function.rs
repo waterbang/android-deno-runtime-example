@@ -20,3 +20,9 @@ pub unsafe extern "C" fn send_buffer(ptr: *const u8, len: usize) {
     let buf = std::slice::from_raw_parts(ptr, len).to_vec();
     call_android_function::call_android(buf); // 通知FFI函数
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn eval_js(ptr: *const u8, len: usize) {
+    let buf = std::slice::from_raw_parts(ptr, len).to_vec();
+    call_android_function::call_android_evaljs(buf); // 通知FFI函数
+}

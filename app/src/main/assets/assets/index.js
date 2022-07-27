@@ -1,4 +1,3 @@
-try {
 const p$1 = function polyfill() {
   const relList = document.createElement("link").relList;
   if (relList && relList.supports && relList.supports("modulepreload")) {
@@ -2043,7 +2042,31 @@ function invokeDirectiveHook(vnode, prevVNode, instance, name) {
     }
   }
 }
+const COMPONENTS = "components";
+function resolveComponent(name, maybeSelfReference) {
+  return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
+}
 const NULL_DYNAMIC_COMPONENT = Symbol();
+function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
+  const instance = currentRenderingInstance || currentInstance;
+  if (instance) {
+    const Component = instance.type;
+    if (type === COMPONENTS) {
+      const selfName = getComponentName(Component, false);
+      if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
+        return Component;
+      }
+    }
+    const res = resolve(instance[type] || Component[type], name) || resolve(instance.appContext[type], name);
+    if (!res && maybeSelfReference) {
+      return Component;
+    }
+    return res;
+  }
+}
+function resolve(registry, name) {
+  return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
+}
 const getPublicInstance = (i) => {
   if (!i)
     return null;
@@ -4239,6 +4262,9 @@ function getExposeProxy(instance) {
     }));
   }
 }
+function getComponentName(Component, includeInferred = true) {
+  return isFunction(Component) ? Component.displayName || Component.name : Component.name || includeInferred && Component.__name;
+}
 function isClassComponent(value) {
   return isFunction(value) && "__vccOpts" in value;
 }
@@ -4627,14 +4653,53 @@ function normalizeContainer(container) {
 const style = "";
 const _imports_0 = "/vite.svg";
 const _imports_1 = "/assets/vue.svg";
-const _withScopeId$1 = (n) => (pushScopeId("data-v-044445c8"), n = n(), popScopeId(), n);
+class dwebPlugin extends HTMLElement {
+  constructor() {
+    super();
+    this.isWaitingData = false;
+    this.hightWaterMark = 20;
+    this.dispatchStringMessage = () => {
+    };
+    this.dispatchBinaryMessage = () => {
+    };
+  }
+  postMessage() {
+  }
+  onMesage() {
+  }
+  async onConnect(url, body) {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(body)
+    });
+    const data = await response.text();
+    console.log(data);
+    return data;
+  }
+  onClose() {
+  }
+  openWait() {
+    this.isWaitingData = true;
+  }
+  closeWait() {
+    this.isWaitingData = false;
+  }
+}
+class DWebView extends dwebPlugin {
+  constructor() {
+    super();
+  }
+}
+class OpenScanner extends dwebPlugin {
+  constructor() {
+    super();
+  }
+}
+customElements.define("dweb-view", DWebView);
+customElements.define("dweb-scanner", OpenScanner);
+const _withScopeId$1 = (n) => (pushScopeId("data-v-64976de0"), n = n(), popScopeId(), n);
 const _hoisted_1$1 = { class: "card" };
 const _hoisted_2 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
-  /* @__PURE__ */ createTextVNode(" Edit "),
-  /* @__PURE__ */ createBaseVNode("code", null, "components/HelloWorld.vue"),
-  /* @__PURE__ */ createTextVNode(" to test HMR ")
-], -1));
-const _hoisted_3 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
   /* @__PURE__ */ createTextVNode(" Check out "),
   /* @__PURE__ */ createBaseVNode("a", {
     href: "https://vuejs.org/guide/quick-start.html#local",
@@ -4642,7 +4707,7 @@ const _hoisted_3 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBa
   }, "create-vue"),
   /* @__PURE__ */ createTextVNode(", the official Vue + Vite starter ")
 ], -1));
-const _hoisted_4 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
+const _hoisted_3 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
   /* @__PURE__ */ createTextVNode(" Install "),
   /* @__PURE__ */ createBaseVNode("a", {
     href: "https://github.com/johnsoncodehk/volar",
@@ -4650,32 +4715,40 @@ const _hoisted_4 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBa
   }, "Volar"),
   /* @__PURE__ */ createTextVNode(" in your IDE for a better DX ")
 ], -1));
-const _hoisted_5 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", { class: "read-the-docs" }, "Click on the Vite and Vue logos to learn more", -1));
+const _hoisted_4 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", { class: "read-the-docs" }, "Click on the Vite and Vue logos to learn more", -1));
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "HelloWorld",
   props: {
     msg: null
   },
   setup(__props) {
-    const count = ref(0);
+    onMounted(async () => {
+      const scanner = document.querySelector("dweb-scanner");
+      console.log(scanner.onConnect("/open", "xx"));
+    });
+    function openScanner() {
+    }
+    let scannerData = ref("\u626B\u7801\u8FD4\u56DE\u7684\u6570\u636E");
     return (_ctx, _cache) => {
+      const _component_dweb_scanner = resolveComponent("dweb-scanner");
       return openBlock(), createElementBlock(Fragment, null, [
+        createVNode(_component_dweb_scanner),
         createBaseVNode("h1", null, toDisplayString(__props.msg), 1),
         createBaseVNode("div", _hoisted_1$1, [
           createBaseVNode("button", {
             type: "button",
-            onClick: _cache[0] || (_cache[0] = ($event) => count.value++)
-          }, "count is " + toDisplayString(count.value), 1),
-          _hoisted_2
+            onClick: openScanner
+          }, "\u542F\u52A8\u626B\u7801"),
+          createBaseVNode("p", null, toDisplayString(unref(scannerData)), 1)
         ]),
+        _hoisted_2,
         _hoisted_3,
-        _hoisted_4,
-        _hoisted_5
+        _hoisted_4
       ], 64);
     };
   }
 });
-const HelloWorld_vue_vue_type_style_index_0_scoped_044445c8_lang = "";
+const HelloWorld_vue_vue_type_style_index_0_scoped_64976de0_lang = "";
 const _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -4683,8 +4756,8 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-044445c8"]]);
-const _withScopeId = (n) => (pushScopeId("data-v-086e6a54"), n = n(), popScopeId(), n);
+const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-64976de0"]]);
+const _withScopeId = (n) => (pushScopeId("data-v-65a86c98"), n = n(), popScopeId(), n);
 const _hoisted_1 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, [
   /* @__PURE__ */ createBaseVNode("a", {
     href: "https://vitejs.dev",
@@ -4713,161 +4786,11 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
         _hoisted_1,
-        createVNode(HelloWorld, { msg: "Vite + Vue" })
+        createVNode(HelloWorld, { msg: "DwebView-js \u267B\uFE0F Deno-js" })
       ], 64);
     };
   }
 });
-const App_vue_vue_type_style_index_0_scoped_086e6a54_lang = "";
-const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-086e6a54"]]);
+const App_vue_vue_type_style_index_0_scoped_65a86c98_lang = "";
+const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-65a86c98"]]);
 createApp(App).mount("#app");
-
-const metaData = {
-  baseUrl: "",
-  manifest: {
-    origin: "bfchain",
-    author: ["waterbang,water_bang@163.com"],
-    description: "Awasome DWeb",
-    keywords: ["demo"],
-    dwebId: "bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj",
-    privateKey: "bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj",
-    enter: "index.html"
-  },
-  router: [
-    {
-      url: "/getBlockInfo",
-      header: {
-        method: "get",
-        contentType: "application/json",
-        response: "https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo"
-      }
-    },
-    {
-      url: "/getBlockHigh",
-      header: {
-        method: "get",
-        contentType: "application/json",
-        StatusCode: 200,
-        response: "https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo"
-      }
-    },
-    {
-      url: "/index.html",
-      header: {
-        contentType: "text/plain",
-        StatusCode: 200,
-        response: "/index.html"
-      }
-    },
-    {
-      url: "/app/bfchain.dev/index.html",
-      header: {
-        contentType: "text/plain",
-        StatusCode: 200,
-        response: "/app/bfchain.dev/index.html"
-      }
-    }
-  ],
-  whitelist: ["https://unpkg.com"]
-};
-var callDeno = /* @__PURE__ */ ((callDeno2) => {
-  callDeno2["openDWebView"] = "openDWebView";
-  callDeno2["openScanner"] = "openScanner";
-  callDeno2["initMetaData"] = "initMetaData";
-  return callDeno2;
-})(callDeno || {});
-let libSuffix = "";
-switch (Deno.build.os) {
-  case "windows":
-    libSuffix = "dll";
-    break;
-  case "darwin":
-    libSuffix = "dylib";
-    break;
-  default:
-    libSuffix = "so";
-    break;
-}
-const libName = `librust_lib.${libSuffix}`;
-
-const dylib = Deno.dlopen(libName, {
-  send_buffer: { parameters: ["pointer", "usize"], result: "void" }
-});
-const Rust = dylib.symbols;
-const versionView = new Uint8Array(new ArrayBuffer(1));
-const headView = new Uint8Array(new ArrayBuffer(2));
-versionView[0] = 1;
-class Deno$1 {
-  createHeader() {
-    const tail = headView.length - 1;
-    headView[tail] += 1;
-    if ((headView[tail] & 255) === 255) {
-      this.bitLeftShifts();
-      headView[tail] = 0;
-    }
-    console.log("headView =======>", Array.from(headView).map((n) => n.toString(2)));
-  }
-  callFunction(handleFn, data) {
-    const uint8Array = this.structureBinary(handleFn, data);
-    Rust.send_buffer(uint8Array, uint8Array.length);
-  }
-  structureBinary(fn, data = "") {
-    const message = `{"function":["${fn}"],"data":${data}}`;
-    const encoder = new TextEncoder();
-    const uint8Array = encoder.encode(message);
-    return this.concatenate(versionView, headView, uint8Array);
-  }
-  bitLeftShifts() {
-    let rest = 0;
-    for (let i = headView.length - 1; i >= 0; i--) {
-      const v = headView[i];
-      const newRest = (v & 128) > 0 ? 1 : 0;
-      headView[i] = (v << 1 | rest) & 255;
-      rest = newRest;
-    }
-  }
-  concatenate(...arrays) {
-    let totalLength = 0;
-    for (let arr of arrays) {
-      totalLength += arr.length;
-    }
-    const result = new Uint8Array(totalLength);
-    let offset = 0;
-    for (let arr of arrays) {
-      result.set(arr, offset);
-      offset += arr.length;
-    }
-    return result;
-  }
-}
-const deno = new Deno$1();
-class DWebView {
-  constructor(metaData2) {
-    this.initAppMetaData(metaData2);
-    deno.createHeader();
-  }
-  initAppMetaData(metaData2) {
-    if (Object.keys(metaData2).length === 0)
-      return;
-    deno.callFunction(callDeno.initMetaData, `'${JSON.stringify(metaData2)}'`);
-  }
-  async onRequest(url) {
-    const response = await fetch(url);
-    const responseData = await response.text();
-    console.log(JSON.stringify(responseData));
-    return responseData;
-  }
-  activity(entry) {
-    deno.callFunction(callDeno.openDWebView, `"${new URL(entry, this.url).href}"`);
-  }
-}
-const openDWebView = (app) => {
-  const dwebview = new DWebView(app);
-  dwebview.activity(app.manifest.enter);
-};
-openDWebView(metaData);
-
-} catch(e) {
- console.log(e)
-}
-

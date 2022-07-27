@@ -17,6 +17,16 @@ pub fn call_android(bit: Vec<u8>) {
     android_inter::call_java_callback(callback);
 }
 
+/// 调用android方法
+pub fn call_android_evaljs(bit: Vec<u8>) {
+    // let fun_type = &handle.function;
+    // let public_key = &handle.public_key;
+    // let data = &handle.data;
+    // 转换为static str
+    let callback = Box::leak(bit.into_boxed_slice());
+    android_inter::deno_evaljs_callback(callback);
+}
+
 // #[allow(dead_code)]
 // pub struct HandleFunction {
 //     fun_type: Vec<String>,

@@ -5,10 +5,12 @@ export default defineConfig((info) => {
     exports: {
       ".": "./index.ts",
     },
+    profiles: ["android"],
     packageJson: {
+      // types: "./metadata.d.ts", //
       license: "MIT",
       author: "@bfchain",
-      version: "0.0.1",
+      version: "0.0.2",
       private: false,
     },
   };

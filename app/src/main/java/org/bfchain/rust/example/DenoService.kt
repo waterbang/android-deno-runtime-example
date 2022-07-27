@@ -36,6 +36,11 @@ class DenoService : IntentService("DenoService") {
         fun handleCallback(bytes: ByteArray)
     }
 
+    interface IDenoCallback {
+        fun denoCallback(bytes: ByteArray)
+    }
+
+    private external fun denoSetCallback(callback: IDenoCallback)
     private external fun nativeSetCallback(callback: IHandleCallback)
     private external fun initDeno(assets: AssetManager)
     external fun backDataToRust(
@@ -45,29 +50,41 @@ class DenoService : IntentService("DenoService") {
     external fun denoRuntime(assets: AssetManager, path: String)
 
     override fun onHandleIntent(p0: Intent?) {
-
         val appContext = applicationContext
-        // native回调
+        // rust 通知 kotlin doing sting
         nativeSetCallback(object : IHandleCallback {
             override fun handleCallback(bytes: ByteArray) {
-                // 处理二进制
-                val (headId, stringData) = parseBytesFactory(bytes)
-                //允许出现特殊字符和转义符
-                mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-                //允许使用单引号
-                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
-                val handle = mapper.readValue(stringData, RustHandle::class.java)
-                // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
-                val funName = (handle.function?.get(0)).toString()
-                rust_call_map[funName] = headId
-                // 执行函数
-                callable_map[handle.function?.get(0)]?.let { handle.data?.let { it1 -> it(it1) } }
+                warpCallback(bytes)
             }
+        })
+        // 单项执行evaljs
+        denoSetCallback(object : IDenoCallback {
+            override fun denoCallback(bytes: ByteArray) {
+                // 单工模式不要存储
+                warpCallback(bytes, false)
+            }
+
         })
         // BFS初始化的操作
         initDeno(appContext.assets)
-
     }
+}
+
+fun warpCallback(bytes: ByteArray, store: Boolean = true) {
+    // 处理二进制
+    val (headId, stringData) = parseBytesFactory(bytes)
+    //允许出现特殊字符和转义符
+    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+    //允许使用单引号
+    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+    val handle = mapper.readValue(stringData, RustHandle::class.java)
+    // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
+    val funName = (handle.function[0]).toString()
+    if (store) {
+        rust_call_map[funName] = headId
+    }
+    // 执行函数
+    callable_map[funName]?.let { it -> it(handle.data) }
 }
 
 // 解析二进制数据
@@ -103,8 +120,8 @@ fun createBytesFactory(callFun: String, message: String): ByteArray {
 
 
 data class RustHandle(
-    val function: Array<String>? = null,
-    val data: String? = null
+    val function: Array<String> = arrayOf(""),
+    val data: String = ""
 )
 
 
