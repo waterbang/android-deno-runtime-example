@@ -10,11 +10,14 @@ class Deno {
       this.bitLeftShifts();
       headView[tail] = 0;
     }
-    console.log("headView =======>", Array.from(headView).map((n) => n.toString(2)));
   }
   callFunction(handleFn, data) {
     const uint8Array = this.structureBinary(handleFn, data);
-    Rust.send_buffer(uint8Array, uint8Array.length);
+    Rust.js_to_rust_buffer(uint8Array, uint8Array.length);
+  }
+  callEvalJsFunction(handleFn, data) {
+    const uint8Array = this.structureBinary(handleFn, data);
+    Rust.eval_js(uint8Array, uint8Array.length);
   }
   structureBinary(fn, data = "") {
     const message = `{"function":["${fn}"],"data":${data}}`;

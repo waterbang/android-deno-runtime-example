@@ -1,16 +1,6 @@
 #Cross 交叉编译容器构建工具：https://github.com/cross-rs/cross/wiki/Configuration
-[build]
-build-std = false # do not build the std library. has precedence over xargo
-default-target = "aarch64-linux-android" # use this target if none is explicitly provided
-# pre-build = [
-#   # additional commands to run prior to building the package
-#   "dpkg --add-architecture $CROSS_DEB_ARCH",
-#   "apt-get update && apt-get --assume-yes install libssl-dev:$CROSS_DEB_ARCH",
-# ] 
-xargo = true # enable the use of xargo by default
-
 [target.aarch64-linux-android]
-image = "cross:aarch64-linux-android-0.2.1"
+image = "ghcr.io/cross-rs/aarch64-linux-android:edge"
 
 [build.env]
 passthrough = [

@@ -5,5 +5,5 @@
 /// https://channelId.bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj.dweb/poll
 /////////////////////////////
 
-import { Channel } from "./channel";
-export { Channel };
+import { createChannel } from "./channel";
+export { createChannel };

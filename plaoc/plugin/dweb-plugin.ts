@@ -5,21 +5,33 @@ export class dwebPlugin extends HTMLElement {
   constructor() {
     super();
   }
-  dispatchStringMessage = () => {};
-  dispatchBinaryMessage = () => {};
+  dispatchStringMessage = (data: string) => {
+    console.log("dweb-plugin:", data);
+  };
+  dispatchBinaryMessage = (byte: ArrayBuffer) => {
+    console.log("dweb-plugin:", byte);
+  };
   postMessage() {}
   onMesage() {}
-
-  async onOpen(url: string, body: any) {
+  // dwebview 无法获取post的body
+  async connectChannel(url: string) {
     const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(body),
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Origin": "*", // 客户端开放，不然会报cors
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
     });
-    const data = await response.json();
+    const data = await response.text();
     console.log(data);
     return data;
   }
-  onPolling() {}
+  async onPolling(fun: string, data: string = ""): Promise<string> {
+    const message = `{"function":["${fun}"],"data":${data}}`;
+    const buffer = new TextEncoder().encode(message);
+    return this.connectChannel(`/poll?data=${buffer}`);
+  }
   onClose() {}
   openWait() {
     this.isWaitingData = true;

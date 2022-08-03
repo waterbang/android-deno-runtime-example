@@ -3,6 +3,7 @@
 use android_logger::Config;
 use log::Level;
 // 引用 jni 库的一些内容，就是上面添加的 jni 依赖
+use crate::js_bridge::call_js_function;
 use crate::module_loader::AssetsModuleLoader;
 use crate::my_deno_runtime::bootstrap_deno_runtime;
 use jni::{
@@ -16,7 +17,7 @@ use std::sync::Arc;
 /// 初始化的一些操作
 #[no_mangle]
 #[tokio::main]
-pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_initDeno(
+pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_initDeno(
     env: JNIEnv,
     _context: JObject,
     jasset_manager: JObject,
@@ -43,7 +44,7 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_initDeno(
 
 #[no_mangle]
 #[tokio::main]
-pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_denoRuntime(
+pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_denoRuntime(
     env: JNIEnv,
     _context: JObject,
     jasset_manager: JObject,
@@ -71,13 +72,16 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_denoRunti
 /// 接收返回的数据
 #[no_mangle]
 #[tokio::main]
-pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_backDataToRust(
+pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_backDataToRust(
     env: JNIEnv,
     _context: JObject,
     byteData: jbyteArray,
 ) {
     let scannerData = env.convert_byte_array(byteData).unwrap();
-    log::info!(" getScanningData ->public_key:{:?}", &scannerData);
+    let dataString = std::str::from_utf8(&scannerData).unwrap();
+    let scannerData = Box::new(&scannerData);
+    call_js_function::store_function2(&|scannerData| scannerData);
+    log::info!(" backDataToRust:{:?}", dataString);
     // let body = web_socket::handler::Event {
     //     function: String::from("openScanner"),
     //     public_key: Some(public_key),
@@ -89,7 +93,7 @@ pub async extern "system" fn Java_org_bfchain_rust_example_DenoService_backDataT
 
 // #[no_mangle]
 // #[allow(non_snake_case)]
-// pub extern "system" fn Java_org_bfchain_rust_example_DenoService_openWebView(
+// pub extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_openWebView(
 //     env: JNIEnv,
 //     _context: JObject,
 //     callback: JObject,

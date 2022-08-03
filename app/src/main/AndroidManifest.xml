@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.bfchain.rust.example">
+    package="org.bfchain.rust.plaoc">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".App"
+        android:name="org.bfchain.rust.plaoc.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,7 +16,7 @@
         android:theme="@style/Theme.RustExample"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="org.bfchain.rust.example.webView.DWebViewActivity"
+            android:name="org.bfchain.rust.plaoc.webView.DWebViewActivity"
             android:exported="true"
             android:launchMode="standard"
             android:theme="@style/Theme.RustExample">
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="org.bfchain.rust.plaoc.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.RustExample">
@@ -44,20 +44,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".barcode.MultipleQRCodeScanningActivity"
+            android:name="org.bfchain.rust.plaoc.barcode.MultipleQRCodeScanningActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CameraScanTheme" />
         <activity
-            android:name=".barcode.QRCodeScanningActivity"
+            android:name="org.bfchain.rust.plaoc.barcode.QRCodeScanningActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CameraScanTheme" />
         <activity
-            android:name=".barcode.BarcodeScanningActivity"
+            android:name="org.bfchain.rust.plaoc.barcode.BarcodeScanningActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CameraScanTheme" />
 
         <service
-            android:name="org.bfchain.rust.example.DenoService"
+            android:name="org.bfchain.rust.plaoc.DenoService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

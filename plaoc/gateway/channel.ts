@@ -2,58 +2,39 @@
 
 import "@bfsx/typings";
 
-export class Channel {
-  private server: Deno.DatagramConn;
-  port!: string;
-  constructor() {
-    this.server = Deno.listenDatagram({
-      port: 0,
-      transport: "udp",
-    });
-    try {
-      this.port = this.server.addr.port;
-      this.create();
-    } catch (e) {
-      console.warn("创建http链接失败：", e);
-    }
-  }
-  async create() {
-    // try {
-    //   if (this.port) {
-    //     // 转换为hex 作为channelId
-    //     const hex = parseInt(this.port, 10).toString(16);
-    //     this.channelUrl = `https://${hex}.${dWebId}.dweb`;
-    //   }
-    // } catch (e) {
-    //   console.warn(e);
-    // }
-    // 使用异步迭代与服务器连接
-    for await (const conn of this.server) {
-      serveHttp(conn);
-    }
+/**
+ * 这是临时的策略，因为rust_v8 的 v8动态链接库(aarch64-linux-android)在 deno:v1.21.1已经停止编译。
+ * 但是 deno_ffi的 static function 参数却是在deno:v.1.23.2才更新，因此能力有限无法编译deno_ffi 的function参数。
+ * 也就导致了流程 dwebview-js --fetch--> kotlin --ffi--> rust --ffi--> deno-js
+ * 临时改变为 dwebview-js --fetch--> kotlin --http--> deno-js
+ * 回来的逻辑是一样的：deno-js --ffi--> kotlin --evaljs--> dwebview-js(dispashByte,dispashString)
+ */
+export const createChannel = async () => {
+  const server = Deno.listen({ port: 8080 });
+  console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
 
-    async function serveHttp(conn: Deno.Conn) {
-      // 创建http链接
-      const httpConn = Deno.serveHttp(conn);
-      console.warn("xxxxx", httpConn);
-      for await (const requestEvent of httpConn) {
-        // 原生 HTTP 服务器使用 web 标准 `Request` 和 `Response`对象。
-        console.log("requestEvent: ", requestEvent);
-        const body = `Your user-agent is:\n\n${
-          requestEvent.request.headers.get("user-agent") ?? "Unknown"
-        }`;
-
-        requestEvent.respondWith(
-          new Response(body, {
-            status: 200,
-          })
-        );
-      }
+  try {
+    for await (const conn of server) {
+      (async () => {
+        const httpConn = Deno.serveHttp(conn);
+        try {
+          for await (const { respondWith } of httpConn) {
+            // Placeholder for some calculations or requests from other services
+            // This makes the difference
+            await respondWith(
+              new Response("hello world", {
+                status: 200,
+              })
+            );
+          }
+        } catch (error) {
+          // This will be called for the error: "Http: connection closed before message completed"
+          console.warn("Error", error);
+        }
+      })();
     }
+  } catch (error) {
+    // Note: This is not called for the error: "Http: connection closed before message completed"
+    console.warn("Error", error);
   }
-  close() {
-    this.server.close();
-  }
-}
-
-export const createChannel = async (appId: string, callback: Function) => {};
+};

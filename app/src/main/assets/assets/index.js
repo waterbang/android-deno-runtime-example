@@ -4658,23 +4658,34 @@ class dwebPlugin extends HTMLElement {
     super();
     this.isWaitingData = false;
     this.hightWaterMark = 20;
-    this.dispatchStringMessage = () => {
+    this.dispatchStringMessage = (data) => {
+      console.log("dweb-plugin:", data);
     };
-    this.dispatchBinaryMessage = () => {
+    this.dispatchBinaryMessage = (byte) => {
+      console.log("dweb-plugin:", byte);
     };
   }
   postMessage() {
   }
   onMesage() {
   }
-  async onConnect(url, body) {
+  async connectChannel(url) {
     const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(body)
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      },
+      mode: "cors"
     });
     const data = await response.text();
     console.log(data);
     return data;
+  }
+  async onPolling(fun, data = "") {
+    const message = `{"function":["${fun}"],"data":${data}}`;
+    const buffer = new TextEncoder().encode(message);
+    return this.connectChannel(`/poll?data=${buffer}`);
   }
   onClose() {
   }
@@ -4694,10 +4705,13 @@ class OpenScanner extends dwebPlugin {
   constructor() {
     super();
   }
+  async openScanner() {
+    return await this.onPolling("openScanner");
+  }
 }
 customElements.define("dweb-view", DWebView);
 customElements.define("dweb-scanner", OpenScanner);
-const _withScopeId$1 = (n) => (pushScopeId("data-v-64976de0"), n = n(), popScopeId(), n);
+const _withScopeId$1 = (n) => (pushScopeId("data-v-44225312"), n = n(), popScopeId(), n);
 const _hoisted_1$1 = { class: "card" };
 const _hoisted_2 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
   /* @__PURE__ */ createTextVNode(" Check out "),
@@ -4723,10 +4737,10 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   },
   setup(__props) {
     onMounted(async () => {
-      const scanner = document.querySelector("dweb-scanner");
-      console.log(scanner.onConnect("/open", "xx"));
     });
-    function openScanner() {
+    async function openScanner() {
+      const scanner = document.querySelector("dweb-scanner");
+      scannerData.value = await scanner.openScanner();
     }
     let scannerData = ref("\u626B\u7801\u8FD4\u56DE\u7684\u6570\u636E");
     return (_ctx, _cache) => {
@@ -4748,7 +4762,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const HelloWorld_vue_vue_type_style_index_0_scoped_64976de0_lang = "";
+const HelloWorld_vue_vue_type_style_index_0_scoped_44225312_lang = "";
 const _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -4756,7 +4770,7 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-64976de0"]]);
+const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-44225312"]]);
 const _withScopeId = (n) => (pushScopeId("data-v-65a86c98"), n = n(), popScopeId(), n);
 const _hoisted_1 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, [
   /* @__PURE__ */ createBaseVNode("a", {

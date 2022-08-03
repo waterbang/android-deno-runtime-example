@@ -17,7 +17,7 @@ pub fn call_android(bit: Vec<u8>) {
     android_inter::call_java_callback(callback);
 }
 
-/// 调用android方法
+/// 调用android方法执行evenjs
 pub fn call_android_evaljs(bit: Vec<u8>) {
     // let fun_type = &handle.function;
     // let public_key = &handle.public_key;

@@ -1,9 +1,12 @@
 import { callDeno } from "../deno/android.fn.mjs";
 import { deno } from "../deno/index.mjs";
+import { createChannel } from "../../../../gateway/dist/esm/channel.mjs";
 class DWebView {
   constructor(metaData) {
+    this.isWaitingData = false;
     this.url = metaData.baseUrl;
     this.initAppMetaData(metaData);
+    this.createChannel();
     deno.createHeader();
   }
   initAppMetaData(metaData) {
@@ -11,14 +14,15 @@ class DWebView {
       return;
     deno.callFunction(callDeno.initMetaData, `'${JSON.stringify(metaData)}'`);
   }
-  async onRequest(url) {
-    const response = await fetch(url);
-    const responseData = await response.text();
-    console.log(JSON.stringify(responseData));
-    return responseData;
-  }
   activity(entry) {
     deno.callFunction(callDeno.openDWebView, `"${new URL(entry, this.url).href}"`);
+  }
+  createChannel() {
+    try {
+      createChannel();
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 export { DWebView };

@@ -1,29 +1,24 @@
 const createChannel = async () => {
-    try {
-
- const server = Deno.listenDatagram({
-    port: 0,
-    transport: "udp"
-   });
-//      console.warn("xxxxx", parseInt(server.addr.port, 10).toString(16));
-
-  for await (const conn of server) {
-    serveHttp(conn);
-  }
-  async function serveHttp(conn) {
-    const httpConn = Deno.serveHttp(conn);
-    for await (const requestEvent of httpConn) {
-      const body = `Your user-agent is:
-
-${requestEvent.request.headers.get("user-agent") ?? "Unknown"}`;
-      requestEvent.respondWith(new Response(body, {
-        status: 200
-      }));
-    }
-  }
-     } catch(e) {
-         console.log(e)
+  const server = Deno.listen({ port: 8080 });
+  console.log(`HTTP webserver running.  Access it at:  http://localhost:8080/`);
+  try {
+    for await (const conn of server) {
+      (async () => {
+        const httpConn = Deno.serveHttp(conn);
+        try {
+          for await (const { respondWith } of httpConn) {
+            await respondWith(new Response("hello world", {
+              status: 200
+            }));
+          }
+        } catch (error) {
+          console.warn("Error", error);
         }
+      })();
+    }
+  } catch (error) {
+    console.warn("Error", error);
+  }
 };
 export { createChannel };
 //# sourceMappingURL=channel.mjs.map

@@ -17,9 +17,38 @@ switch (Deno.build.os) {
 const libName = `librust_lib.${libSuffix}`;
 
 const dylib = Deno.dlopen(libName, {
-  send_buffer: { parameters: ["pointer", "usize"], result: "void" },
+  // deno_js向rust发送消息
+  js_to_rust_buffer: { parameters: ["pointer", "usize"], result: "void" },
+  // rust发送消息给deno_js
+  rust_to_js_buffer: {
+    parameters: ["pointer"],
+    result: "pointer",
+  },
+  // deno_js 走这个ffi去执行kotlin 的evaljs通知dwebview-js
+  eval_js: { parameters: ["pointer", "usize"], result: "void" },
+  // store_function: { parameters: ["function"], result: "pointer" },
 });
 
 const Rust = dylib.symbols;
+
+// const rustCallback = new Deno.UnsafeCallback(
+//   {
+//     parameters: ["u8"],
+//     result: "u8",
+//   },
+//   (value) => {
+//     console.log("rustCallback:", rustCallback);
+//     return value + 10;
+//   }
+// );
+
+// function ptr(v: any) {
+//   return Deno.UnsafePointer.of(v);
+// }
+
+// dylib.symbols.store_function(ptr(rustCallback));
+
+// const buffer = new TextEncoder().encode("Hello coming from Deno space");
+// const ret = dylib.symbols.rust_to_js_buffer(buffer);
 
 export default Rust;

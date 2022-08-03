@@ -3404,28 +3404,96 @@ declare global {
      */
     function getUid(): number | null;
 
-    /** All possible types for interfacing with foreign functions */
-    type NativeType =
-      | "void"
+    /** All plain number types for interfacing with foreign functions */
+    type NativeNumberType =
       | "u8"
       | "i8"
       | "u16"
       | "i16"
       | "u32"
       | "i32"
-      | "u64"
-      | "i64"
-      | "usize"
-      | "isize"
-      | "buffer"
       | "f32"
-      | "f64"
-      | "pointer";
+      | "f64";
+
+    /** All BigInt number type sfor interfacing with foreign functions */
+    type NativeBigIntType = "u64" | "i64" | "usize" | "isize";
+
+    type NativePointerType = "pointer";
+
+    type NativeFunctionType = "function";
+
+    type NativeVoidType = "void";
+
+    /** All possible types for interfacing with foreign functions */
+    type NativeType =
+      | NativeNumberType
+      | NativeBigIntType
+      | NativePointerType
+      | NativeFunctionType;
+
+    type NativeResultType = NativeType | NativeVoidType;
+
+    type ToNativeTypeMap = Record<NativeNumberType, number> &
+      Record<NativeBigIntType, PointerValue> &
+      Record<NativePointerType, TypedArray | PointerValue | null> &
+      Record<NativeFunctionType, PointerValue | null>;
+
+    /** Type conversion for foreign symbol parameters and unsafe callback return types */
+    type ToNativeType<T extends NativeType = NativeType> = ToNativeTypeMap[T];
+
+    type ToNativeResultTypeMap = ToNativeTypeMap & Record<NativeVoidType, void>;
+
+    /** Type conversion for unsafe callback return types */
+    type ToNativeResultType<
+      T extends NativeResultType = NativeResultType
+    > = ToNativeResultTypeMap[T];
+
+    type ToNativeParameterTypes<T extends readonly NativeType[]> =
+      //
+      [T[number][]] extends [T]
+        ? ToNativeType<T[number]>[]
+        : [readonly T[number][]] extends [T]
+        ? readonly ToNativeType<T[number]>[]
+        : T extends readonly [...NativeType[]]
+        ? {
+            [K in keyof T]: ToNativeType<T[K]>;
+          }
+        : never;
+
+    type FromNativeTypeMap = Record<NativeNumberType, number> &
+      Record<NativeBigIntType, PointerValue> &
+      Record<NativePointerType, PointerValue> &
+      Record<NativeFunctionType, PointerValue>;
+
+    /** Type conversion for foreign symbol return types and unsafe callback parameters */
+    type FromNativeType<
+      T extends NativeType = NativeType
+    > = FromNativeTypeMap[T];
+
+    type FromNativeResultTypeMap = FromNativeTypeMap &
+      Record<NativeVoidType, void>;
+
+    /** Type conversion for foregin symbol return types */
+    type FromNativeResultType<
+      T extends NativeResultType = NativeResultType
+    > = FromNativeResultTypeMap[T];
+
+    type FromNativeParameterTypes<T extends readonly NativeType[]> =
+      //
+      [T[number][]] extends [T]
+        ? FromNativeType<T[number]>[]
+        : [readonly T[number][]] extends [T]
+        ? readonly FromNativeType<T[number]>[]
+        : T extends readonly [...NativeType[]]
+        ? {
+            [K in keyof T]: FromNativeType<T[K]>;
+          }
+        : never;
 
     /** A foreign function as defined by its parameter and result types */
-    interface ForeignFunction<
+    export interface ForeignFunction<
       Parameters extends readonly NativeType[] = readonly NativeType[],
-      Result extends NativeType = NativeType,
+      Result extends NativeResultType = NativeResultType,
       NonBlocking extends boolean = boolean
     > {
       /** Name of the symbol, defaults to the key name in symbols object. */
@@ -3434,59 +3502,41 @@ declare global {
       result: Result;
       /** When true, function calls will run on a dedicated blocking thread and will return a Promise resolving to the `result`. */
       nonblocking?: NonBlocking;
+      /** When true, function calls can safely callback into JS or trigger a GC event. Default is `false`. */
+      callback?: boolean;
     }
 
-    interface ForeignStatic<Type extends NativeType = NativeType> {
+    export interface ForeignStatic<Type extends NativeType = NativeType> {
       /** Name of the symbol, defaults to the key name in symbols object. */
       name?: string;
-      type: Exclude<Type, "void">;
+      type: Type;
     }
 
     /** A foreign library interface descriptor */
-    interface ForeignLibraryInterface {
+    export interface ForeignLibraryInterface {
       [name: string]: ForeignFunction | ForeignStatic;
     }
-
-    /** All possible number types interfacing with foreign functions */
-    type StaticNativeNumberType = Exclude<NativeType, "void" | "pointer">;
-
-    /** Infers a foreign function return type */
-    type StaticForeignFunctionResult<T extends NativeType> = T extends "void"
-      ? void
-      : T extends StaticNativeNumberType
-      ? number
-      : T extends "pointer"
-      ? UnsafePointer
-      : never;
-
-    type StaticForeignFunctionParameter<T> = T extends "void"
-      ? void
-      : T extends StaticNativeNumberType
-      ? number
-      : T extends "pointer"
-      ? Deno.UnsafePointer | Deno.TypedArray | null
-      : unknown;
-
-    /** Infers a foreign function parameter list. */
-    type StaticForeignFunctionParameters<T extends readonly NativeType[]> = [
-      ...{
-        [K in keyof T]: StaticForeignFunctionParameter<T[K]>;
-      }
-    ];
 
     /** Infers a foreign symbol */
     type StaticForeignSymbol<
       T extends ForeignFunction | ForeignStatic
     > = T extends ForeignFunction
-      ? (
-          ...args: StaticForeignFunctionParameters<T["parameters"]>
-        ) => ConditionalAsync<
-          T["nonblocking"],
-          StaticForeignFunctionResult<T["result"]>
-        >
+      ? FromForeignFunction<T>
       : T extends ForeignStatic
-      ? StaticForeignFunctionResult<T["type"]>
+      ? FromNativeType<T["type"]>
       : never;
+
+    type FromForeignFunction<
+      T extends ForeignFunction
+    > = T["parameters"] extends readonly []
+      ? () => StaticForeignSymbolReturnType<T>
+      : (
+          ...args: ToNativeParameterTypes<T["parameters"]>
+        ) => StaticForeignSymbolReturnType<T>;
+
+    type StaticForeignSymbolReturnType<
+      T extends ForeignFunction
+    > = ConditionalAsync<T["nonblocking"], FromNativeResultType<T["result"]>>;
 
     type ConditionalAsync<
       IsAsync extends boolean | undefined,
@@ -3511,24 +3561,24 @@ declare global {
       | BigInt64Array
       | BigUint64Array;
 
+    /**
+     * Pointer type depends on the architecture and actual pointer value.
+     *
+     * On a 32 bit system all pointer values are plain numbers. On a 64 bit
+     * system pointer values are represented as numbers if the value is below
+     * `Number.MAX_SAFE_INTEGER`.
+     */
+    type PointerValue = number | bigint;
+
     /** **UNSTABLE**: Unsafe and new API, beware!
      *
      * An unsafe pointer to a memory location for passing and returning pointers to and from the ffi
      */
-    class UnsafePointer {
-      constructor(value: bigint);
-
-      value: bigint;
-
+    export class UnsafePointer {
       /**
        * Return the direct memory pointer to the typed array in memory
        */
-      static of(typedArray: TypedArray): UnsafePointer;
-
-      /**
-       * Returns the value of the pointer which is useful in certain scenarios.
-       */
-      valueOf(): bigint;
+      static of(value: Deno.UnsafeCallback | TypedArray): PointerValue;
     }
 
     /** **UNSTABLE**: Unsafe and new API, beware!
@@ -3538,10 +3588,10 @@ declare global {
      * `DataView` for accessing the underlying types at an memory location
      * (numbers, strings and raw bytes).
      */
-    class UnsafePointerView {
-      constructor(pointer: UnsafePointer);
+    export class UnsafePointerView {
+      constructor(pointer: bigint);
 
-      pointer: UnsafePointer;
+      pointer: bigint;
 
       /** Gets an unsigned 8-bit integer at the specified byte offset from the pointer. */
       getUint8(offset?: number): number;
@@ -3556,9 +3606,9 @@ declare global {
       /** Gets a signed 32-bit integer at the specified byte offset from the pointer. */
       getInt32(offset?: number): number;
       /** Gets an unsigned 64-bit integer at the specified byte offset from the pointer. */
-      getBigUint64(offset?: number): bigint;
+      getBigUint64(offset?: number): PointerValue;
       /** Gets a signed 64-bit integer at the specified byte offset from the pointer. */
-      getBigInt64(offset?: number): bigint;
+      getBigInt64(offset?: number): PointerValue;
       /** Gets a signed 32-bit float at the specified byte offset from the pointer. */
       getFloat32(offset?: number): number;
       /** Gets a signed 64-bit float at the specified byte offset from the pointer. */
@@ -3577,18 +3627,86 @@ declare global {
      * An unsafe pointer to a function, for calling functions that are not
      * present as symbols.
      */
-    class UnsafeFnPointer<Fn extends ForeignFunction> {
-      pointer: UnsafePointer;
+    export class UnsafeFnPointer<Fn extends ForeignFunction> {
+      pointer: bigint;
       definition: Fn;
 
-      constructor(pointer: UnsafePointer, definition: Fn);
+      constructor(pointer: bigint, definition: Fn);
 
-      call(
-        ...args: StaticForeignFunctionParameters<Fn["parameters"]>
-      ): ConditionalAsync<
-        Fn["nonblocking"],
-        StaticForeignFunctionResult<Fn["result"]>
+      call: FromForeignFunction<Fn>;
+    }
+
+    interface UnsafeCallbackDefinition<
+      Parameters extends readonly NativeType[] = readonly NativeType[],
+      Result extends NativeResultType = NativeResultType
+    > {
+      parameters: Parameters;
+      result: Result;
+    }
+
+    type UnsafeCallbackFunction<
+      Parameters extends readonly NativeType[] = readonly NativeType[],
+      Result extends NativeResultType = NativeResultType
+    > = Parameters extends readonly []
+      ? () => ToNativeResultType<Result>
+      : (
+          ...args: FromNativeParameterTypes<Parameters>
+        ) => ToNativeResultType<Result>;
+
+    /**
+     * **UNSTABLE**: Unsafe and new API, beware!
+     *
+     * An unsafe function pointer for passing JavaScript functions
+     * as C function pointers to ffi calls.
+     *
+     * The function pointer remains valid until the `close()` method is called.
+     *
+     * The callback can be explicitly ref'ed and deref'ed to stop Deno's
+     * process from exiting.
+     */
+    class UnsafeCallback<
+      Definition extends UnsafeCallbackDefinition = UnsafeCallbackDefinition
+    > {
+      constructor(
+        definition: Definition,
+        callback: UnsafeCallbackFunction<
+          Definition["parameters"],
+          Definition["result"]
+        >
+      );
+
+      pointer: bigint;
+      definition: Definition;
+      callback: UnsafeCallbackFunction<
+        Definition["parameters"],
+        Definition["result"]
       >;
+
+      /**
+       * Adds one to this callback's reference counting.
+       *
+       * If the callback's reference count becomes non-zero, it will keep
+       * Deno's process from exiting.
+       */
+      ref(): void;
+
+      /**
+       * Removes one from this callback's reference counting.
+       *
+       * If the callback's reference counter becomes zero, it will no longer
+       * keep Deno's process from exiting.
+       */
+      unref(): void;
+
+      /**
+       * Removes the C function pointer associated with the UnsafeCallback.
+       * Continuing to use the instance after calling this object will lead to errors
+       * and crashes.
+       *
+       * Calling this method will also immediately set the callback's reference
+       * counting to zero and it will no longer keep Deno's process from exiting.
+       */
+      close(): void;
     }
 
     /** A dynamic library resource */

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="org.bfchain.rust.example.webView.FirstFragment"
+        android:name="org.bfchain.rust.plaoc.webView.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="org.bfchain.rust.example.webView.SecondFragment"
+        android:name="org.bfchain.rust.plaoc.webView.SecondFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 

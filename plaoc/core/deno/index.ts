@@ -31,7 +31,16 @@ class Deno {
    */
   callFunction(handleFn: string, data?: string) {
     const uint8Array = this.structureBinary(handleFn, data);
-    Rust.send_buffer(uint8Array, uint8Array.length);
+    Rust.js_to_rust_buffer(uint8Array, uint8Array.length);
+  }
+  /**
+   * 调用evaljs 执行js
+   * @param handleFn
+   * @param data
+   */
+  callEvalJsFunction(handleFn: string, data?: string) {
+    const uint8Array = this.structureBinary(handleFn, data);
+    Rust.eval_js(uint8Array, uint8Array.length);
   }
   /** 针对64位
    * 第一块分区：版本号 2^8 8位，一个字节 1：表示消息，2：表示广播，4：心跳检测

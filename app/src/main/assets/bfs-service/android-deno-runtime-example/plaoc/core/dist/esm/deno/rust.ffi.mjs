@@ -12,7 +12,12 @@ switch (Deno.build.os) {
 }
 const libName = `librust_lib.${libSuffix}`;
 const dylib = Deno.dlopen(libName, {
-  send_buffer: { parameters: ["pointer", "usize"], result: "void" }
+  js_to_rust_buffer: { parameters: ["pointer", "usize"], result: "void" },
+  rust_to_js_buffer: {
+    parameters: ["pointer"],
+    result: "pointer"
+  },
+  eval_js: { parameters: ["pointer", "usize"], result: "void" }
 });
 const Rust = dylib.symbols;
 export { Rust as default };
