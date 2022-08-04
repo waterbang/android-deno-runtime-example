@@ -1,7 +1,4 @@
 export class dwebPlugin extends HTMLElement {
-  private isWaitingData = false;
-  /**反压高水位，暴露给开发者控制 */
-  hightWaterMark = 20;
   constructor() {
     super();
   }
@@ -27,16 +24,12 @@ export class dwebPlugin extends HTMLElement {
     console.log(data);
     return data;
   }
-  async onPolling(fun: string, data: string = ""): Promise<string> {
+  async onPolling(fun: string, data: string = "''"): Promise<string> {
     const message = `{"function":["${fun}"],"data":${data}}`;
     const buffer = new TextEncoder().encode(message);
     return this.connectChannel(`/poll?data=${buffer}`);
   }
   onClose() {}
-  openWait() {
-    this.isWaitingData = true;
-  }
-  closeWait() {
-    this.isWaitingData = false;
-  }
 }
+
+customElements.define("dweb-plugin", dwebPlugin);

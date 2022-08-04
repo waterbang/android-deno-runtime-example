@@ -4,6 +4,7 @@ export default defineConfig((info) => {
     name: "@bfsx/plugin",
     exports: {
       ".": "./index.ts",
+      "./dweb-plugin": "./dweb-plugin.ts",
     },
     profiles: ["android"],
     packageJson: {

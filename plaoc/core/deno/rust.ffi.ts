@@ -31,6 +31,12 @@ const dylib = Deno.dlopen(libName, {
 
 const Rust = dylib.symbols;
 
+// Deno.core.recv(handleAsyncMsgFromRust);
+
+// function handleAsyncMsgFromRust() {
+//   // Callers should not call Deno.core.recv, use setAsyncHandler.
+// }
+
 // const rustCallback = new Deno.UnsafeCallback(
 //   {
 //     parameters: ["u8"],
@@ -48,7 +54,7 @@ const Rust = dylib.symbols;
 
 // dylib.symbols.store_function(ptr(rustCallback));
 
-// const buffer = new TextEncoder().encode("Hello coming from Deno space");
-// const ret = dylib.symbols.rust_to_js_buffer(buffer);
-
+const buffer = new TextEncoder().encode("Hello coming from Deno space");
+const ret = dylib.symbols.rust_to_js_buffer(buffer);
+console.log("dylib.symbols.rust_to_js_buffer(buffer):", ret);
 export default Rust;

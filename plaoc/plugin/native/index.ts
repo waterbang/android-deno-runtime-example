@@ -15,6 +15,5 @@ export class OpenScanner extends dwebPlugin {
     return await this.onPolling("openScanner");
   }
 }
-
 customElements.define("dweb-view", DWebView);
 customElements.define("dweb-scanner", OpenScanner);

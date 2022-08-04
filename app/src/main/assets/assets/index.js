@@ -1305,12 +1305,6 @@ function setCurrentRenderingInstance(instance) {
   currentScopeId = instance && instance.type.__scopeId || null;
   return prev;
 }
-function pushScopeId(id) {
-  currentScopeId = id;
-}
-function popScopeId() {
-  currentScopeId = null;
-}
 function withCtx(fn, ctx = currentRenderingInstance, isNonScopedSlot) {
   if (!ctx)
     return fn;
@@ -3970,6 +3964,11 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
 function createTextVNode(text = " ", flag = 0) {
   return createVNode(Text, null, text, flag);
 }
+function createStaticVNode(content, numberOfNodes) {
+  const vnode = createVNode(Static, null, content);
+  vnode.staticCount = numberOfNodes;
+  return vnode;
+}
 function normalizeVNode(child) {
   if (child == null || typeof child === "boolean") {
     return createVNode(Comment);
@@ -4652,12 +4651,10 @@ function normalizeContainer(container) {
 }
 const style = "";
 const _imports_0 = "/vite.svg";
-const _imports_1 = "/assets/vue.svg";
+const _imports_1 = "data:image/png;base64,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";
 class dwebPlugin extends HTMLElement {
   constructor() {
     super();
-    this.isWaitingData = false;
-    this.hightWaterMark = 20;
     this.dispatchStringMessage = (data) => {
       console.log("dweb-plugin:", data);
     };
@@ -4682,20 +4679,15 @@ class dwebPlugin extends HTMLElement {
     console.log(data);
     return data;
   }
-  async onPolling(fun, data = "") {
+  async onPolling(fun, data = "''") {
     const message = `{"function":["${fun}"],"data":${data}}`;
     const buffer = new TextEncoder().encode(message);
     return this.connectChannel(`/poll?data=${buffer}`);
   }
   onClose() {
   }
-  openWait() {
-    this.isWaitingData = true;
-  }
-  closeWait() {
-    this.isWaitingData = false;
-  }
 }
+customElements.define("dweb-plugin", dwebPlugin);
 class DWebView extends dwebPlugin {
   constructor() {
     super();
@@ -4711,25 +4703,8 @@ class OpenScanner extends dwebPlugin {
 }
 customElements.define("dweb-view", DWebView);
 customElements.define("dweb-scanner", OpenScanner);
-const _withScopeId$1 = (n) => (pushScopeId("data-v-44225312"), n = n(), popScopeId(), n);
 const _hoisted_1$1 = { class: "card" };
-const _hoisted_2 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
-  /* @__PURE__ */ createTextVNode(" Check out "),
-  /* @__PURE__ */ createBaseVNode("a", {
-    href: "https://vuejs.org/guide/quick-start.html#local",
-    target: "_blank"
-  }, "create-vue"),
-  /* @__PURE__ */ createTextVNode(", the official Vue + Vite starter ")
-], -1));
-const _hoisted_3 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", null, [
-  /* @__PURE__ */ createTextVNode(" Install "),
-  /* @__PURE__ */ createBaseVNode("a", {
-    href: "https://github.com/johnsoncodehk/volar",
-    target: "_blank"
-  }, "Volar"),
-  /* @__PURE__ */ createTextVNode(" in your IDE for a better DX ")
-], -1));
-const _hoisted_4 = /* @__PURE__ */ _withScopeId$1(() => /* @__PURE__ */ createBaseVNode("p", { class: "read-the-docs" }, "Click on the Vite and Vue logos to learn more", -1));
+const _hoisted_2 = /* @__PURE__ */ createStaticVNode('<div style="margin-top:50px;" data-v-66898868><input id="toastMessage" type="text" placeholder="Toast message" data-v-66898868></div><p data-v-66898868> Check out <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank" data-v-66898868>create-vue</a>, the official Vue + Vite starter </p><p data-v-66898868> Install <a href="https://github.com/johnsoncodehk/volar" target="_blank" data-v-66898868>Volar</a> in your IDE for a better DX </p><p class="read-the-docs" data-v-66898868>Click on the Vite and Vue logos to learn more</p>', 4);
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "HelloWorld",
   props: {
@@ -4737,6 +4712,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   },
   setup(__props) {
     onMounted(async () => {
+      window.dwebPlugin = new dwebPlugin();
     });
     async function openScanner() {
       const scanner = document.querySelector("dweb-scanner");
@@ -4755,14 +4731,12 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           }, "\u542F\u52A8\u626B\u7801"),
           createBaseVNode("p", null, toDisplayString(unref(scannerData)), 1)
         ]),
-        _hoisted_2,
-        _hoisted_3,
-        _hoisted_4
+        _hoisted_2
       ], 64);
     };
   }
 });
-const HelloWorld_vue_vue_type_style_index_0_scoped_44225312_lang = "";
+const HelloWorld_vue_vue_type_style_index_0_scoped_66898868_lang = "";
 const _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -4770,30 +4744,8 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-44225312"]]);
-const _withScopeId = (n) => (pushScopeId("data-v-65a86c98"), n = n(), popScopeId(), n);
-const _hoisted_1 = /* @__PURE__ */ _withScopeId(() => /* @__PURE__ */ createBaseVNode("div", null, [
-  /* @__PURE__ */ createBaseVNode("a", {
-    href: "https://vitejs.dev",
-    target: "_blank"
-  }, [
-    /* @__PURE__ */ createBaseVNode("img", {
-      src: _imports_0,
-      class: "logo",
-      alt: "Vite logo"
-    })
-  ]),
-  /* @__PURE__ */ createBaseVNode("a", {
-    href: "https://vuejs.org/",
-    target: "_blank"
-  }, [
-    /* @__PURE__ */ createBaseVNode("img", {
-      src: _imports_1,
-      class: "logo vue",
-      alt: "Vue logo"
-    })
-  ])
-], -1));
+const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-66898868"]]);
+const _hoisted_1 = /* @__PURE__ */ createStaticVNode('<div data-v-e2cfde70><a href="https://vitejs.dev" target="_blank" data-v-e2cfde70><img src="' + _imports_0 + '" class="logo" alt="Vite logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a></div>', 1);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "App",
   setup(__props) {
@@ -4805,6 +4757,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const App_vue_vue_type_style_index_0_scoped_65a86c98_lang = "";
-const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-65a86c98"]]);
+const App_vue_vue_type_style_index_0_scoped_e2cfde70_lang = "";
+const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-e2cfde70"]]);
 createApp(App).mount("#app");

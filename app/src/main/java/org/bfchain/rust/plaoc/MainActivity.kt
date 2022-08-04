@@ -27,6 +27,7 @@ import org.bfchain.rust.plaoc.lib.drawRect
 import org.bfchain.rust.plaoc.webView.DWebViewActivity
 import org.bfchain.rust.plaoc.webView.network.initMetaData
 import org.bfchain.rust.plaoc.webView.openDWebWindow
+import org.bfchain.rust.plaoc.webView.sendToJavaScript
 import java.net.URL
 
 
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             DenoService().denoRuntime(this.assets, it)
         }
         callable_map[ExportNative().evalJsRuntime] =
-            { DWebViewActivity }
+            { sendToJavaScript(it) }
 
         // 启动Deno服务
         val deno = Intent(this, DenoService::class.java)

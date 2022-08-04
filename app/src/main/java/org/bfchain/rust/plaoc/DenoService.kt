@@ -57,33 +57,26 @@ class DenoService : IntentService("DenoService") {
                 warpCallback(bytes)
             }
         })
-        // 单项执行evaljs
+        // 单项执行evalJs
         denoSetCallback(object : IDenoCallback {
             override fun denoCallback(bytes: ByteArray) {
-                // 单工模式不要存储
-                warpCallback(bytes, false)
+                warpCallback(bytes, false) // 单工模式不要存储
             }
         })
-        // BFS初始化的操作
-        initDeno(appContext.assets)
+        initDeno(appContext.assets) // BFS初始化的操作
     }
 }
 
 fun warpCallback(bytes: ByteArray, store: Boolean = true) {
-    // 处理二进制
-    val (headId, stringData) = parseBytesFactory(bytes)
-    //允许出现特殊字符和转义符
-    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
-    //允许使用单引号
-    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
+    val (headId, stringData) = parseBytesFactory(bytes) // 处理二进制
+    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true) //允许出现特殊字符和转义符
+    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true) //允许使用单引号
     val handle = mapper.readValue(stringData, RustHandle::class.java)
-    // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
     val funName = (handle.function[0]).toString()
     if (store) {
-        rust_call_map[funName] = headId
+        rust_call_map[funName] = headId     // 存一下头部标记，返回数据的时候才知道给谁,存储的调用的函数名跟头部标记一一对应
     }
-    // 执行函数
-    callable_map[funName]?.let { it -> it(handle.data) }
+    callable_map[funName]?.let { it -> it(handle.data) } // 执行函数
 }
 
 // 解析二进制数据

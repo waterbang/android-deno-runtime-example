@@ -1,13 +1,18 @@
 import { callDeno } from "../deno/android.fn.mjs";
 import { deno } from "../deno/index.mjs";
-import { createChannel } from "../../../../gateway/dist/esm/channel.mjs";
 class DWebView {
   constructor(metaData) {
-    this.isWaitingData = false;
+    this.isWaitingData = 1;
+    this.hightWaterMark = 1;
     this.url = metaData.baseUrl;
     this.initAppMetaData(metaData);
-    this.createChannel();
     deno.createHeader();
+  }
+  waterOverflow() {
+    if (this.isWaitingData < this.hightWaterMark)
+      return;
+    console.log("waterOverflow:", this.isWaitingData);
+    deno.callEvalJsFunction(callDeno.evalJsRuntime, `"javascript:dwebPlugin.dispatchStringMessage('\u54C8\u54C8')"`);
   }
   initAppMetaData(metaData) {
     if (Object.keys(metaData).length === 0)
@@ -18,11 +23,16 @@ class DWebView {
     deno.callFunction(callDeno.openDWebView, `"${new URL(entry, this.url).href}"`);
   }
   createChannel() {
-    try {
-      createChannel();
-    } catch (e) {
-      console.log(e);
-    }
+  }
+  openWait() {
+    if (this.isWaitingData >= Number.MAX_SAFE_INTEGER)
+      return;
+    this.isWaitingData++;
+  }
+  closeWait() {
+    if (this.isWaitingData === 0)
+      return;
+    this.isWaitingData--;
   }
 }
 export { DWebView };

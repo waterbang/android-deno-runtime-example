@@ -34,6 +34,7 @@ import org.bfchain.rust.plaoc.callable_map
 import org.bfchain.rust.plaoc.ui.theme.RustApplicationTheme
 import org.bfchain.rust.plaoc.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.plaoc.webView.urlscheme.requestHandlerFromAssets
+import org.bfchain.rust.plaoc.webkit.AdAndroidWebView
 import org.bfchain.rust.plaoc.webkit.rememberAdWebViewState
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -41,8 +42,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.io.path.Path
 
-
 private const val TAG = "DWebViewActivity"
+var dWebView: AdAndroidWebView? = null
 
 class DWebViewActivity : AppCompatActivity() {
 
@@ -70,8 +71,7 @@ class DWebViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ALL.add(this)
-        // 开启调试
-        WebView.setWebContentsDebuggingEnabled(true)
+        WebView.setWebContentsDebuggingEnabled(true)// 开启调试
         // 设置装饰视图是否应适合WindowInsetsCompat(Describes a set of insets for window content.)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val activity = this
@@ -133,14 +133,7 @@ private fun NavFun(activity: ComponentActivity) {
                     customUrlScheme = customUrlScheme,
 //                    modifier = Modifier.padding(innerPadding)
                 ) { webView ->
-                    val TO_JAVASCRIPT_PREFIX = "javascript:dwebPlugin.dispatchBinaryMessage('%s')"
-                    fun sendToJavaScript(message: String) {
-                        Log.i("xxx", "sendToJavaScript->:$message")
-                        val jsCommand =
-                            String.format(TO_JAVASCRIPT_PREFIX, JsonUtils.escapeString(message))
-                        webView.evaluateJavascript(jsCommand, null)
-                    }
-
+                    dWebView = webView
 //                     webView.addJavascriptInterface()
 //                    adWebViewHook = webView.adWebViewHook
                 }
@@ -156,6 +149,16 @@ fun openDWebWindow(activity: ComponentActivity, url: String) {
     }
     Log.d(TAG, "openDWebWindow: ${URLEncoder.encode(url, "UTF-8")}")
     activity.startActivity(intent)
+}
+
+fun sendToJavaScript(message: String) {
+    Log.i("xxx", "sendToJavaScript->:$message")
+    dWebView?.post(Runnable {
+        dWebView?.evaluateJavascript(message) { response ->
+            Log.d(TAG, "sendToJavaScript: $response")
+        }
+    })
+
 }
 
 

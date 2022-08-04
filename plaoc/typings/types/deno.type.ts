@@ -72,6 +72,7 @@ declare global {
   }
 
   namespace Deno {
+    const core: any;
     /** A set of error constructors that are raised by Deno APIs. */
     namespace errors {
       class NotFound extends Error {}

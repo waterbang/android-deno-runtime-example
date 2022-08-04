@@ -13,13 +13,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.RustExample"
+        android:theme="@style/Theme.plaoc"
         android:usesCleartextTraffic="true">
         <activity
             android:name="org.bfchain.rust.plaoc.webView.DWebViewActivity"
             android:exported="true"
             android:launchMode="standard"
-            android:theme="@style/Theme.RustExample">
+            android:theme="@style/Theme.plaoc">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="org.bfchain.dweb" />
@@ -36,7 +36,7 @@
             android:name="org.bfchain.rust.plaoc.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.RustExample">
+            android:theme="@style/Theme.plaoc">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -20,5 +20,8 @@ const dylib = Deno.dlopen(libName, {
   eval_js: { parameters: ["pointer", "usize"], result: "void" }
 });
 const Rust = dylib.symbols;
+const buffer = new TextEncoder().encode("Hello coming from Deno space");
+const ret = dylib.symbols.rust_to_js_buffer(buffer);
+console.log("dylib.symbols.rust_to_js_buffer(buffer):", ret);
 export { Rust as default };
 //# sourceMappingURL=rust.ffi.mjs.map

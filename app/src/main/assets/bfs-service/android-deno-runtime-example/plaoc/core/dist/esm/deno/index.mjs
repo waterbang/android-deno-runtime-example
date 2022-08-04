@@ -11,13 +11,16 @@ class Deno {
       headView[tail] = 0;
     }
   }
-  callFunction(handleFn, data) {
+  callFunction(handleFn, data = "''") {
     const uint8Array = this.structureBinary(handleFn, data);
     Rust.js_to_rust_buffer(uint8Array, uint8Array.length);
   }
-  callEvalJsFunction(handleFn, data) {
+  callEvalJsFunction(handleFn, data = "''") {
     const uint8Array = this.structureBinary(handleFn, data);
     Rust.eval_js(uint8Array, uint8Array.length);
+  }
+  getRustMessage() {
+    return "bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj";
   }
   structureBinary(fn, data = "") {
     const message = `{"function":["${fn}"],"data":${data}}`;

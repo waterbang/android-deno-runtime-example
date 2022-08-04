@@ -3,8 +3,10 @@ package org.bfchain.rust.plaoc.webView.network
 import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
-import org.bfchain.rust.plaoc.DenoService
+import org.bfchain.rust.plaoc.RustHandle
+import org.bfchain.rust.plaoc.callable_map
 import org.bfchain.rust.plaoc.mapper
 import org.bfchain.rust.plaoc.webView.urlscheme.CustomUrlScheme
 import java.io.ByteArrayInputStream
@@ -59,22 +61,20 @@ fun messageGateWay(
 ): WebResourceResponse {
     val url = request.url.toString().lowercase(Locale.ROOT)
     Log.i(TAG, " messageGateWay: $url")
-    val temp = url.substring(url.lastIndexOf("=") + 1)
-    DenoService().backDataToRust(temp.toByteArray())// FFI 写法，现在deno无法传递function
-    // http
-    val targetUrl = "http://localhost:8080?data=${temp}"
-    try {
-        val connection = URL(targetUrl).openConnection() as HttpURLConnection
-        connection.requestMethod = request.method
-        Log.i(TAG, " messageGateWay connection.inputStream: ${connection.inputStream}")
-    } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-    }
+    val byteData = url.substring(url.lastIndexOf("=") + 1)
+    val stringData = String(hexStrToByteArray(byteData))
+    mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+    mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true) //允许使用单引号
+    val handle = mapper.readValue(stringData, RustHandle::class.java)
+    val funName = (handle.function[0]).toString()
+    // 执行函数
+    callable_map[funName]?.let { it -> it(handle.data) }
+//    DenoService().backDataToRust(temp.toByteArray())// FFI 写法，现在deno无法传递function
 
     return WebResourceResponse(
         "application/json",
         "utf-8",
-        ByteArrayInputStream(temp.toByteArray())
+        ByteArrayInputStream("ok".toByteArray())
     )
 }
 
@@ -143,6 +143,24 @@ fun jumpWhitelist(url: String): Boolean {
         return false
     }
     return true
+}
+
+/**
+ * 十六进制String转Byte数组
+ *
+ * @param str
+ * @return
+ */
+fun hexStrToByteArray(str: String): ByteArray {
+    if (str.isEmpty()) {
+        return ByteArray(0)
+    }
+    val currentStr = str.split(",")
+    val byteArray = ByteArray(currentStr.size)
+    for (i in byteArray.indices) {
+        byteArray[i] = currentStr[i].toByte()
+    }
+    return byteArray
 }
 
 // 读取到了配置文件 ， mock : https://62b94efd41bf319d22797acd.mockapi.io/bfchain/v1/getBlockInfo
