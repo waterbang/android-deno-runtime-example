@@ -15,8 +15,13 @@ class Deno {
     const uint8Array = this.structureBinary(handleFn, data);
     Rust.js_to_rust_buffer(uint8Array, uint8Array.length);
   }
-  callEvalJsFunction(handleFn, data = "''") {
+  callEvalJsStringFunction(handleFn, data = "''") {
     const uint8Array = this.structureBinary(handleFn, data);
+    Rust.eval_js(uint8Array, uint8Array.length);
+  }
+  callEvalJsByteFunction(handleFn, data = "''") {
+    const buffer = new TextEncoder().encode(data);
+    const uint8Array = this.structureBinary(handleFn, buffer);
     Rust.eval_js(uint8Array, uint8Array.length);
   }
   getRustMessage() {

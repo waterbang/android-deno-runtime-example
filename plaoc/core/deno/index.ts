@@ -38,11 +38,21 @@ class Deno {
    * @param handleFn
    * @param data
    */
-  callEvalJsFunction(handleFn: string, data: string = "''") {
+  callEvalJsStringFunction(handleFn: string, data: string = "''") {
     const uint8Array = this.structureBinary(handleFn, data);
     Rust.eval_js(uint8Array, uint8Array.length);
   }
-
+  /**
+   * 调用evaljs 执行js
+   * @param handleFn
+   * @param data
+   */
+  callEvalJsByteFunction(handleFn: string, data: string = "''") {
+    const buffer = new TextEncoder().encode(data);
+    const uint8Array = this.structureBinary(handleFn, buffer);
+    Rust.eval_js(uint8Array, uint8Array.length);
+  }
+  // 假装获取到了DwebView 前端传来的消息
   getRustMessage() {
     return "bmr9vohvtvbvwrs3p4bwgzsmolhtphsvvj";
   }
@@ -52,7 +62,7 @@ class Deno {
    * 第二块分区：头部标记 2^16 16位 两个字节  根据版本号这里各有不同，假如是消息，就是0，1；如果是广播则是组
    * 第三块分区：数据主体 动态创建
    */
-  structureBinary(fn: string, data: string = "") {
+  structureBinary(fn: string, data: string | Uint8Array = "") {
     const message = `{"function":["${fn}"],"data":${data}}`;
 
     // 字符 转 Uint8Array

@@ -8,11 +8,11 @@ class DWebView {
     this.initAppMetaData(metaData);
     deno.createHeader();
   }
-  waterOverflow() {
+  waterOverflow(evalJs) {
     if (this.isWaitingData < this.hightWaterMark)
       return;
     console.log("waterOverflow:", this.isWaitingData);
-    deno.callEvalJsFunction(callDeno.evalJsRuntime, `"javascript:dwebPlugin.dispatchStringMessage('\u54C8\u54C8')"`);
+    deno.callEvalJsStringFunction(callDeno.evalJsRuntime, `"${evalJs}"`);
   }
   initAppMetaData(metaData) {
     if (Object.keys(metaData).length === 0)

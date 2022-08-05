@@ -116,5 +116,11 @@ data class RustHandle(
     val data: String = ""
 )
 
+data class jsHandle(
+    val function: Array<String> = arrayOf(""),
+    val data: String = "",
+    val channelId: String = ""
+)
+
 
 data class ByteData(var headId: ByteArray, var stringData: String)

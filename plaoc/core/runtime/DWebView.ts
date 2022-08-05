@@ -15,13 +15,10 @@ export class DWebView {
     deno.createHeader();
   }
 
-  waterOverflow() {
+  waterOverflow(evalJs: string) {
     if (this.isWaitingData < this.hightWaterMark) return;
     console.log("waterOverflow:", this.isWaitingData);
-    deno.callEvalJsFunction(
-      callDeno.evalJsRuntime,
-      `"javascript:dwebPlugin.dispatchStringMessage('哈哈')"`
-    );
+    deno.callEvalJsStringFunction(callDeno.evalJsRuntime, `"${evalJs}"`);
   }
   /**
    * 初始化app元数据

@@ -4652,19 +4652,60 @@ function normalizeContainer(container) {
 const style = "";
 const _imports_0 = "/vite.svg";
 const _imports_1 = "data:image/png;base64,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";
-class dwebPlugin extends HTMLElement {
+class DwebPlugin extends HTMLElement {
   constructor() {
     super();
+    this.asyncDataArr = [];
+    this.asyncIter = {
+      next: () => {
+        return {
+          value: void 0,
+          done: true
+        };
+      }
+    };
+    this.asyncNextIndex = 0;
+    this.channelId = "";
     this.dispatchStringMessage = (data) => {
-      console.log("dweb-plugin:", data);
+      console.log("dweb-plugin dispatchStringMessage:", data);
+      this.asyncDataArr.push(data);
     };
-    this.dispatchBinaryMessage = (byte) => {
-      console.log("dweb-plugin:", byte);
+    this.dispatchBinaryMessage = (buf) => {
+      console.log("dweb-plugin dispatchBinaryMessage:", buf);
+      const data = new TextDecoder("utf-8").decode(new Uint8Array(buf));
+      console.log("dweb-plugin dispatchBinaryMessage:", data);
+      this.asyncDataArr.push(data);
     };
+    const asyncIterable = this.asyncIterator();
+    this.asyncIter = asyncIterable[Symbol.asyncIterator]();
   }
   postMessage() {
   }
   onMesage() {
+  }
+  asyncIterator() {
+    return {
+      [Symbol.asyncIterator]: () => {
+        return {
+          next: () => {
+            if (this.asyncDataArr.length !== 0 && this.asyncNextIndex < this.asyncDataArr.length) {
+              return Promise.resolve({
+                value: this.asyncDataArr[this.asyncNextIndex++],
+                done: false
+              });
+            } else {
+              this.onClose();
+              return { value: void 0, done: true };
+            }
+          }
+        };
+      }
+    };
+  }
+  async onPolling(fun, data = "''") {
+    const message = `{"function":["${fun}"],"data":${data},"channelId":${this.channelId}}`;
+    const buffer = new TextEncoder().encode(message);
+    return this.connectChannel(`/poll?data=${buffer}`);
   }
   async connectChannel(url) {
     const response = await fetch(url, {
@@ -4679,21 +4720,36 @@ class dwebPlugin extends HTMLElement {
     console.log(data);
     return data;
   }
-  async onPolling(fun, data = "''") {
-    const message = `{"function":["${fun}"],"data":${data}}`;
-    const buffer = new TextEncoder().encode(message);
-    return this.connectChannel(`/poll?data=${buffer}`);
+  static get observedAttributes() {
+    return ["channelId"];
+  }
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log("channelId: ", name, oldValue, newValue);
+    if (name === "channelId") {
+      this.channelId = newValue;
+    }
+  }
+  disconnectedCallback() {
+    this.onClose();
   }
   onClose() {
+    this.asyncNextIndex = 0;
+    this.asyncDataArr = [];
   }
 }
-customElements.define("dweb-plugin", dwebPlugin);
-class DWebView extends dwebPlugin {
+customElements.define("ddweb-plugin", DwebPlugin);
+window.dwebPlugin = new DwebPlugin();
+class dwebPlugin extends DwebPlugin {
   constructor() {
     super();
   }
 }
-class OpenScanner extends dwebPlugin {
+class DWebView extends DwebPlugin {
+  constructor() {
+    super();
+  }
+}
+class OpenScanner extends DwebPlugin {
   constructor() {
     super();
   }
@@ -4701,28 +4757,45 @@ class OpenScanner extends dwebPlugin {
     return await this.onPolling("openScanner");
   }
 }
+customElements.define("dweb-plugin", dwebPlugin);
 customElements.define("dweb-view", DWebView);
 customElements.define("dweb-scanner", OpenScanner);
 const _hoisted_1$1 = { class: "card" };
-const _hoisted_2 = /* @__PURE__ */ createStaticVNode('<div style="margin-top:50px;" data-v-66898868><input id="toastMessage" type="text" placeholder="Toast message" data-v-66898868></div><p data-v-66898868> Check out <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank" data-v-66898868>create-vue</a>, the official Vue + Vite starter </p><p data-v-66898868> Install <a href="https://github.com/johnsoncodehk/volar" target="_blank" data-v-66898868>Volar</a> in your IDE for a better DX </p><p class="read-the-docs" data-v-66898868>Click on the Vite and Vue logos to learn more</p>', 4);
+const _hoisted_2 = { class: "card" };
+const _hoisted_3 = /* @__PURE__ */ createStaticVNode('<div style="margin-top:50px;" data-v-a36c24b2><input id="toastMessage" type="text" placeholder="Toast message" data-v-a36c24b2></div><p data-v-a36c24b2> Check out <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank" data-v-a36c24b2>create-vue</a>, the official Vue + Vite starter </p><p data-v-a36c24b2> Install <a href="https://github.com/johnsoncodehk/volar" target="_blank" data-v-a36c24b2>Volar</a> in your IDE for a better DX </p><p class="read-the-docs" data-v-a36c24b2>Click on the Vite and Vue logos to learn more</p>', 4);
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "HelloWorld",
   props: {
     msg: null
   },
   setup(__props) {
+    let scannerData = ref("\u626B\u7801\u8FD4\u56DE\u7684\u6570\u636E");
+    let dwebPluginData = ref("dweb\u7684\u6570\u636E");
     onMounted(async () => {
-      window.dwebPlugin = new dwebPlugin();
+      console.log("document.querySelector('dweb-plugin'):", document.querySelector("dweb-plugin"));
+      console.log("document.querySelector('dweb-scanner'):", document.querySelector("dweb-scanner"));
     });
     async function openScanner() {
       const scanner = document.querySelector("dweb-scanner");
-      scannerData.value = await scanner.openScanner();
+      const iter = await scanner.asyncIter.next();
+      console.log("scannerData.value = await scanner.openScanner() -->", JSON.stringify(iter));
+      if (iter.done === false) {
+        scannerData.value = iter.value;
+      }
     }
-    let scannerData = ref("\u626B\u7801\u8FD4\u56DE\u7684\u6570\u636E");
+    async function onDwebPlugin() {
+      const dwebPlugin2 = document.querySelector("dweb-plugin");
+      const iter = await dwebPlugin2.asyncIter.next();
+      console.log("document.querySelector('dweb-plugin') as dwebPlugin -->", JSON.stringify(iter));
+      if (iter.done === false) {
+        dwebPluginData.value = iter.value;
+      }
+    }
     return (_ctx, _cache) => {
       const _component_dweb_scanner = resolveComponent("dweb-scanner");
       return openBlock(), createElementBlock(Fragment, null, [
-        createVNode(_component_dweb_scanner),
+        createVNode(unref(DwebPlugin), { id: "dweb" }),
+        createVNode(_component_dweb_scanner, { channelId: "helloWorld" }),
         createBaseVNode("h1", null, toDisplayString(__props.msg), 1),
         createBaseVNode("div", _hoisted_1$1, [
           createBaseVNode("button", {
@@ -4731,12 +4804,19 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           }, "\u542F\u52A8\u626B\u7801"),
           createBaseVNode("p", null, toDisplayString(unref(scannerData)), 1)
         ]),
-        _hoisted_2
+        createBaseVNode("div", _hoisted_2, [
+          createBaseVNode("button", {
+            type: "button",
+            onClick: onDwebPlugin
+          }, "webPlugin\u6D88\u606F"),
+          createBaseVNode("p", null, toDisplayString(unref(dwebPluginData)), 1)
+        ]),
+        _hoisted_3
       ], 64);
     };
   }
 });
-const HelloWorld_vue_vue_type_style_index_0_scoped_66898868_lang = "";
+const HelloWorld_vue_vue_type_style_index_0_scoped_a36c24b2_lang = "";
 const _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -4744,7 +4824,7 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-66898868"]]);
+const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-a36c24b2"]]);
 const _hoisted_1 = /* @__PURE__ */ createStaticVNode('<div data-v-e2cfde70><a href="https://vitejs.dev" target="_blank" data-v-e2cfde70><img src="' + _imports_0 + '" class="logo" alt="Vite logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a></div>', 1);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "App",

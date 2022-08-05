@@ -1,7 +1,7 @@
-import { dwebPlugin } from "../dweb-plugin";
+import { DwebPlugin } from "../native/dweb-plugin";
 import { Plaoc, virtual_keyboard } from "./keyboard.d";
 
-export class BfcsKeyboard extends dwebPlugin {
+export class BfcsKeyboard extends DwebPlugin {
   private _ffi: Plaoc.VirtualKeyboardFFI = virtual_keyboard;
   private $element!: HTMLElement;
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
 import org.bfchain.rust.plaoc.RustHandle
 import org.bfchain.rust.plaoc.callable_map
+import org.bfchain.rust.plaoc.jsHandle
 import org.bfchain.rust.plaoc.mapper
 import org.bfchain.rust.plaoc.webView.urlscheme.CustomUrlScheme
 import java.io.ByteArrayInputStream
@@ -65,7 +66,7 @@ fun messageGateWay(
     val stringData = String(hexStrToByteArray(byteData))
     mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
     mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true) //允许使用单引号
-    val handle = mapper.readValue(stringData, RustHandle::class.java)
+    val handle = mapper.readValue(stringData, jsHandle::class.java)
     val funName = (handle.function[0]).toString()
     // 执行函数
     callable_map[funName]?.let { it -> it(handle.data) }

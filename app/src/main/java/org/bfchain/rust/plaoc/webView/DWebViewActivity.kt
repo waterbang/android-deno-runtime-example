@@ -27,10 +27,6 @@ import androidx.navigation.navDeepLink
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.google.android.gms.common.util.JsonUtils
-import org.bfchain.rust.plaoc.ExportNative
-import org.bfchain.rust.plaoc.R
-import org.bfchain.rust.plaoc.callable_map
 import org.bfchain.rust.plaoc.ui.theme.RustApplicationTheme
 import org.bfchain.rust.plaoc.webView.urlscheme.CustomUrlScheme
 import org.bfchain.rust.plaoc.webView.urlscheme.requestHandlerFromAssets
@@ -38,8 +34,6 @@ import org.bfchain.rust.plaoc.webkit.AdAndroidWebView
 import org.bfchain.rust.plaoc.webkit.rememberAdWebViewState
 import java.net.URLDecoder
 import java.net.URLEncoder
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.io.path.Path
 
 private const val TAG = "DWebViewActivity"
@@ -131,11 +125,8 @@ private fun NavFun(activity: ComponentActivity) {
                     activity = activity,
                     modifier = Modifier.background(Color.Unspecified),
                     customUrlScheme = customUrlScheme,
-//                    modifier = Modifier.padding(innerPadding)
                 ) { webView ->
                     dWebView = webView
-//                     webView.addJavascriptInterface()
-//                    adWebViewHook = webView.adWebViewHook
                 }
             }
         }
@@ -147,7 +138,6 @@ fun openDWebWindow(activity: ComponentActivity, url: String) {
     var intent = Intent(activity.applicationContext, DWebViewActivity::class.java).also {
         it.data = Uri.parse("https://" + URLEncoder.encode(url, "UTF-8"))
     }
-    Log.d(TAG, "openDWebWindow: ${URLEncoder.encode(url, "UTF-8")}")
     activity.startActivity(intent)
 }
 

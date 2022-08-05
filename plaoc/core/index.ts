@@ -10,8 +10,11 @@ const openDWebView = (metaData: MetaData) => {
   dwebview.activity(metaData.manifest.enter);
 
   setTimeout(() => {
-    // 模拟已经收到信号
-    dwebview.waterOverflow();
+    // 模拟已经收到信号l
+    dwebview.waterOverflow(
+      "javascript:dwebPlugin.dispatchStringMessage('哈哈')"
+    );
+    dwebview.waterOverflow("javascript:scanner.dispatchStringMessage('哈哈')");
   }, 2000);
 };
 

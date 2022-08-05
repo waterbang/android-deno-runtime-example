@@ -4,7 +4,7 @@ const openDWebView = (metaData) => {
   const dwebview = new DWebView(metaData);
   dwebview.activity(metaData.manifest.enter);
   setTimeout(() => {
-    dwebview.waterOverflow();
+    dwebview.waterOverflow("javascript:dwebPlugin.dispatchStringMessage('\u54C8\u54C8')");
   }, 2e3);
 };
 export { openDWebView };

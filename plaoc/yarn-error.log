@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  SyntaxError: /Users/mac/Desktop/waterbang/project/android-deno-runtime-example/plaoc/gateway/package.json: Unexpected end of JSON input
+  SyntaxError: /Users/mac/Desktop/waterbang/project/android-deno-runtime-example/plaoc/core/package.json: Unexpected end of JSON input
       at JSON.parse (<anonymous>)
       at /usr/local/lib/node_modules/@bfchain/pkgm/node_modules/yarn/lib/cli.js:1629:59
       at Generator.next (<anonymous>)
