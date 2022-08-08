@@ -1,7 +1,7 @@
 /// <reference lib="dom" />
 import { DwebPlugin } from "./dweb-plugin";
 
-export class dwebPlugin extends DwebPlugin {
+export class DWebMessager extends DwebPlugin {
   constructor() {
     super();
   }
@@ -26,8 +26,8 @@ export class OpenScanner extends DwebPlugin {
  * 单独给某个webComponent发送消息则使用 组件名称.dispatch，
  * 单元测试需要使用模拟函数覆盖到两者所有组件
  */
-customElements.define("dweb-plugin", dwebPlugin);
-(window as any).dwebPlugin = new dwebPlugin();
+customElements.define("dweb-messager", DWebMessager);
+// (window as any).dwebPlugin = new dwebPlugin();
 
 customElements.define("dweb-view", DWebView);
 customElements.define("dweb-scanner", OpenScanner);

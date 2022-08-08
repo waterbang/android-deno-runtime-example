@@ -1,7 +1,7 @@
 /////////////////////////////
 /// 这里封装调用deno的方法，然后暴露出去
 /////////////////////////////
-import Rust from "./rust.ffi";
+// import Rust from "./rust.op";
 
 const versionView = new Uint8Array(new ArrayBuffer(1));
 const headView = new Uint8Array(new ArrayBuffer(2)); // 初始化头部标记
@@ -31,7 +31,7 @@ class Deno {
    */
   callFunction(handleFn: string, data: string = "''") {
     const uint8Array = this.structureBinary(handleFn, data);
-    Rust.js_to_rust_buffer(uint8Array, uint8Array.length);
+    // Rust.js_to_rust_buffer(uint8Array, uint8Array.length);
   }
   /**
    * 调用evaljs 执行js
@@ -40,7 +40,7 @@ class Deno {
    */
   callEvalJsStringFunction(handleFn: string, data: string = "''") {
     const uint8Array = this.structureBinary(handleFn, data);
-    Rust.eval_js(uint8Array, uint8Array.length);
+    // Rust.eval_js(uint8Array, uint8Array.length);
   }
   /**
    * 调用evaljs 执行js
@@ -50,7 +50,7 @@ class Deno {
   callEvalJsByteFunction(handleFn: string, data: string = "''") {
     const buffer = new TextEncoder().encode(data);
     const uint8Array = this.structureBinary(handleFn, buffer);
-    Rust.eval_js(uint8Array, uint8Array.length);
+    // Rust.eval_js(uint8Array, uint8Array.length);
   }
   // 假装获取到了DwebView 前端传来的消息
   getRustMessage() {

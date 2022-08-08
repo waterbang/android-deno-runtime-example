@@ -1,4 +1,4 @@
-#![cfg(target_os = "android")]
+// #![cfg(target_os = "android")]
 use crate::android::android_inter;
 use crate::web_socket::ws::TopicsRequest;
 use std::sync::mpsc::{Receiver, Sender};

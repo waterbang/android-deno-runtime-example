@@ -17,8 +17,7 @@ standalone = [
   "deno_console/standalone",
   "deno_core/standalone",
   "deno_crypto/standalone",
-  "deno_fetch/standalone",
-  "deno_ffi/standalone",
+  "deno_fetch/standalone", # "deno_ffi/standalone",
   "deno_http/standalone",
   "deno_net/standalone",
   "deno_tls/standalone",
@@ -43,7 +42,7 @@ deno_console = {version = "0.50.0", path = "../../../deno/ext/console"}
 deno_core = {version = "0.132.0", path = "../../../deno/core"}
 deno_crypto = {version = "0.64.0", path = "../../../deno/ext/crypto"}
 deno_fetch = {version = "0.73.0", path = "../../../deno/ext/fetch"}
-deno_ffi = {version = "0.37.0", path = "../../../deno/ext/ffi"}
+# deno_ffi = {version = "0.37.0", path = "../../../deno/ext/ffi"}
 deno_http = {version = "0.44.0", path = "../../../deno/ext/http"}
 deno_net = {version = "0.42.0", path = "../../../deno/ext/net"}
 deno_tls = {version = "0.37.0", path = "../../../deno/ext/tls"}
@@ -66,7 +65,7 @@ deno_console = {version = "0.50.0", path = "../../../deno/ext/console"}
 deno_core = {version = "0.132.0", path = "../../../deno/core"}
 deno_crypto = {version = "0.64.0", path = "../../../deno/ext/crypto"}
 deno_fetch = {version = "0.73.0", path = "../../../deno/ext/fetch"}
-deno_ffi = {version = "0.37.0", path = "../../../deno/ext/ffi"}
+# deno_ffi = {version = "0.37.0", path = "../../../deno/ext/ffi"}
 deno_http = {version = "0.44.0", path = "../../../deno/ext/http"}
 deno_net = {version = "0.42.0", path = "../../../deno/ext/net"}
 deno_tls = {version = "0.37.0", path = "../../../deno/ext/tls"}

@@ -4737,9 +4737,7 @@ class DwebPlugin extends HTMLElement {
     this.asyncDataArr = [];
   }
 }
-customElements.define("ddweb-plugin", DwebPlugin);
-window.dwebPlugin = new DwebPlugin();
-class dwebPlugin extends DwebPlugin {
+class DWebMessager extends DwebPlugin {
   constructor() {
     super();
   }
@@ -4757,12 +4755,12 @@ class OpenScanner extends DwebPlugin {
     return await this.onPolling("openScanner");
   }
 }
-customElements.define("dweb-plugin", dwebPlugin);
+customElements.define("dweb-messager", DWebMessager);
 customElements.define("dweb-view", DWebView);
 customElements.define("dweb-scanner", OpenScanner);
 const _hoisted_1$1 = { class: "card" };
 const _hoisted_2 = { class: "card" };
-const _hoisted_3 = /* @__PURE__ */ createStaticVNode('<div style="margin-top:50px;" data-v-a36c24b2><input id="toastMessage" type="text" placeholder="Toast message" data-v-a36c24b2></div><p data-v-a36c24b2> Check out <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank" data-v-a36c24b2>create-vue</a>, the official Vue + Vite starter </p><p data-v-a36c24b2> Install <a href="https://github.com/johnsoncodehk/volar" target="_blank" data-v-a36c24b2>Volar</a> in your IDE for a better DX </p><p class="read-the-docs" data-v-a36c24b2>Click on the Vite and Vue logos to learn more</p>', 4);
+const _hoisted_3 = /* @__PURE__ */ createStaticVNode('<div style="margin-top:50px;" data-v-e123b634><input id="toastMessage" type="text" placeholder="Toast message" data-v-e123b634></div><p data-v-e123b634> Check out <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank" data-v-e123b634>create-vue</a>, the official Vue + Vite starter </p><p data-v-e123b634> Install <a href="https://github.com/johnsoncodehk/volar" target="_blank" data-v-e123b634>Volar</a> in your IDE for a better DX </p><p class="read-the-docs" data-v-e123b634>Click on the Vite and Vue logos to learn more</p>', 4);
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "HelloWorld",
   props: {
@@ -4772,7 +4770,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     let scannerData = ref("\u626B\u7801\u8FD4\u56DE\u7684\u6570\u636E");
     let dwebPluginData = ref("dweb\u7684\u6570\u636E");
     onMounted(async () => {
-      console.log("document.querySelector('dweb-plugin'):", document.querySelector("dweb-plugin"));
+      console.log("document.querySelector('dweb-messager'):", document.querySelector("dweb-messager"));
       console.log("document.querySelector('dweb-scanner'):", document.querySelector("dweb-scanner"));
     });
     async function openScanner() {
@@ -4784,17 +4782,18 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       }
     }
     async function onDwebPlugin() {
-      const dwebPlugin2 = document.querySelector("dweb-plugin");
-      const iter = await dwebPlugin2.asyncIter.next();
+      const dwebPlugin = document.querySelector("dweb-messager");
+      const iter = await dwebPlugin.asyncIter.next();
       console.log("document.querySelector('dweb-plugin') as dwebPlugin -->", JSON.stringify(iter));
       if (iter.done === false) {
         dwebPluginData.value = iter.value;
       }
     }
     return (_ctx, _cache) => {
+      const _component_dweb_messager = resolveComponent("dweb-messager");
       const _component_dweb_scanner = resolveComponent("dweb-scanner");
       return openBlock(), createElementBlock(Fragment, null, [
-        createVNode(unref(DwebPlugin), { id: "dweb" }),
+        createVNode(_component_dweb_messager, { id: "dweb" }),
         createVNode(_component_dweb_scanner, { channelId: "helloWorld" }),
         createBaseVNode("h1", null, toDisplayString(__props.msg), 1),
         createBaseVNode("div", _hoisted_1$1, [
@@ -4816,7 +4815,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const HelloWorld_vue_vue_type_style_index_0_scoped_a36c24b2_lang = "";
+const HelloWorld_vue_vue_type_style_index_0_scoped_e123b634_lang = "";
 const _export_sfc = (sfc, props) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props) {
@@ -4824,7 +4823,7 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-a36c24b2"]]);
+const HelloWorld = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-e123b634"]]);
 const _hoisted_1 = /* @__PURE__ */ createStaticVNode('<div data-v-e2cfde70><a href="https://vitejs.dev" target="_blank" data-v-e2cfde70><img src="' + _imports_0 + '" class="logo" alt="Vite logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a><a href="https://vuejs.org/" target="_blank" data-v-e2cfde70><img src="' + _imports_1 + '" class="logo vue" alt="Vue logo" data-v-e2cfde70></a></div>', 1);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "App",

@@ -12,9 +12,11 @@ const openDWebView = (metaData: MetaData) => {
   setTimeout(() => {
     // 模拟已经收到信号l
     dwebview.waterOverflow(
-      "javascript:dwebPlugin.dispatchStringMessage('哈哈')"
+      "javascript:document.querySelector('dweb-messager').dispatchStringMessage('哈哈:我是messager')"
     );
-    dwebview.waterOverflow("javascript:scanner.dispatchStringMessage('哈哈')");
+    dwebview.waterOverflow(
+      "javascript:document.querySelector('dweb-scanner').dispatchStringMessage('哈哈:我是scanner')"
+    );
   }, 2000);
 };
 

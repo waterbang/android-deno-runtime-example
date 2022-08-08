@@ -1,4 +1,4 @@
-#![cfg(target_os = "android")]
+// #![cfg(target_os = "android")]
 
 use android_logger::Config;
 use log::Level;
@@ -80,7 +80,7 @@ pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_backDataToR
     let scannerData = env.convert_byte_array(byteData).unwrap();
     let dataString = std::str::from_utf8(&scannerData).unwrap();
     let scannerData = Box::new(&scannerData);
-    call_js_function::store_function2(&|scannerData| scannerData);
+    // call_js_function::store_function2(&|scannerData| scannerData);
     log::info!(" backDataToRust:{:?}", dataString);
     // let body = web_socket::handler::Event {
     //     function: String::from("openScanner"),

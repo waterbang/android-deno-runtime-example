@@ -55,11 +55,11 @@ pub fn bootstrap_deno_core() {
             unreachable!("snapshotting!")
         }
     }
-    impl deno_ffi::FfiPermissions for Permissions {
-        fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
-            unreachable!("snapshotting!")
-        }
-    }
+    // impl deno_ffi::FfiPermissions for Permissions {
+    //     fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
+    //         unreachable!("snapshotting!")
+    //     }
+    // }
 
     // Initialize a runtime instance
     let mut runtime = JsRuntime::new(RuntimeOptions {

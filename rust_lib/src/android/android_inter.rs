@@ -1,4 +1,4 @@
-#![cfg(target_os = "android")]
+// #![cfg(target_os = "android")]
 use android_logger::Config;
 use lazy_static::*;
 use log::{debug, error, info, Level};
