@@ -1,1 +1,0 @@
-{"version":3,"file":"index.mjs","sources":["../../../../../index.ts"],"sourcesContent":["import { MetaData } from \"@bfsx/metadata\";\nimport { metaData } from \"./BFS-Metadata\";\n\nimport { openDWebView } from \"@bfsx/core\";\nopenDWebView(new MetaData(metaData));\n"],"names":[],"mappings":";;;AAIA,aAAa,IAAI,SAAS,QAAQ,CAAC;"}

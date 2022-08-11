@@ -1,20 +1,25 @@
-// #![cfg(target_os = "android")]
-
+#![cfg(target_os = "android")]
 use android_logger::Config;
 use log::Level;
+use serde::Deserialize;
+use serde_json::from_str;
+use std::{fmt, sync::RwLock};
 // 引用 jni 库的一些内容，就是上面添加的 jni 依赖
 use crate::js_bridge::call_js_function;
+use crate::js_bridge::call_js_function::{BUFFER_RESOLVE};
 use crate::module_loader::AssetsModuleLoader;
 use crate::my_deno_runtime::bootstrap_deno_runtime;
 use jni::{
     objects::{JObject, JString, JValue},
     JNIEnv,
 };
+
 use jni_sys::jbyteArray;
-use std::ptr::NonNull;
 use std::sync::Arc;
+use std::{collections::HashMap, ptr::NonNull};
 
 /// 初始化的一些操作
+
 #[no_mangle]
 #[tokio::main]
 pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_initDeno(
@@ -36,7 +41,7 @@ pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_initDeno(
             NonNull::new(asset_manager_ptr).unwrap(),
         )),
         "/bfs-service/vue/plaoc-ts/bfs-serivce/index.mjs",
-        // "/assets/index.js",
+        // "/assets/hello_runtime.js",
     )
     .await
     .unwrap();
@@ -69,7 +74,25 @@ pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_denoRuntime
     .unwrap();
 }
 
-/// 接收返回的数据
+#[derive(Deserialize, Debug)]
+struct JsBackData {
+    function: Vec<String>,
+    data: String,
+    channelId: String,
+}
+
+/// 实现一个toString的trait
+impl fmt::Display for JsBackData {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{{channelId:{},function:{:?},data:{}}}",
+            self.channelId, self.function, self.data
+        )
+    }
+}
+
+/// 接收返回的二进制数据
 #[no_mangle]
 #[tokio::main]
 pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_backDataToRust(
@@ -77,42 +100,22 @@ pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_backDataToR
     _context: JObject,
     byteData: jbyteArray,
 ) {
-    let scannerData = env.convert_byte_array(byteData).unwrap();
-    let dataString = std::str::from_utf8(&scannerData).unwrap();
-    let scannerData = Box::new(&scannerData);
-    // call_js_function::store_function2(&|scannerData| scannerData);
-    log::info!(" backDataToRust:{:?}", dataString);
-    // let body = web_socket::handler::Event {
-    //     function: String::from("openScanner"),
-    //     public_key: Some(public_key),
-    //     message: scannerData,
-    // };
-    // 告知js扫码的数据
-    // web_socket::handler::publish_handler(body, web_socket::CLIENTS.clone()).await;
+    let scanner_data = env.convert_byte_array(byteData).unwrap();
+    let data_string = std::str::from_utf8(&scanner_data).unwrap();
+    log::info!(" backDataToRust:{:?}", data_string);
+    BUFFER_RESOLVE.lock().push(scanner_data.to_vec());
 }
 
+// 接收返回的操作对象
 // #[no_mangle]
-// #[allow(non_snake_case)]
-// pub extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_openWebView(
+// #[tokio::main]
+// pub async extern "system" fn Java_org_bfchain_rust_plaoc_DenoService_backHanderToRust(
 //     env: JNIEnv,
 //     _context: JObject,
-//     callback: JObject,
+//     byteData: jbyteArray,
 // ) {
-//     android_logger::init_once(
-//         Config::default()
-//             .with_min_level(Level::Debug)
-//             .with_tag("myrust::web_socket"),
-//     );
-//     log::info!("i am web_socket");
-//     let s = String::from("hello_runtime.html");
-//     let response = env.new_string(&s).expect("Couldn't create java string!");
-//     env.call_method(
-//         callback,
-//         "webViewCallback",
-//         "(Ljava/lang/String;)V",
-//         &[JValue::from(JObject::from(response))],
-//     )
-//     .unwrap();
-//     let mut rt = tokio::runtime::Runtime::new().unwrap();
-//     rt.block_on(web_socket::start());
+//     let scanner_data = env.convert_byte_array(byteData).unwrap();
+//     let data_string = std::str::from_utf8(&scanner_data).unwrap();
+//     log::info!(" backDataToRust:{:?}", data_string);
+//     BUFFER_HANDLER.lock().push(scanner_data.to_vec());
 // }

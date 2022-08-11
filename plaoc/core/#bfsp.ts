@@ -14,7 +14,6 @@ export default defineConfig((info) => {
       dependencies: {},
       devDependencies: {
         "@bfsx/metadata": "0.0.2",
-        "@bfsx/gateway": "0.0.2",
         "@bfsx/typings": "0.0.2",
       },
     },

@@ -2,26 +2,22 @@
  * 所有的dweb-plugin需要继承这个类
  */
 export class DwebPlugin extends HTMLElement {
+  private isWaitingData = 0;
   asyncDataArr: string[] = []; // 存储迭代目标
-  asyncIter: Interator<string> = {
-    next: () => {
-      return {
-        value: undefined,
-        done: true,
-      };
-    },
-  }; // 迭代对象
-  asyncNextIndex = 0; // 迭代索引
+  /**反压高水位，暴露给开发者控制 */
+  hightWaterMark = 10;
   /** 用来区分不同的Dweb-plugin建议使用英文单词，单元测试需要覆盖中文和特殊字符传输情况*/
   channelId = "";
   constructor() {
     super();
-    const asyncIterable = this.asyncIterator();
-    this.asyncIter = asyncIterable[Symbol.asyncIterator]();
   }
   /**接收kotlin的evaJs来的string */
   dispatchStringMessage = (data: string) => {
     console.log("dweb-plugin dispatchStringMessage:", data);
+    if (this.isWaitingData > this.hightWaterMark) {
+      return;
+    }
+    this.isWaitingData++;
     this.asyncDataArr.push(data);
   };
   /**接收kotlin的evaJs来的buffer，转为string */
@@ -31,29 +27,18 @@ export class DwebPlugin extends HTMLElement {
     console.log("dweb-plugin dispatchBinaryMessage:", data);
     this.asyncDataArr.push(data);
   };
-  postMessage() {}
-  onMesage() {}
-
   /**迭代器生成函数*/
-  asyncIterator() {
+  onMesage() {
     return {
-      [Symbol.asyncIterator]: () => {
-        return {
-          next: () => {
-            if (
-              this.asyncDataArr.length !== 0 &&
-              this.asyncNextIndex < this.asyncDataArr.length
-            ) {
-              return Promise.resolve({
-                value: this.asyncDataArr[this.asyncNextIndex++],
-                done: false,
-              });
-            } else {
-              this.onClose();
-              return { value: undefined, done: true };
-            }
-          },
-        };
+      next: async () => {
+        const data = this.asyncDataArr.shift();
+        if (data) {
+          return {
+            value: data,
+            done: false,
+          };
+        }
+        return { value: "", done: true };
       },
     };
   }
@@ -63,8 +48,8 @@ export class DwebPlugin extends HTMLElement {
    * @param data 数据
    * @returns Promise<Ok>
    */
-  async onPolling(fun: string, data: string = "''"): Promise<string> {
-    const message = `{"function":["${fun}"],"data":${data},"channelId":${this.channelId}}`;
+  async onPolling(fun: string, data: string = `"''"`): Promise<string> {
+    const message = `{"function":"${fun}","data":${data},"channelId":"${this.channelId}"}`;
     const buffer = new TextEncoder().encode(message);
     return this.connectChannel(`/poll?data=${buffer}`);
   }
@@ -97,19 +82,8 @@ export class DwebPlugin extends HTMLElement {
       this.channelId = newValue;
     }
   }
-  // dom被删除的声明周期
-  disconnectedCallback() {
-    this.onClose();
-  }
-  // 关闭
-  private onClose() {
-    this.asyncNextIndex = 0;
-    this.asyncDataArr = [];
-  }
 }
 
 type Interator<T> = {
-  next: () =>
-    | Promise<{ value: T; done: boolean }>
-    | { value: any; done: boolean };
+  next: () => Promise<{ value: T; done: boolean }>;
 };

@@ -5,4 +5,9 @@ export enum callDeno {
   denoRuntime = "denoRuntime",
   evalJsRuntime = "evalJsRuntime",
 }
+
+export enum callDVebView {
+  openScanner = "dweb-scanner",
+  openDWebView = "dweb-view",
+}
 // const callDeno

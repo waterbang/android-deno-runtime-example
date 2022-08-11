@@ -126,7 +126,7 @@ impl MainWorker {
             deno_crypto::init(options.seed),
             // deno_webgpu::init(unstable),
             // ffi
-            // deno_ffi::init::<Permissions>(unstable),
+            deno_ffi::init::<Permissions>(unstable),
             // Runtime ops
             ops::runtime::init(main_module.clone()),
             ops::worker_host::init(

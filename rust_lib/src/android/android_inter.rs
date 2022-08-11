@@ -1,4 +1,4 @@
-// #![cfg(target_os = "android")]
+#![cfg(target_os = "android")]
 use android_logger::Config;
 use lazy_static::*;
 use log::{debug, error, info, Level};
@@ -172,11 +172,6 @@ unsafe fn register_natives(jvm: &JavaVM, class_name: &str, methods: &[NativeMeth
 
 /// 回调 Callback 对象的 { void handleCallback(byte: byteArray) } 函数
 pub fn call_java_callback(fun_type: &'static [u8]) {
-    android_logger::init_once(
-        Config::default()
-            .with_min_level(Level::Debug)
-            .with_tag("myrust::handleCallback"),
-    );
     log::info!("i am call_java_callback {:?}", fun_type);
     call_jvm(&JNI_CALLBACK, move |obj: JObject, env: &JNIEnv| {
         // let response: JString = env
@@ -198,11 +193,6 @@ pub fn call_java_callback(fun_type: &'static [u8]) {
 
 /// 回调 Callback 对象的 { void denoCallback(byte: Byte) } 函数
 pub fn deno_evaljs_callback(fun_type: &'static [u8]) {
-    android_logger::init_once(
-        Config::default()
-            .with_min_level(Level::Debug)
-            .with_tag("myrust::denoSetCallback"),
-    );
     log::info!("i am deno_evaljs_callback {:?}", fun_type);
     call_jvm(&JNI_JS_CALLBACK, move |obj: JObject, env: &JNIEnv| {
         let response: jbyteArray = env

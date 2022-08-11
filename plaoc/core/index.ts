@@ -3,23 +3,14 @@
 /////////////////////////////
 import { DWebView } from "./runtime/DWebView";
 import { openScanner } from "./runtime/scanner";
-import { MetaData } from "@bfsx/metadata";
 
-const openDWebView = (metaData: MetaData) => {
-  const dwebview = new DWebView(metaData);
-  dwebview.activity(metaData.manifest.enter);
+// eventLoop();
+// async function eventLoop() {
 
-  setTimeout(() => {
-    // 模拟已经收到信号l
-    dwebview.waterOverflow(
-      "javascript:document.querySelector('dweb-messager').dispatchStringMessage('哈哈:我是messager')"
-    );
-    dwebview.waterOverflow(
-      "javascript:document.querySelector('dweb-scanner').dispatchStringMessage('哈哈:我是scanner')"
-    );
-  }, 2000);
-};
+//   // const stringData = await handlerFactory();
+//   // console.log("eventLoop:", stringData);
+// }
 
-export { openDWebView, openScanner };
+export { DWebView, openScanner };
 
 // openDWebView();

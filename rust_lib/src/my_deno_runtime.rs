@@ -1,5 +1,4 @@
 #![cfg(target_os = "android")]
-
 use crate::errors::get_error_class_name;
 use crate::fmt_errors::PrettyJsError;
 use crate::module_loader::AssetsModuleLoader;
@@ -58,7 +57,7 @@ fn create_web_worker_callback(
             extensions,
             unsafely_ignore_certificate_errors: None,
             root_cert_store: None,
-            user_agent: "hello_worker_runtime".to_string(),
+            user_agent: "plaoc".to_string(),
             seed: None,
             module_loader,
             create_web_worker_cb,
@@ -100,14 +99,12 @@ pub fn create_main_worker(
     module_loader_arc: Arc<AssetsModuleLoader>,
     main_module: ModuleSpecifier,
     permissions: Permissions,
-    mut custom_extensions: Vec<Extension>,
 ) -> MainWorker {
     let module_loader: Rc<AssetsModuleLoader> = Rc::new((*module_loader_arc.clone()).clone());
     let create_web_worker_cb = create_web_worker_callback(module_loader_arc);
     let web_worker_preload_module_cb = create_web_worker_preload_module_callback();
 
-    let mut extensions = cli_exts();
-    extensions.append(&mut custom_extensions);
+    let extensions = cli_exts();
 
     let options = WorkerOptions {
         bootstrap: BootstrapOptions {
@@ -122,12 +119,12 @@ pub fn create_main_worker(
             is_tty: colors::is_tty(),
             runtime_version: "x".to_string(),
             ts_version: "x".to_string(),
-            unstable: true,
+            unstable: true, // 是否开启不安全api
         },
-        extensions,
+        extensions, // op
         unsafely_ignore_certificate_errors: None,
         root_cert_store: None,
-        user_agent: "hello_runtime".to_string(),
+        user_agent: "plaoc".to_string(),
         seed: None,
         source_map_getter: None,
         js_error_create_fn: Some(Rc::new(PrettyJsError::create)),
@@ -155,7 +152,7 @@ pub async fn bootstrap_deno_runtime(
     let main_module = deno_core::resolve_path(entry_js_path)?;
     let permissions = Permissions::allow_all();
 
-    let mut worker = create_main_worker(module_loader, main_module.clone(), permissions, vec![]);
+    let mut worker = create_main_worker(module_loader, main_module.clone(), permissions);
     log::info!("start deno runtime!!!");
 
     worker.execute_main_module(&main_module).await?;

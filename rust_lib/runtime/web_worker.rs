@@ -391,7 +391,7 @@ impl WebWorker {
             deno_crypto::init(options.seed),
             // deno_webgpu::init(unstable),
             // ffi
-            // deno_ffi::init::<Permissions>(unstable),
+            deno_ffi::init::<Permissions>(unstable),
             // Runtime ops that are always initialized for WebWorkers
             ops::web_worker::init(),
             ops::runtime::init(main_module.clone()),

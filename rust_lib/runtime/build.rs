@@ -92,11 +92,11 @@ mod not_docs {
         }
     }
 
-    // impl deno_ffi::FfiPermissions for Permissions {
-    //     fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
-    //         unreachable!("snapshotting!")
-    //     }
-    // }
+    impl deno_ffi::FfiPermissions for Permissions {
+        fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
+            unreachable!("snapshotting!")
+        }
+    }
 
     impl deno_net::NetPermissions for Permissions {
         fn check_net<T: AsRef<str>>(
@@ -131,7 +131,7 @@ mod not_docs {
                 deno_broadcast_channel::InMemoryBroadcastChannel::default(),
                 false, // No --unstable.
             ),
-            // deno_ffi::init::<Permissions>(false),
+            deno_ffi::init::<Permissions>(false),
             deno_net::init::<Permissions>(
                 None, false, // No --unstable.
                 None,

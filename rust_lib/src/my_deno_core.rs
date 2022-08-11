@@ -9,8 +9,6 @@ use deno_core::{op, Extension, JsRuntime, RuntimeOptions, Snapshot};
 // This is a hack to make the `#[op]` macro work with
 // deno_core examples.
 // You can remove this:
-use deno_core::*;
-
 // use log::debug;
 // use once_cell::sync::Lazy;
 
@@ -55,16 +53,16 @@ pub fn bootstrap_deno_core() {
             unreachable!("snapshotting!")
         }
     }
-    // impl deno_ffi::FfiPermissions for Permissions {
-    //     fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
-    //         unreachable!("snapshotting!")
-    //     }
-    // }
+    impl deno_ffi::FfiPermissions for Permissions {
+        fn check(&mut self, _path: Option<&Path>) -> Result<(), deno_core::error::AnyError> {
+            unreachable!("snapshotting!")
+        }
+    }
 
     // Initialize a runtime instance
     let mut runtime = JsRuntime::new(RuntimeOptions {
         extensions: vec![
-            // deno_ffi::init::<Permissions>(false),
+            deno_ffi::init::<Permissions>(false),
             deno_webidl::init(),
             deno_url::init(),
             deno_tls::init(),
