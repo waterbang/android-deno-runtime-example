@@ -1,5 +1,7 @@
 *.iml
 .gradle
+*/node_modules
+
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -13,4 +15,6 @@
 .externalNativeBuild
 .cxx
 local.properties
-librust_lib.so
+/test-vue3/build
+/plaoc/yarn-error.log
+/plaoc/plugin
